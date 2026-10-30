@@ -77,7 +77,7 @@ body.cfm #tools,body.cfm #trav,body.cfm #info,body.cfm #code,body.cfm #modes,bod
 @media(max-width:760px){
  #top>span:not(.sp){display:none}#vw{max-width:36vw}
  #top{font-size:12px;gap:6px;padding:6px 8px}button,select{padding:6px 9px;min-height:40px}
- #bAna,#bSet,#bHelp{display:none}#bMore{display:inline-block}
+ #bMore{display:inline-block}
  #info{width:150px;padding:8px 10px}#info div{font-size:12px}
  #tools{flex-direction:row;overflow-x:auto;overflow-y:hidden;width:auto;right:8px;bottom:var(--tb,120px);max-height:none}#tools button{white-space:nowrap}
  #trav{left:8px}
@@ -85,6 +85,17 @@ body.cfm #tools,body.cfm #trav,body.cfm #info,body.cfm #code,body.cfm #modes,bod
  #tools>.cx.tgl{width:auto;min-height:40px}
  #trav>.cx,#info>.cx,#code>.cx{min-width:36px;min-height:36px;font-size:16px;line-height:1}
  #code .tb button{min-height:34px}}
+
+/* ===== Chỉnh giao diện điện thoại ===== */
+/* thanh công cụ khi thu gọn: chỉ còn nút biểu tượng + mũi tên, không còn thanh đen */
+#tools.cl{right:auto!important;background:none;border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;padding:0!important;overflow:visible}
+#tools.cl>.cx.tgl{background:var(--g);border:1px solid var(--l);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+/* "Thông tin nút": chừa chỗ cho mũi tên để không che chữ */
+#info h4{padding-right:32px}
+#info>.cx{top:4px;right:5px}
+/* nút 📐 Đo thông số trên thanh trên: hết chỗ thì chỉ còn biểu tượng, hết nữa thì nằm trong ⋯ */
+#top .ic .tx{display:none}#top .nf{display:none!important}
+@media(max-width:760px){#top{gap:4px}#top .sp{display:none}#vw{width:106px;max-width:none;flex:1 1 106px;text-overflow:ellipsis}#top>button{flex:1 1 auto}#top>#bMore{flex:none}#top>button,#top>select{padding:6px 7px}#top>button.ic{padding:6px 8px}#info{width:178px}#info h4{font-size:13px;white-space:nowrap}#info>.cx{min-width:30px;min-height:30px}}
 
 /* ===== Giao diện sáng (bật trong ⚙ Cài đặt; mặc định là tối) ===== */
 :root[data-theme="dark"]{color-scheme:dark}
@@ -125,15 +136,15 @@ addEventListener('unhandledrejection',function(e){showErr((e.reason&&e.reason.me
 <body>
 <div id="ar"></div>
 <div id="start"><h1>AR Cây nhị phân 3D</h1>
-<p>Đưa camera vào hình cây nhị phân (in hoặc vẽ tay trên giấy sáng; nét và nút màu đen, xanh, đỏ… đều được, nút tô đặc hay vòng rỗng đều được). Web tự nhận diện nút – đường nối, dựng cây 3D để bạn duyệt, thêm, xóa, tìm kiếm, kéo từng nút, làm trắc nghiệm và chơi game trên chính cây đó. Nếu hình giống một hình trong sách, app sẽ gợi ý đúng hình đó và dùng luôn số chuẩn.</p>
+<p>Đưa camera vào hình cây nhị phân (in hoặc vẽ tay trên giấy sáng; nét và nút màu đen, xanh, đỏ… đều được, nút tô đặc hay vòng rỗng đều được). Web tự nhận diện nút – đường nối, dựng cây 3D để bạn duyệt, thêm, xóa, tìm kiếm, kéo từng nút, làm trắc nghiệm và chơi game trên chính cây đó.</p>
 <p style="font-size:13px">💡 Mẹo quét nét: đủ sáng · đưa máy cách giấy ~30–40cm · giữ máy yên 1–2 giây · vẽ nét đậm, khép kín vòng tròn · đặt hình cây vào <b>KHUNG VÀNG</b> (kéo khung để dời, kéo chấm góc để đổi cỡ). Ảnh mờ thì bấm <b>📸 Chụp quét</b> hoặc <b>🖼 Tải ảnh</b> (chụp bằng camera gốc cho nét).</p><p id="stt">⏳ Đang khởi động...</p><button id="bAR" disabled>Bắt đầu quét AR</button><button id="bDemo" disabled>⌨ Không cần camera (nhập cây bằng chuỗi)</button></div>
 <div id="top" class="gl"><span>TRẠNG THÁI AR: <b id="st"></b></span><span class="sp"></span>
 <select id="vw" title="Cách hiển thị: cây 3D hoặc mảng 1 chiều T[]"><option value="tree">Cây 3D AR</option><option value="arr">Mảng 1 chiều T[]</option></select>
-<button id="bAna" title="Xem chiều cao, số lá, số mức… của cây">📐<span class="tx"> Đo thông số</span></button><button id="bMv" title="Đổi cách kéo 1 ngón: Xoay cây ⟷ Kéo nút"></button><button id="bLock" class="or" hidden></button><button id="bMan" title="Không quét được? nhập cây bằng tay">⌨<span class="tx"> Nhập tay</span></button><button id="bSnap" title="Chụp 1 ảnh nét để nhận diện">📸<span class="tx"> Chụp quét</span></button><button id="bUp" title="Tải ảnh có sẵn">🖼<span class="tx"> Tải ảnh</span></button><button id="bSet" title="Cài đặt: giao diện, độ sáng, âm thanh, ghi chú hướng dẫn">⚙<span class="tx"> Cài đặt</span></button><button id="bHelp" title="Trợ giúp: cách dùng và ý nghĩa màu nút">?<span class="tx"> Trợ giúp</span></button><button id="bMore" title="Thêm: đo thông số, cài đặt, trợ giúp">⋯</button></div>
+<button id="bAna" title="Xem chiều cao, số lá, số mức… của cây">📐<span class="tx"> Đo thông số</span></button><button id="bMv" title="Đổi cách kéo 1 ngón: Xoay cây ⟷ Kéo nút"></button><button id="bLock" class="or" hidden></button><button id="bMan" title="Không quét được? nhập cây bằng tay">⌨<span class="tx"> Nhập tay</span></button><button id="bSnap" title="Chụp 1 ảnh nét để nhận diện">📸<span class="tx"> Chụp quét</span></button><button id="bUp" title="Tải ảnh có sẵn">🖼<span class="tx"> Tải ảnh</span></button><button id="bSet" title="Cài đặt: giao diện, độ sáng, âm thanh, nút None, ghi chú hướng dẫn">⚙<span class="tx"> Cài đặt</span></button><button id="bHelp" title="Trợ giúp: cách dùng và ý nghĩa màu nút">?<span class="tx"> Trợ giúp</span></button><button id="bMore" title="Thêm: đo thông số, cài đặt, trợ giúp">⋯</button></div>
 <div id="modes" class="gl" role="tablist"><button data-mode="kham" title="Khám phá: xem thông số, thông tin nút, thêm / xóa / sửa nút">🔎<span> Khám phá</span></button><button data-mode="duyet" title="Duyệt cây: xem duyệt trước, giữa, sau, ngược kèm code">🚶<span> Duyệt cây</span></button><button data-mode="choi" title="Trò chơi: duyệt đúng thứ tự, săn nút, trắc nghiệm">🎮<span> Trò chơi</span></button><small id="mdesc"></small></div>
 <div id="info" class="gl"></div><div id="code" class="gl"></div><div id="gm" class="gl"></div>
 <div id="tools" class="gl">
-<button id="tg" class="cx tgl" title="Thu gọn / mở rộng thanh công cụ"></button><button data-op="ad" title="Thêm nút mới hoặc xóa nút đang chọn (cùng một hộp)">＋/－ Thêm / Xóa nút</button><button data-op="search" title="Tìm một giá trị trên cây và xem đường đi">🔍 Tìm kiếm</button><button data-op="upd" title="Đổi giá trị của nút đang chọn">✎ Cập nhật</button><button data-op="inp" title="Nhập cây bằng chuỗi hoặc số, tạo cây mẫu, khôi phục cây quét">⌨ Nhập / Khởi tạo cây</button><button data-op="lay" title="Đưa các nút và góc nhìn về vị trí ban đầu">↺ Đặt lại vị trí & góc nhìn</button><button data-op="game" title="Chơi game và làm trắc nghiệm trên chính cây này">🎮 Chọn trò chơi</button><button data-op="quiz" title="Làm câu trắc nghiệm sinh từ chính cây đang hiển thị">📝 Trắc nghiệm</button></div>
+<button id="tg" class="cx tgl" title="Thu gọn / mở rộng thanh công cụ"></button><button data-op="ad" title="Thêm nút mới hoặc xóa nút đang chọn (cùng một hộp)">＋/－ Thêm / Xóa nút</button><button data-op="search" title="Tìm một giá trị trên cây và xem đường đi">🔍 Tìm kiếm</button><button data-op="upd" title="Đổi giá trị của nút đang chọn">✎ Cập nhật</button><button data-op="inp" title="Nhập cây bằng chuỗi hoặc số, tạo cây mẫu, mở thư viện hình sách, khôi phục cây quét">⌨ Nhập / Khởi tạo cây</button><button data-op="lay" title="Đưa các nút và góc nhìn về vị trí ban đầu">↺ Đặt lại vị trí & góc nhìn</button><button data-op="game" title="Chơi game và làm trắc nghiệm trên chính cây này">🎮 Chọn trò chơi</button><button data-op="quiz" title="Làm câu trắc nghiệm sinh từ chính cây đang hiển thị">📝 Trắc nghiệm</button></div>
 <div id="trav" class="gl"><div class="r"><b id="tt"></b><select id="tk" title="Chọn kiểu duyệt cây"></select><span class="sp"></span>
 <button id="bPv" title="Lùi một bước">⏮</button><button id="bPlay" title="Phát / tạm dừng mô phỏng">▶</button><button id="bNx" title="Tiến một bước">⏭</button>
 <select id="spd" title="Tốc độ phát"><option value="0.5">0.5x</option><option value="1" selected>1.0x</option><option value="1.5">1.5x</option><option value="2">2.0x</option></select></div>
@@ -161,7 +172,7 @@ let nid=1,root=null;
 const mk=(v,o)=>Object.assign({v},o,{id:nid++,l:null,r:null});
 const MODES={kham:{n:'Khám phá',ops:'ad search upd inp lay ana'},duyet:{n:'Duyệt cây',ops:'search lay'},choi:{n:'Trò chơi',ops:'game quiz'}};
 let TR={off:0,i:0};try{TR.off=localStorage.getItem('arbt_tour')=='1'?1:0}catch(e){}
-const S={mode:'kham',notes:true,view:'tree',sel:null,kind:'pre',steps:[],i:-1,run:0,tm:0,speed:1,bright:1,size:1,snd:true,orig:null,yaw:0,pitch:0,zoom:1,grow:0,spin:null,px:0,py:0,roll:0,mv:'orbit',dm:'rot',showCode:true,lang:'gia',ck:null};
+const S={mode:'kham',notes:true,view:'tree',sel:null,kind:'pre',steps:[],i:-1,run:0,tm:0,speed:1,bright:1,size:1,snd:true,orig:null,yaw:0,pitch:0,zoom:1,grow:0,spin:null,px:0,py:0,roll:0,mv:'orbit',dm:'rot',showCode:true,lang:'gia',ck:null,showNone:false,fig:null};
 const kf=()=>'v';
 const cmp=(a,b)=>typeof a=='string'?a.localeCompare(b,'vi'):a-b;
 const disp=n=>!n?'':n.v;
@@ -177,7 +188,7 @@ const depth=n=>{let d=0;while((n=par(n)))d++;return d};
 const pathTo=n=>{const a=[];for(;n;n=par(n))a.unshift(n.id);return a};   // đường từ gốc xuống nút n
 const clone=n=>n&&Object.assign({},n,{l:clone(n.l),r:clone(n.r)});
 const treeStr=n=>n?n.v+(n.l||n.r?'('+treeStr(n.l)+','+treeStr(n.r)+')':''):'';
-function parseStr(s){let i=0;s=s.replace(/\s+/g,'');const num=()=>{const m=/^(-?\d+|None)/.exec(s.slice(i));if(!m)return null;i+=m[0].length;return m[0]=='None'?'None':+m[0]};
+function parseStr(s){let i=0;s=s.replace(/\s+/g,'');const num=()=>{const m=/^-?\d+/.exec(s.slice(i));if(!m)return null;i+=m[0].length;return +m[0]};
   const nd=()=>{const v=num();if(v===null)return null;const n=mk(v,{});if(s[i]=='('){i++;n.l=nd();if(s[i]==',')i++;n.r=nd();if(s[i]==')')i++}return n};return nd()}
 let TL={r:.05,dx:.1,dy:.1};
 function adopt(tr,C,M){                            // kết quả nhận diện → cây của web
@@ -188,44 +199,9 @@ function adopt(tr,C,M){                            // kết quả nhận diện 
     (function z(u){[u.l,u.r].forEach(c=>{if(c){const a=map[u.i].P0,b=map[c.i].P0;dys.push(Math.abs(b[1]-a[1]));dxs.push(Math.abs(b[0]-a[0]));z(c)}})})(tr.root);
     const md=a=>a.sort((x,y)=>x-y)[a.length>>1]||.1;TL={r:md(rs)*.97,dy:Math.max(md(dys),md(rs)*2.4),dx:Math.max(md(dxs),md(rs)*1.4)}}
   S.sel=null;S.view='tree';S.orig=clone(root);clear();refresh();return map}
-function afterScan(){                          // sau khi xác nhận số: chốt dữ liệu cây
-  const seen=new Set();let fix=0;inord().forEach(n=>{while(seen.has(n.v)){n.v++;fix++}seen.add(n.v)});
+function afterScan(){                          // sau khi xác nhận số: chốt dữ liệu cây (số trùng được GIỮ NGUYÊN, không tự đổi)
   S.orig=clone(root);clear();refresh();
-  toast(fix?'⚠ Có số trùng nên đã tự đổi — kiểm tra bằng 🔢 Nhập số các nút':'✅ Đã kiểm tra & cố định cây — dùng các công cụ để thao tác')}
-
-// ================= THƯ VIỆN HÌNH CÂY TRONG SÁCH (so khớp hình quét với hình mẫu) =================
-// Mỗi mẫu: tên + chuỗi cây v(trái,phải), con trống để trống, None = nút giả. Muốn thêm hình mới: thêm một dòng vào LIB.
-const LIB=[
- {n:'Mẫu 1 · cây 1–6 nét đen',s:'1(2(3(5,6),4),)'},
- {n:'Mẫu 2 · Hình 6.6 cây hoàn chỉnh',s:'5(18(4(6,20),11(12,3)),7(9(1,),15))'},
- {n:'Mẫu 3 · a) cây nhị phân tổng quát',s:'5(8(,3),4(7,))'},
- {n:'Mẫu 4 · b) hoàn chỉnh có nút None',s:'5(8(None,3),4(7,))'},
- {n:'Mẫu 5 · a) gốc 5, con 2 và 10',s:'5(2(,4),10(8,11))'},
- {n:'Mẫu 6 · b) gốc 8, con 5 và 10',s:'8(5(1,4),10(8(,9),11))'},
- {n:'Mẫu 7 · 7a cây hoàn chỉnh 5–3–7',s:'5(3,7)'},
- {n:'Mẫu 8 · 7b cây tổng quát có nút 6',s:'5(3,7(6,))'},
- {n:'Mẫu 9 · 7c hoàn chỉnh có nút None',s:'5(3(None,None),7(6,))'},
- {n:'Mẫu 10 · a) cây tìm kiếm gốc 4',s:'4(2(1,3),12(7(6,9),15))'},
- {n:'Mẫu 11 · b) cây tìm kiếm suy biến',s:'10(,12(,15(,20)))'},
- {n:'Mẫu 12 · cây gốc 11',s:'11(4(1,7(6,)),20(15(,16),21))'}];
-const LP=s=>{let i=0;s=s.replace(/\s+/g,'');const nd=()=>{const m=/^(-?\d+|None)/.exec(s.slice(i));if(!m)return null;i+=m[0].length;const n={v:m[0],l:null,r:null};if(s[i]=='('){i++;n.l=nd();if(s[i]==',')i++;n.r=nd();if(s[i]==')')i++}return n};return nd()};
-const lsz=u=>u?1+lsz(u.l)+lsz(u.r):0;
-const lpd=(a,b)=>a&&b?lpd(a.l,b.l)+lpd(a.r,b.r):lsz(a||b);        // số vị trí nút có ở cây này mà thiếu ở cây kia (cùng vị trí trái/phải)
-const lvProf=C=>{if(!C||C.length<3)return null;const rs=C.map(c=>c.r).sort((a,b)=>a-b),mr=rs[rs.length>>1],o=[...C].sort((a,b)=>a.y-b.y),p=[];let cur=[o[0]];   // số nút trên từng hàng (gom theo toạ độ y)
-  for(let i=1;i<o.length;i++){const m=cur.reduce((u,c)=>u+c.y,0)/cur.length;if(o[i].y-m>1.2*mr){p.push(cur.length);cur=[o[i]]}else cur.push(o[i])}p.push(cur.length);return p};
-const lvOf=t=>{const p=[];(function f(u,d){if(!u)return;p[d]=(p[d]||0)+1;f(u.l,d+1);f(u.r,d+1)})(t,0);return p};
-const profSim=(a,b)=>{const n=Math.max(a.length,b.length);let df=0;for(let i=0;i<n;i++)df+=Math.abs((a[i]||0)-(b[i]||0));return 1-df/(a.reduce((u,v)=>u+v,0)+b.reduce((u,v)=>u+v,0))};
-function libMatch(sr,C){const na=lsz(sr);if(na<3)return[];const pf=lvProf(C);            // sr = cây vừa quét (chỉ cần hình dạng: .l / .r)
-  const all=LIB.map(L=>{const t=L.t||(L.t=LP(L.s)),d=lpd(sr,t),s1=1-d/Math.max(na,lsz(t)),s2=pf?profSim(pf,lvOf(t))-.1:0;return{L,d,sim:Math.max(s1,s2)}}).sort((a,b)=>b.sim-a.sim);
-  return all.filter(m=>m.sim>=.75&&m.sim>=all[0].sim-.25).slice(0,3)}   // tối đa 3 hình giống nhất
-function adoptLib(L,tr,C,M){                                        // dựng cây MẪU, nút nào có trên giấy thì đặt đúng chỗ giấy; nút thiếu tự xếp theo nút cha
-  root=parseStr(L.s);const pos={},rs=[],dys=[],dxs=[];
-  (function z(u,p){if(!u)return;pos[p]=C[u.i];z(u.l,p+'l');z(u.r,p+'r')})(tr.root,'');
-  (function put(n,p){if(!n)return;const c=pos[p];if(c){n.P0=[(c.x-M.cx)/M.pxS,-(c.y-M.cy)/M.pxS,0];rs.push(c.r/M.pxS)}put(n.l,p+'l');put(n.r,p+'r')})(root,'');
-  (function z(n){[n.l,n.r].forEach(c=>{if(c){if(n.P0&&c.P0){dys.push(Math.abs(c.P0[1]-n.P0[1]));dxs.push(Math.abs(c.P0[0]-n.P0[0]))}z(c)}})})(root);
-  const md=a=>a.sort((x,y)=>x-y)[a.length>>1]||.1;
-  TL={r:md(rs)*.97,dy:Math.max(md(dys),md(rs)*2.4),dx:Math.max(md(dxs),md(rs)*1.4)};
-  S.sel=null;S.view='tree';S.orig=clone(root);clear();refresh()}
+  toast('✅ Đã kiểm tra & cố định cây — dùng các công cụ để thao tác')}
 
 // ================= MÃ GIẢ + PYTHON (khớp từng dòng với bước mô phỏng) =================
 const NM={pre:'preorder',in:'inorder',post:'postorder',rin:'reverseorder'},OR={pre:'vlr',in:'lvr',post:'lrv',rin:'rvl'},TNm={pre:'duyệt trước',in:'duyệt giữa',post:'duyệt sau',rin:'duyệt ngược'};
@@ -270,6 +246,7 @@ const close=()=>{$('#mo').style.display='none';$('#mo').className='';MOK=null;MX
 $('#mok').onclick=()=>{if(MOK&&MOK()===false)return;close();refresh()};$('#mx').onclick=()=>{const f=MXC;close();if(f)f()};
 const X={};$('#mbd').addEventListener('click',e=>{const b=e.target.closest('[data-x]');if(b&&X[b.dataset.x])X[b.dataset.x]()});
 $('#mbd').addEventListener('input',e=>{const t=e.target;if(t.id=='sb')S.bright=+t.value;if(t.id=='ss')S.size=+t.value;if(t.id=='sn')S.snd=t.checked;if(t.id=='sg'){S.notes=t.checked;ui()}
+  if(t.id=='sno')S.showNone=t.checked;
   if(t.id=='sth'){TH.m=t.value=='light'?'light':'dark';try{localStorage.setItem('arbt_theme',TH.m)}catch(_){}applyTheme()}sync()});
 const F=(id,l,v='',ty='text')=>`<label>${l}</label><input id="${id}" type="${ty}" value="${esc(v)}">`;
 const fields=n=>F('f1','Khoá v',n?n.v:'','number');
@@ -287,7 +264,7 @@ const OP={
  search(){modal('Tìm kiếm',F('f1','Khoá cần tìm','','number'),()=>{const a=$('#f1').value.trim();if(!a)return false;if(!root){toast(EM);return false}setSteps(sSteps(+a))},'Tìm')},
  upd(){const n=byId(S.sel);if(!n)return hint('👆 Chưa chọn nút: hãy chạm vào nút cần cập nhật trên cây (các nút đang nhấp nháy), rồi bấm lại Cập nhật',1);
    modal('Cập nhật nút',fields(n),()=>{const a=$('#f1').value.trim();if(!a||!Number.isFinite(+a))return false;n.v=+a;S.spin=n.id;clear()},'Lưu')},
- inp(){modal('Nhập / Khởi tạo cây','<p>Nhập tay hoặc dựng lại cây từ dữ liệu đã quét:</p><button class="bt or" data-x="i1">⌨ Nhập cây bằng chuỗi v(trái,phải)</button><button class="bt or" data-x="i2">🔢 Nhập / sửa số các nút</button><hr style="opacity:.2"><button class="bt" data-x="rand">🎲 Cây ngẫu nhiên</button><button class="bt" data-x="deg">📏 Cây suy biến (đường thẳng)</button><button class="bt" data-x="bal">⚖ Cây cân bằng</button><button class="bt" data-x="orig">↩ Khôi phục cây quét ban đầu</button>')},
+ inp(){modal('Nhập / Khởi tạo cây','<p>Nhập tay, mở hình trong sách hoặc dựng lại cây từ dữ liệu đã quét:</p><button class="bt or" data-x="lib">📚 Thư viện hình sách (14 hình)</button><button class="bt or" data-x="i1">⌨ Nhập cây bằng chuỗi v(trái,phải)</button><button class="bt or" data-x="i2">🔢 Nhập / sửa số các nút</button><hr style="opacity:.2"><button class="bt" data-x="rand">🎲 Cây ngẫu nhiên</button><button class="bt" data-x="deg">📏 Cây suy biến (đường thẳng)</button><button class="bt" data-x="bal">⚖ Cây cân bằng</button><button class="bt" data-x="orig">↩ Khôi phục cây quét ban đầu</button>')},
  str(){modal('Nhập cây bằng chuỗi','<p>⚠ Cây đang hiển thị sẽ bị thay bằng cây mới (có thể khôi phục cây quét ban đầu ở menu Nhập / Khởi tạo).</p>'+F('f1','Dạng v(trái,phải) — ví dụ 1(2(3(5,6),4),) ; để trống con thì bỏ số',treeStr(root)||'1(2(3(5,6),4),)'),()=>{
    const t=parseStr($('#f1').value);if(!t){toast('Chuỗi chưa đúng, ví dụ: 1(2,3)');return false}
    const nn=(function c(n){return n?1+c(n.l)+c(n.r):0})(t);if(nn>31){toast('Tối đa 31 nút');return false}
@@ -298,10 +275,10 @@ const OP={
  lay(){inord().forEach(n=>delete n.P);Object.assign(S,{px:0,py:0,roll:0,yaw:0,pitch:0,zoom:1,grow:0});clear();refresh();toast('Đã đặt lại vị trí nút và góc nhìn')},
  quiz(){newQ();drawQ()},
  game(){modal('Chơi game','<p>Chạm vào nút trên cây. Sai 3 lần là thua, qua màn sẽ khó dần.</p><button class="bt or" data-x="g1">🔢 Duyệt đúng thứ tự</button><button class="bt or" data-x="g2">🍃 Săn nút theo đặc điểm</button><button class="bt or" data-x="g3">🔍 Đi tìm khoá</button><button class="bt or" data-x="gq">📝 Trắc nghiệm</button><small>Điểm cao nhất: '+GM.best+'</small>')},
- ana(){if(!root)return toast(EM);const a=inord(),ks=a.map(n=>n.v).filter(v=>typeof v=='number').sort(cmp),n=a.length,h=hE(root),lv=a.filter(x=>!x.l&&!x.r).length,two=a.filter(x=>x.l&&x.r).length,
+ ana(){if(!root)return toast(EM);const a=inord(),ks=a.map(n=>n.v).sort(cmp),n=a.length,h=hE(root),lv=a.filter(x=>!x.l&&!x.r).length,two=a.filter(x=>x.l&&x.r).length,
    full=a.every(x=>!x.l==!x.r),comp=Math.max(...wk().list.map(e=>e.k))==n-1,perf=n==2**(h+1)-1,
    kinds=perf?['hoàn hảo (cũng đầy đủ và hoàn chỉnh)']:[full&&'đầy đủ',comp&&'hoàn chỉnh'].filter(Boolean);
-   modal('Thông số cây',`<table><tr><td>Số nút n</td><td>${n}</td></tr><tr><td>Chiều cao cây h</td><td>${h}</td></tr><tr><td>Số mức</td><td>${h+1} (mức 0…${h})</td></tr><tr><td>Số lá</td><td>${lv}</td></tr><tr><td>Số nút nhánh</td><td>${n-lv}</td></tr><tr><td>Nút có đủ 2 con</td><td>${two}</td></tr><tr><td>Giá trị nhỏ nhất</td><td>${esc(ks[0]??'—')}</td></tr><tr><td>Giá trị lớn nhất</td><td>${esc(ks[ks.length-1]??'—')}</td></tr></table><p>Loại: ${kinds.length?kinds.join(', '):'thường'}</p><small>Quy ước: gốc ở mức 0 · lá có chiều cao 0 · chiều cao cây = số cạnh trên đường dài nhất từ gốc xuống lá.</small>`)}};
+   modal('Thông số cây',`<table><tr><td>Số nút n</td><td>${n}</td></tr><tr><td>Chiều cao cây h</td><td>${h}</td></tr><tr><td>Số mức</td><td>${h+1} (mức 0…${h})</td></tr><tr><td>Số lá</td><td>${lv}</td></tr><tr><td>Số nút nhánh</td><td>${n-lv}</td></tr><tr><td>Nút có đủ 2 con</td><td>${two}</td></tr><tr><td>Giá trị nhỏ nhất</td><td>${esc(ks[0])}</td></tr><tr><td>Giá trị lớn nhất</td><td>${esc(ks[ks.length-1])}</td></tr></table><p>Loại: ${kinds.length?kinds.join(', '):'thường'}</p><small>Quy ước: gốc ở mức 0 · lá có chiều cao 0 · chiều cao cây = số cạnh trên đường dài nhất từ gốc xuống lá.</small>`)}};
 X.build=k=>{const f=kf(),R=inord().map(n=>{const c=Object.assign({},n,{l:null,r:null});delete c.P;delete c.P0;return c}).sort((p,q)=>cmp(p[f],q[f]));let t=null;
   const ins=r=>{const m=mk(r.v,r);if(!t){t=m;return}let c=t;for(;;){const d=cmp(r[f],c[f])<0?'l':'r';if(!c[d]){c[d]=m;return}c=c[d]}};
   if(k=='bal'){const b=(l,h)=>{if(l>h)return null;const m=(l+h+1)>>1,n=mk(R[m].v,R[m]);n.l=b(l,m-1);n.r=b(m+1,h);return n};t=b(0,R.length-1)}
@@ -310,10 +287,10 @@ X.build=k=>{const f=kf(),R=inord().map(n=>{const c=Object.assign({},n,{l:null,r:
 const RB=(k,nm)=>()=>sure('Tạo '+nm,'Cây hiện tại sẽ được dựng lại theo dạng này (giá trị các nút giữ nguyên, vị trí kéo tay bị xóa). Muốn quay lại: Nhập / Khởi tạo cây → Khôi phục cây quét ban đầu.',()=>X.build(k),'Tạo');
 X.rand=RB('rand','cây ngẫu nhiên');X.deg=RB('deg','cây suy biến');X.bal=RB('bal','cây cân bằng');
 X.orig=()=>sure('Khôi phục cây quét ban đầu','Mọi thay đổi (thêm / xóa / sửa nút, vị trí đã kéo) sẽ mất, cây trở về lúc vừa quét.',()=>{if(!S.orig)return;root=clone(S.orig);S.grow=1;S.sel=null;clear();close();refresh()},'Khôi phục');
-$('#bSet').onclick=()=>modal('Cài đặt',`<label>Giao diện</label><select id="sth"><option value="dark" ${TH.m=='dark'?'selected':''}>Tối (mặc định)</option><option value="light" ${TH.m=='light'?'selected':''}>Sáng</option></select><label>Độ sáng hiệu ứng</label><input id="sb" type="range" min=".4" max="2" step=".1" value="${S.bright}"><label><input id="sn" type="checkbox" style="width:auto" ${S.snd?'checked':''}> Âm thanh tương tác</label><label><input id="sg" type="checkbox" style="width:auto" ${S.notes?'checked':''}> Hiện ghi chú hướng dẫn (bong bóng gợi ý)</label>`);
-$('#bHelp').onclick=()=>modal('Trợ giúp',`<button class="bt or" data-x="tour">↺ Xem lại hướng dẫn 3 bước</button><p><span class="hand">👆</span> Chạm một nút để xem thông tin. Thanh trên có 3 chế độ: <b>🔎 Khám phá</b> (xem và sửa cây), <b>🚶 Duyệt cây</b> (xem từng bước kèm code), <b>🎮 Trò chơi</b>. Nút trên thanh trên đổi cách kéo 1 ngón: <b>⟳ Xoay cây</b> (kéo để xoay 3D) hoặc <b>✋ Kéo nút</b> (kéo từng nút; kéo chỗ trống để dời cả cây).<br>Hai ngón: chụm để thu/phóng, vặn để xoay cây.<br>📌 Cây tự cố định ngay khi bạn xác nhận quét đúng. Muốn đổi cây: bấm 🔍 Quét lại. Giữ lâu một nút bất kỳ để xem ghi chú tác dụng.</p><p><b style="color:#fab005">●</b> Nút gốc &nbsp;<b style="color:#4dabf7">●</b> Nút trong (nhánh) &nbsp;<b style="color:#40c057">●</b> Nút lá<br><b style="color:#ff6b35">●</b> Đang duyệt &nbsp;<b style="color:#ffd43b">●</b> Đã duyệt &nbsp;<b style="color:#fa5252">●</b> Không tìm thấy</p>`);
+$('#bSet').onclick=()=>modal('Cài đặt',`<label>Giao diện</label><select id="sth"><option value="dark" ${TH.m=='dark'?'selected':''}>Tối (mặc định)</option><option value="light" ${TH.m=='light'?'selected':''}>Sáng</option></select><label>Độ sáng hiệu ứng</label><input id="sb" type="range" min=".4" max="2" step=".1" value="${S.bright}"><label><input id="sn" type="checkbox" style="width:auto" ${S.snd?'checked':''}> Âm thanh tương tác</label><label><input id="sno" type="checkbox" style="width:auto" ${S.showNone?'checked':''}> Hiện nút None (cây nhị phân hoàn chỉnh biểu diễn bằng mảng)</label><label><input id="sg" type="checkbox" style="width:auto" ${S.notes?'checked':''}> Hiện ghi chú hướng dẫn (bong bóng gợi ý)</label>`);
+$('#bHelp').onclick=()=>modal('Trợ giúp',`<button class="bt or" data-x="tour">↺ Xem lại hướng dẫn 3 bước</button><p><span class="hand">👆</span> Chạm một nút để xem thông tin. Thanh trên có 3 chế độ: <b>🔎 Khám phá</b> (xem và sửa cây), <b>🚶 Duyệt cây</b> (xem từng bước kèm code), <b>🎮 Trò chơi</b>. Nút trên thanh trên đổi cách kéo 1 ngón: <b>⟳ Xoay cây</b> (kéo để xoay 3D) hoặc <b>✋ Kéo nút</b> (kéo từng nút; kéo chỗ trống để dời cả cây).<br>Hai ngón: chụm để thu/phóng, vặn để xoay cây.<br>📌 Cây tự cố định ngay khi bạn xác nhận quét đúng. Muốn đổi cây: bấm 🔍 Quét lại. Giữ lâu một nút bất kỳ để xem ghi chú tác dụng.<br>📚 Hình giống hình trong sách sẽ được nhận ra và hiện tên hình ở khung thông tin nút. Hai nút trùng số vẫn được giữ nguyên.</p><p><b style="color:#fab005">●</b> Nút gốc &nbsp;<b style="color:#4dabf7">●</b> Nút trong (nhánh) &nbsp;<b style="color:#40c057">●</b> Nút lá &nbsp;<b style="color:#868e96">●</b> Nút None (nút giả)<br><b style="color:#ff6b35">●</b> Đang duyệt &nbsp;<b style="color:#ffd43b">●</b> Đã duyệt &nbsp;<b style="color:#fa5252">●</b> Không tìm thấy</p>`);
 // nút ⋯ trên màn hình hẹp: gom Cài đặt / Trợ giúp / Đo thông số
-$('#bMore').onclick=()=>modal('Thêm','<button class="bt" data-x="mSet">⚙ Cài đặt</button><button class="bt" data-x="mHelp">? Trợ giúp</button>'+(S.mode=='kham'&&root?'<button class="bt" data-x="mAna">📐 Đo thông số</button>':''));
+$('#bMore').onclick=()=>{const nf=q=>$(q).classList.contains('nf');modal('Thêm',(nf('#bSet')?'<button class="bt" data-x="mSet">⚙ Cài đặt</button>':'')+(nf('#bHelp')?'<button class="bt" data-x="mHelp">? Trợ giúp</button>':'')+(nf('#bAna')&&S.mode=='kham'&&root?'<button class="bt" data-x="mAna">📐 Đo thông số</button>':''))};
 X.mSet=()=>{close();$('#bSet').click()};X.mHelp=()=>{close();$('#bHelp').click()};X.mAna=()=>{close();OP.ana()};
 document.querySelectorAll('[data-op]').forEach(b=>b.onclick=()=>OP[b.dataset.op]());
 $('#bAna').onclick=OP.ana;
@@ -345,6 +322,16 @@ function tour(){const el=$('#coach');document.querySelectorAll('.hl').forEach(x=
   if(TR.i>=TS.length){TR.off=1;try{localStorage.setItem('arbt_tour','1')}catch(e){}el.style.display='none';toast('🎉 Xong hướng dẫn! Bấm ? để xem lại');return}
   const c=TS[TR.i];$('#ct').innerHTML=c.t;el.style.display='flex';if(c.sel){const t=$(c.sel);t&&t.classList.add('hl')}}
 $('#cs').onclick=()=>{TR.off=1;try{localStorage.setItem('arbt_tour','1')}catch(e){}tour()};
+function fitTop(){const t=$('#top'),A=[$('#bAna'),$('#bSet'),$('#bHelp')],mo=$('#bMore');
+  [...A,mo].forEach(b=>b.classList.remove('ic','nf'));
+  if(!matchMedia('(max-width:760px)').matches)return;
+  const wr=()=>{const k=[...t.children].filter(e=>e.offsetParent);if(k.length<2)return false;const c=e=>e.offsetTop+e.offsetHeight/2,y=c(k[0]);return k.some(e=>Math.abs(c(e)-y)>12)};
+  A.forEach(b=>b.classList.add('nf'));                       // bắt đầu: tất cả nằm trong ⋯, rồi đưa ra ngoài nếu còn chỗ
+  let full=true;                                              // hết chỗ ở nút nào thì các nút sau cũng nằm trong ⋯ (đúng thứ tự ưu tiên)
+  A.forEach((b,i)=>{if(b.hidden)return;if(!full)return;b.classList.remove('nf');if(i>0)b.classList.add('ic');   // 📐 thử cả chữ; ⚙ và ? chỉ biểu tượng
+    if(wr()){b.classList.add('ic');if(wr()){b.classList.add('nf');full=false}}});
+  if(A.every(b=>!b.classList.contains('nf'))){mo.classList.add('nf');if(wr())mo.classList.remove('nf')}}   // ra hết thì bỏ nút ⋯
+addEventListener('resize',()=>{try{ui()}catch(e){}});
 function ui(){
   const sc=document.body.classList.contains('scan'),st=S.steps[S.i];
   $('#st').textContent=sc?'ĐANG QUÉT':isLocked?'ĐÃ CỐ ĐỊNH':'ĐÃ HOẠT ĐỘNG';$('#st').style.color=sc||isLocked?'#e67700':'#2f9e44';
@@ -362,11 +349,12 @@ function ui(){
   $('#tt').textContent=st&&st.t=='path'?'ĐƯỜNG ĐI':'MÔ PHỎNG';$('#bPlay').textContent=S.run?'⏸':'▶';
   const ids=st?st.out:[];$('#out').innerHTML=ids.map((id,j)=>`<span class="${st.cur==id&&j==ids.length-1?'cu':''}">${esc(trunc(disp(byId(id))))}</span>`).join('')||'<small style="opacity:.6;font-weight:400">Kết quả sẽ hiện ở đây</small>';
   $('#nt').textContent=st?st.note:'';
-  const n=byId(S.sel);let h='<h4>THÔNG TIN NÚT</h4>';
+  const n=byId(S.sel);let h='<h4>THÔNG TIN NÚT</h4>'+(S.fig&&root&&S.fig.sig==shp(root)?'<div style="color:#ffc93c">📖 '+esc(S.fig.n)+'</div>':'');
   if(!n)h+=root?'<div><i>Chạm vào một nút 3D để xem chi tiết</i></div>':'<div><i>Cây rỗng — dùng ⌨ Nhập / Khởi tạo cây</i></div>';
   else{const p=par(n),k=(function g(t,k){return t===n?k:t?(g(t.l,2*k+1)??g(t.r,2*k+2)):null})(root,0);
     h+=`<div>Giá trị: ${esc(n.v)}</div><div>Loại: ${n===root?'Nút gốc':!n.l&&!n.r?'Nút lá':'Nút trong (nút nhánh)'}</div><div>Mức: ${depth(n)} <i>(gốc = 0)</i></div><div>Chiều cao: ${hE(n)} <i>(lá = 0)</i></div><div>Bậc: ${(n.l?1:0)+(n.r?1:0)}</div><div>Cha: ${p?esc(disp(p)):'—'}</div><div>Con trái: ${n.l?esc(disp(n.l)):'—'} · phải: ${n.r?esc(disp(n.r)):'—'}</div><div>Mảng: k=${k} → 2k+1=${2*k+1}, 2k+2=${2*k+2}</div>`}
   $('#info').innerHTML=h;drawCode();tour();
+  fitTop();
   const tbH=$('#top').offsetHeight,mbH=$('#modes').offsetHeight;document.documentElement.style.setProperty('--tm',(tbH+14)+'px');document.documentElement.style.setProperty('--ti',(tbH+16+(mbH?mbH+6:0))+'px');document.documentElement.style.setProperty('--tb',($('#trav').offsetHeight+16)+'px');
 }
 document.body.classList.add('scan');
@@ -374,14 +362,15 @@ document.body.classList.add('scan');
 // ================= TRẮC NGHIỆM (sinh câu hỏi từ chính cây đang hiển thị) =================
 let Q=null,QS=[0,0];
 const wk=()=>{const m={},list=[];(function f(n,d,k,p){if(!n)return;const e={n,d,k,p};m[n.id]=e;list.push(e);f(n.l,d+1,2*k+1,e);f(n.r,d+1,2*k+2,e)})(root,0,0,null);return{m,list}};
+const uq=()=>{const{list}=wk();return list.filter(e=>list.every(o=>o===e||o.n.v!=e.n.v))};   // chỉ lấy nút có số KHÔNG trùng, để câu hỏi không mơ hồ
 const seqIds=k=>{const s=tSteps(k);return s.length?s[s.length-1].out:[]};
 const dv=id=>disp(byId(id));
 function mc(t,r,w,why,run){w=[...new Set(w.map(String))].filter(x=>x!==String(r));if(w.length<2)return null;const o=sh([String(r),...sh(w).slice(0,3)]);return{t,o,a:o.indexOf(String(r)),why,run}}
 const QG=[
  ()=>{const{list}=wk(),h=Math.max(...list.map(e=>e.d)),ids=list.filter(e=>e.d==h).map(e=>e.n.id);return mc('Chiều cao của cây (mức cao nhất của các nút) là bao nhiêu?',h,[h+1,h+2,h-1,h+3,list.length],'Mức của gốc là 0, mỗi bước xuống tăng 1 mức. Nút sâu nhất ở mức '+h+'.',()=>show(ids,'Nút sâu nhất ở mức '+h))},
- ()=>{const{list}=wk(),e=rn(list);return mc('Nút '+dv(e.n.id)+' ở mức mấy?',e.d,[e.d+1,e.d+2,e.d-1,e.d+3],'Số cạnh từ gốc xuống nút này là '+e.d+'.',()=>show([e.n.id],'Mức '+e.d))},
- ()=>{const{list}=wk(),e=rn(list),g=(e.n.l?1:0)+(e.n.r?1:0);return mc('Bậc của nút '+dv(e.n.id)+' là bao nhiêu?',g,[0,1,2,3],'Bậc của nút là số nút con của nó.',()=>show([e.n.id],'Bậc '+g))},
- ()=>{const{list}=wk(),e=rn(list),k=e.k;return mc('Khi biểu diễn bằng mảng, nút '+dv(e.n.id)+' nằm ở chỉ số k nào?',k,[k+1,k+2,2*k+1,k+3,k-1],'Gốc k = 0; con trái 2k+1, con phải 2k+2. Nút này có k = '+k+'.',()=>show([e.n.id],'k = '+k))},
+ ()=>{const e=rn(uq());if(!e)return null;return mc('Nút '+dv(e.n.id)+' ở mức mấy?',e.d,[e.d+1,e.d+2,e.d-1,e.d+3],'Số cạnh từ gốc xuống nút này là '+e.d+'.',()=>show([e.n.id],'Mức '+e.d))},
+ ()=>{const e=rn(uq());if(!e)return null;const g=(e.n.l?1:0)+(e.n.r?1:0);return mc('Bậc của nút '+dv(e.n.id)+' là bao nhiêu?',g,[0,1,2,3],'Bậc của nút là số nút con của nó.',()=>show([e.n.id],'Bậc '+g))},
+ ()=>{const e=rn(uq());if(!e)return null;const k=e.k;return mc('Khi biểu diễn bằng mảng, nút '+dv(e.n.id)+' nằm ở chỉ số k nào?',k,[k+1,k+2,2*k+1,k+3,k-1],'Gốc k = 0; con trái 2k+1, con phải 2k+2. Nút này có k = '+k+'.',()=>show([e.n.id],'k = '+k))},
  ()=>{const k=rn([0,1,2,3,4,5]),s=rn(['trái','phải']),r=s=='trái'?2*k+1:2*k+2;return mc('Nút có chỉ số k = '+k+' thì nút con '+s+' có chỉ số bao nhiêu?',r,[2*k+1,2*k+2,2*k,k+1,2*k+3],'left(k) = 2k+1 và right(k) = 2k+2.')},
  ()=>{const k=rn(['pre','in','post','rin']),f=x=>seqIds(x).map(dv).join(' ');return mc('Kết quả '+TNm[k]+' của cây đang hiển thị là:',f(k),[...['pre','in','post','rin'].filter(x=>x!=k).map(f),sh(seqIds(k)).map(dv).join(' ')],'Thứ tự đúng: '+f(k)+'.',()=>setSteps(tSteps(k),k))},
  ()=>{const{list}=wk(),n=list.length,h=Math.max(...list.map(e=>e.d)),mx=Math.max(...list.map(e=>e.k)),c=n==2**(h+1)-1?'Hoàn hảo':mx==n-1?'Hoàn chỉnh (nhưng không hoàn hảo)':'Không hoàn hảo và không hoàn chỉnh';return mc('Cây đang hiển thị thuộc loại nào?',c,['Hoàn hảo','Hoàn chỉnh (nhưng không hoàn hảo)','Không hoàn hảo và không hoàn chỉnh'],'Hoàn hảo: n = 2^(h+1) − 1. Hoàn chỉnh: chỉ số mảng liên tục 0…n−1, không có None. Ở đây n = '+n+', h = '+h+'.')}];
@@ -401,7 +390,7 @@ function gRound(){clearInterval(GM.tm);const a=wk().list;if(a.length<3)return gE
   else if(GM.m==2){const mx=Math.max(...a.map(e=>e.d)),Lv=1+(Math.random()*mx|0),PR=[['nút lá',e=>!e.n.l&&!e.n.r],['nút nhánh (có ít nhất 1 con)',e=>e.n.l||e.n.r],['nút có đủ 2 con',e=>e.n.l&&e.n.r],['nút ở mức '+Lv,e=>e.d==Lv]];
     for(let t=0;t<12;t++){const p=rn(PR),ids=a.filter(p[1]).map(e=>e.n.id);if(ids.length>=1&&ids.length<a.length){T=ids;txt='Chạm <b>tất cả '+p[0]+'</b> (thứ tự tùy ý)';need='set';break}}
     if(!T){T=seqIds('pre');txt='Chạm các nút theo <b>duyệt trước</b>';need='order'}}
-  else{let x;for(let t=0;t<12;t++){const n0=rn(a).n;T=pathTo(n0);x=n0.v;if(T.length>=2)break}txt='Đi từ gốc xuống nút có khoá <b>'+esc(x)+'</b>, chạm từng nút trên đường đi'}
+  else{let x;const U=a.filter(e=>a.every(o=>o===e||o.n.v!=e.n.v));for(let t=0;t<12;t++){const n0=rn(U.length?U:a).n;T=pathTo(n0);x=n0.v;if(T.length>=2)break}txt='Đi từ gốc xuống nút có khoá <b>'+esc(x)+'</b>, chạm từng nút trên đường đi'}
   Object.assign(GM,{T,need,txt,pos:0,hit:new Set(),tl:Math.max(7000,(T.length*2300+3500)*Math.pow(.93,GM.lv)),t0:Date.now()});
   clear();refresh();
   $('#gm').innerHTML=`<div>🎮 <b>${['','Duyệt đúng thứ tự','Săn nút','Đi tìm khoá'][GM.m]}</b> · màn ${GM.lv+1}<span id="gS" style="float:right"></span></div><div style="margin:6px 0">${txt}</div><div id="gP"></div><div class="bar"><i id="gB"></i></div><div style="display:flex;gap:8px;justify-content:flex-end"><button data-g="skip">Bỏ qua (−1 ❤)</button><button data-g="quit">Thoát</button></div>`;
@@ -422,13 +411,57 @@ function gEnd(msg){clearInterval(GM.tm);const sc=GM.score,nb=sc>GM.best;if(nb){G
   modal(msg||'Hết lượt!',`<p style="font-size:22px;margin:0">⭐ ${sc} điểm</p><p>${nb?'🏆 Kỷ lục mới!':'Kỷ lục: '+GM.best}</p><button class="bt or" data-x="g${was||1}">🔁 Chơi lại</button><button class="bt" data-x="g${was%3+1}">➡ Thử chế độ khác</button>`)}
 $('#gm').addEventListener('click',e=>{const b=e.target.closest('[data-g]');if(!b)return;if(b.dataset.g=='quit')gEnd('Đã thoát');else if(GM.on)gLose('Bỏ qua')});
 
+//#LIB-START
+// ================= THƯ VIỆN HÌNH SÁCH + SO KHỚP =================
+// s = chuỗi cây v(trái,phải) · none:1 = hình vẽ thêm các nút giả None (cây nhị phân hoàn chỉnh biểu diễn bằng mảng)
+// Số trùng (7.1b, 7.5a, 7.5c) được giữ nguyên đúng như trong sách.
+const LIB=[
+ {n:'Hình 6.6 – cây nhị phân hoàn chỉnh',s:'5(18(4(6,20),11(12,3)),7(9(1,),15))'},
+ {n:'Hình 6.8a – cây nhị phân tổng quát',s:'5(8(,3),4(7,))'},
+ {n:'Hình 6.8b – hoàn chỉnh biểu diễn cây tổng quát (có None)',s:'5(8(,3),4(7,))',none:1},
+ {n:'Hình 7.1a',s:'5(2(,4),10(8,11))'},
+ {n:'Hình 7.1b',s:'8(5(1,4),10(8(,9),11))'},
+ {n:'Hình 7.3a – cây nhị phân hoàn chỉnh',s:'5(3,7)'},
+ {n:'Hình 7.3b – cây nhị phân tổng quát',s:'5(3,7(6,))'},
+ {n:'Hình 7.3c – hoàn chỉnh với các nút giả None',s:'5(3,7(6,))',none:1},
+ {n:'Hình 7.4a – cây tìm kiếm nhị phân',s:'4(2(1,3),12(7(6,9),15))'},
+ {n:'Hình 7.4b – cây tìm kiếm suy biến',s:'10(,12(,15(,20)))'},
+ {n:'Hình 7.5a',s:'6(4(1,5),11(7(5,9),17))'},
+ {n:'Hình 7.5b',s:'4(2(1,3),12(7,15))'},
+ {n:'Hình 7.5c',s:'4(3(0,3),10(7(,8),14))'},
+ {n:'Hình 9.1 – cây tìm kiếm nhị phân',s:'9(3(1,7(4,8)),15(12(10,14),19))'}];
+const shp=n=>n?'('+shp(n.l)+shp(n.r)+')':'.',szT=n=>n?1+szT(n.l)+szT(n.r):0;                    // shp = hình dạng (không xét số)
+const tdist=(a,b)=>!a?szT(b):!b?szT(a):tdist(a.l,b.l)+tdist(a.r,b.r);                           // số vị trí khác nhau giữa 2 hình dạng
+const vsc=(a,b)=>a&&b?(a.v==b.v?1:0)+vsc(a.l,b.l)+vsc(a.r,b.r):0;                               // số vị trí có cùng giá trị
+function setLib(e,useTree){if(useTree){root=parseStr(e.s);S.orig=clone(root);S.grow=1}
+  S.sel=null;S.view='tree';S.fig={n:e.n,sig:shp(root)};S.showNone=!!e.none;clear();close();refresh()}
+X.lib=()=>{close();modal('Thư viện hình sách','<p>Chọn một hình để dựng cây 3D (thay cây đang hiển thị):</p>'+LIB.map((e,i)=>`<button class="bt" data-x="L${i}">${esc(e.n)}</button>`).join(''))};
+LIB.forEach((e,i)=>{X['L'+i]=()=>{setLib(e,1);toast('📖 '+e.n)}});
+let LM=[];
+function matchLib(){if(!root)return;                                                           // quét ra hình dạng gần đúng → chọn hình giống nhất → hỏi nếu nhiều hình ngang nhau
+  const n=lvl().length,th=Math.max(1,Math.floor(n*.25)),
+    R=LIB.map(e=>{const t=parseStr(e.s);return{e,d:tdist(root,t),v:vsc(root,t)}}).filter(r=>r.d<=th);
+  if(!R.length)return;
+  const md=Math.min(...R.map(r=>r.d));let c=R.filter(r=>r.d==md);const mv=Math.max(...c.map(r=>r.v));c=c.filter(r=>r.v==mv);   // cùng hình dạng thì ưu tiên hình có số giống nhất
+  LM=c.slice(0,6);
+  if(c.length==1&&md==0){setLib(c[0].e,0);toast('📖 Nhận ra: '+c[0].e.n);return}
+  modal(md==0?'Cây này giống nhiều hình trong sách':'Cây gần giống hình trong sách','<p>'+(md==0?'Hình dạng khớp '+c.length+' hình, chọn hình đúng với giấy của bạn:':'Giống nhất, lệch '+md+' vị trí so với cây vừa quét. Chọn hình để dùng cây trong thư viện, hoặc giữ cây vừa quét:')+'</p>'+LM.map((r,j)=>`<button class="bt or" data-x="ml${j}">${esc(r.e.n)}</button>`).join('')+'<button class="bt" data-x="mlk">Giữ cây vừa quét</button>')}
+for(let j=0;j<6;j++)X['ml'+j]=()=>{const r=LM[j];if(!r)return;const same=tdist(root,parseStr(r.e.s))==0;setLib(r.e,!same);toast('📖 '+r.e.n)};
+X.mlk=()=>close();
+// ---- nút None: nút giả tính theo chỉ số mảng (k < chỉ số lớn nhất mà chưa có nút), chỉ gắn tạm khi vẽ cây 3D, không nằm trong dữ liệu cây ----
+const NNC={};
+function addNone(){const L=wk().list,mx=Math.max(...L.map(e=>e.k)),add=[];
+  L.forEach(e=>['l','r'].forEach((s,j)=>{if(!e.n[s]&&2*e.k+1+j<mx){const id=-(e.n.id*2+j+1),z=NNC[id]||(NNC[id]={v:'None',none:1,id,l:null,r:null});e.n[s]=z;add.push([e.n,s])}}));
+  return()=>add.forEach(([p,s])=>{p[s]=null})}
+//#LIB-END
+
 //#AN-START
 // ===== NHẬN DIỆN HÌNH CÂY (JS thuần): ngưỡng thích nghi → "lỗ" hình elip = nút → dò đường nối → chọn cây lớn nhất → dựng cha–con =====
 // all=true (quét trong KHUNG VÀNG): lấy mọi nút trong khung, thiếu/thừa đường nối thì tự nối (infer)
 function analyze(gray,w,h,ds=[1,2,4],los=[0,1],all,col,fs){let best=null,bs=-1;   // fs: 0 = chỉ thuật toán "lỗ rỗng", 1 = chỉ thuật toán nút đặc/màu, bỏ trống = thử lần lượt
-  const T=(r,d,lo,sm)=>{const sc=(r.tr.ok?1e3:0)+r.ed.length*20+r.C.length*5;if(sc>bs){bs=sc;best=r;r.dd=d;r.lo=lo;r.sm=sm}};
+  const T=(r,d,lo,sm)=>{const sc=(r.tr.ok?1e3:0)+r.C.length;if(sc>bs){bs=sc;best=r;r.dd=d;r.lo=lo;r.sm=sm}};
   if(fs!==1){for(const lo of los){for(const d of ds)T(an(gray,w,h,d,lo,all),d,lo,0);if(best&&best.tr.ok)break}}      // lo=1: chế độ ảnh yếu (tương phản thấp/nhiễu)
-  if(col&&fs!==0&&!(best&&best.tr.ok&&best.ed.length>=best.C.length-1)){const d=ds.includes(2)?2:ds[0];for(const lo of los){T(an(gray,w,h,d,lo,all,col,1),d,lo,1);if(best&&best.tr.ok)break}}   // nút tô đặc / nét màu (đen, xanh, đỏ, vàng…)
+  if(col&&fs!==0&&!(best&&best.tr.ok)){const d=ds.includes(2)?2:ds[0];for(const lo of los){T(an(gray,w,h,d,lo,all,col,1),d,lo,1);if(best&&best.tr.ok)break}}   // nút tô đặc / nét màu (đen, xanh, đỏ, vàng…)
   return best}
 function an(gray,w,h,dd,lo,all,col,sm){
   const N=w*h,W1=w+1,I=new Float64Array(W1*(h+1));
@@ -473,9 +506,9 @@ function an(gray,w,h,dd,lo,all,col,sm){
     if(g1-g0<4)continue;
     let bl=false;for(let m=0;m<n;m++)if(m!=i&&m!=j){const c=C[m],tt=(c.x-a.x)*ux+(c.y-a.y)*uy;if(tt>0&&tt<d&&Math.abs((c.x-a.x)*uy-(c.y-a.y)*ux)<c.r*1.05){bl=true;break}}
     if(bl)continue;
-    let hit=0,tot=0;const tw=Math.max(2,Math.min(a.r,b.r)*.3|0),OS=[0];for(let o=2;o<=tw;o+=2)OS.push(o,-o);
+    let hit=0,tot=0;
     for(let s=g0;s<=g1;s++){tot++;const px=a.x+ux*s,py=a.y+uy*s;let ok=0;
-      for(const o of OS){const X=Math.round(px-uy*o),Y=Math.round(py+ux*o);if(X>=0&&Y>=0&&X<w&&Y<h&&dl[Y*w+X]){ok=1;break}}hit+=ok}
+      for(const o of[-2,0,2]){const X=Math.round(px-uy*o),Y=Math.round(py+ux*o);if(X>=0&&Y>=0&&X<w&&Y<h&&dl[Y*w+X]){ok=1;break}}hit+=ok}
     if(hit/tot>.9)ed.push([i,j])}
   const cp=C.map((_,i)=>i),fd=i=>cp[i]===i?i:(cp[i]=fd(cp[i]));ed.forEach(([i,j])=>cp[fd(i)]=fd(j));   // chỉ giữ cây lớn nhất (gần giữa khung nếu bằng nhau)
   const gp={};C.forEach((_,i)=>(gp[fd(i)]=gp[fd(i)]||[]).push(i));let pk=null,bs=-1;
@@ -583,14 +616,14 @@ let ocrW=null;
 async function getOcr(){if(ocrW)return ocrW;
   if(!window.Tesseract)await new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';s.onload=ok;s.onerror=()=>no(new Error('không tải được Tesseract.js'));document.head.appendChild(s)});
   const w=await Tesseract.createWorker('eng');await w.setParameters({tessedit_char_whitelist:'0123456789',tessedit_pageseg_mode:'7'});return ocrW=w}
-// Bước 3/3: thanh xác nhận số GỌN. Bấm ✔ → kiểm tra số, TỰ ĐỘNG cố định cây, rồi mới hiện các chức năng.
+// Bước 3/3: thanh xác nhận số GỌN. Bấm ✔ → kiểm tra số, TỰ ĐỘNG cố định cây, so khớp thư viện hình sách, rồi mới hiện các chức năng.
 function cfm(msg){const L=lvl();
-  bar(`<p style="margin:0 0 6px;font-size:13px">Bước 3/3 · ${msg} Đối chiếu số trên cây với giấy, sai thì sửa (theo từng mức, trái → phải, ${L.length} số):</p><input id="f1" value="${esc(L.map(x=>x.v).join(' '))}"><div style="display:flex;gap:6px;margin-top:8px"><button class="or" data-x="s3ok" style="flex:2">✔ Xác nhận & cố định</button><button data-x="s3re" style="flex:1">↻ Quét lại</button></div>`)}
+  bar(`<p style="margin:0 0 6px;font-size:13px">Bước 3/3 · ${msg} Đối chiếu số trên cây với giấy, sai thì sửa (theo từng mức, trái → phải, ${L.length} số; hai nút trùng số vẫn được):</p><input id="f1" value="${esc(L.map(x=>x.v).join(' '))}"><div style="display:flex;gap:6px;margin-top:8px"><button class="or" data-x="s3ok" style="flex:2">✔ Xác nhận & cố định</button><button data-x="s3re" style="flex:1">↻ Quét lại</button></div>`)}
 X.s3ok=()=>{const L=lvl(),n=L.length,A=$('#f1').value.split(/[\s,;]+/).filter(Boolean).map(Number);
   if(A.length!=n||A.some(x=>!Number.isFinite(x)))return toast('Cần đúng '+n+' số');
-  if(new Set(A).size<n)return toast('Có số trùng nhau — mỗi nút cần một số khác nhau');
   close();L.forEach((x,i)=>x.v=A[i]);document.body.classList.remove('cfm');   // hiện lại các chức năng
-  afterScan();if(!isLocked&&lockFn)lockFn(true)};                              // tự động cố định, không cần bấm khóa
+  afterScan();if(!isLocked&&lockFn)lockFn(true);                               // tự động cố định, không cần bấm khóa
+  matchLib()};                                                                 // nhận ra hình trong sách (nếu có)
 X.s3re=()=>{rescanFn&&rescanFn()};
 async function readDigits(src,C,f,map){         // đọc số trong từng nút: cắt ruột nút, nhị phân hoá Otsu, thử 2 chế độ nhận dạng
   const my=scanId,n=C.length,v={};let got=0;
@@ -611,11 +644,11 @@ async function readDigits(src,C,f,map){         // đọc số trong từng nút
       if(best&&best.c>30){v[i]=+best.t;got++}}
   }catch(e){if(my!=scanId)return false;cfm('⚠ Không đọc tự động được số ('+e.message+') — hãy nhập số theo giấy.');return}
   if(my!=scanId)return false;
-  const cnt={};Object.values(v).forEach(x=>cnt[x]=(cnt[x]||0)+1);const dup=Object.keys(cnt).filter(x=>cnt[x]>1);
+  const dup=[];                                                                         // số trùng nhau là hợp lệ (nhiều hình trong sách cố tình có 2 nút cùng số) → giữ nguyên
   const used=new Set(Object.values(v));let nx=1;
-  Object.keys(map).forEach(i=>{if(v[i]==null||dup.includes(String(v[i]))){while(used.has(nx))nx++;v[i]=nx;used.add(nx)}map[i].v=v[i]});
+  Object.keys(map).forEach(i=>{if(v[i]==null){while(used.has(nx))nx++;v[i]=nx;used.add(nx)}map[i].v=v[i]});   // chỉ nút KHÔNG đọc được mới nhận số tạm
   clear();refresh();const ino=inord().map(n=>n.v);
-  cfm(got<Math.ceil(n*.7)?`⚠ Chỉ đọc được ${got}/${n} số, các số còn lại là số tạm.`:dup.length?'⚠ Có số đọc trùng nhau nên đã đổi tạm.':`🔤 Đã đọc ${got}/${n} số`+(ino.every((x,i)=>!i||x>ino[i-1])&&n>1?' · cây này cũng là BST':'')+'.')}
+  cfm(got<Math.ceil(n*.7)?`⚠ Chỉ đọc được ${got}/${n} số, các số còn lại là số tạm.`:`🔤 Đã đọc ${got}/${n} số`+(ino.every((x,i)=>!i||x>ino[i-1])&&n>1?' · cây này cũng là BST':'')+'.')}
 
 async function loadLibs(){try{THREE=await import('three');stt('✅ Sẵn sàng');$('#bAR').disabled=false;$('#bDemo').disabled=false}catch(e){stt('❌ Không tải được Three.js ('+(e&&e.message||e)+'). Kiểm tra mạng rồi tải lại trang.')}}
 loadLibs();
@@ -673,7 +706,7 @@ async function startAR(useCam){
       const hit=new THREE.Mesh(geoS,new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}));
       g.add(sph,rec,lab,ring,hit);content.add(g);return{g,m1,m2,mr,sph,rec,lab,pl,pr,ring,hit,t:new THREE.Vector3(),a:{sph:0,rec:0,lab:0},b:{sph:0,rec:0,lab:0},spin:0}};
     const newE=()=>{const g=new THREE.Group(),cyl=new THREE.Mesh(geoC,mEn);g.add(cyl);content.add(g);return{g,cyl}};
-    sync=()=>{
+    const syncCore=()=>{
       const a=lvl(),n=a.length,v=S.view,st=S.steps[S.i],vis=(st&&st.out)||[],cu=st&&st.cur,rs=st&&st.res,Lm={};
       inord().forEach((x,i)=>Lm[x.id]={x:i,d:0,z:0,k:0});
       a.forEach(x=>{const e=Lm[x.id];[['l',1,1],['r',-1,2]].forEach(([s,g,o])=>{const c=x[s];if(c){const q=Lm[c.id];q.d=e.d+1;q.z=e.z+g*.07/(1+e.d*.6);q.k=2*e.k+o;q.p=x.id;q.left=s=='l'}})});
@@ -690,20 +723,23 @@ async function startAR(useCam){
         let o=O[id];if(!o){o=O[id]=newO();o.g.position.set(tx,ty+(S.grow?-.5:.5),tz)}
         o.t.set(tx,ty,tz);o.b={sph:hide||ptr?0:rad,rec:hide||!ptr?0:cw,lab:hide?0:ptr?cw*.9:rad};o.rad=rad;o.hide=hide;
         if(S.spin==id)o.spin=1;
-        const inV=vis.includes(id),lf=!x.l&&!x.r,c=rs=='no'&&inV?'#fa5252':id==cu?(rs=='ok'?'#94d82d':'#ff6b35'):inV?'#ffd43b':x===root?'#fab005':lf?'#40c057':'#4dabf7',ei=(id==cu?1:inV?.7:.5)*S.bright;
+        const inV=vis.includes(id),lf=!x.l&&!x.r,c=x.none?'#868e96':rs=='no'&&inV?'#fa5252':id==cu?(rs=='ok'?'#94d82d':'#ff6b35'):inV?'#ffd43b':x===root?'#fab005':lf?'#40c057':'#4dabf7',ei=(id==cu?1:inV?.7:.5)*S.bright;
         [o.m1,o.mr].forEach(m=>{m.color.set(c);m.emissive.set(c);m.emissiveIntensity=ei});o.m2.color.set(c);o.m2.opacity=.12+.12*S.bright;
-        o.lab.material.map=labTex(trunc(disp(x)));o.lab.material.needsUpdate=true;
+        o.lab.material.map=labTex(trunc(disp(x)),x.none?'#e9ecef':'#fff');o.lab.material.needsUpdate=true;
         o.pl.material.map=labTex(x.l?'●':'∅',x.l?'#ffc93c':'#ff8a9a');o.pr.material.map=labTex(x.r?'●':'∅',x.r?'#ffc93c':'#ff8a9a');o.pl.material.needsUpdate=o.pr.material.needsUpdate=true;
-        o.hit.scale.setScalar(Math.max(ptr?cw*1.8:rad*1.7,.05));o.hit.userData.id=id;if(!hide)hits.push(o.hit)});
+        o.hit.scale.setScalar(Math.max(ptr?cw*1.8:rad*1.7,.05));o.hit.userData.id=id;if(!hide&&!x.none)hits.push(o.hit)});
       Object.keys(E).forEach(id=>{if(!live.has(+id)||!Lm[id].p){content.remove(E[id].g);delete E[id]}});
       a.forEach(x=>{const e=Lm[x.id];if(!e.p)return;const q=E[x.id]||(E[x.id]=newE());q.pid=e.p;q.left=e.left;
         q.cyl.material=vis.includes(x.id)&&vis.includes(e.p)?mEg:S.sel==x.id||S.sel==e.p?mEs:mEn});
       Object.keys(O).forEach(id=>{if(!live.has(+id)){const o=O[id];delete O[id];o.m1.color.set('#fa5252');o.m1.emissive.set('#fa5252');o.b={sph:0,rec:0,lab:0};o.ring.visible=false;dying.push({o,f:60})}});
       while(slots.children.length){const c=slots.children[0];slots.remove(c);if(c.isSprite)c.material.dispose()}
       if(v=='arr')for(let i=0;i<N;i++){const x=(i%cols-(cols-1)/2)*cs,y=((rows-1)/2-(i/cols|0))*cs*1.25,b=new THREE.Mesh(geoB,mSlot);b.scale.set(cs*.92,cs*.92,cs*.2);b.position.set(x,y,-.03);
-        const t=new THREE.Sprite(new THREE.SpriteMaterial({map:labTex('['+i+']','#9fe8ff'),transparent:true,depthTest:false}));t.scale.set(cs*.8,cs*.4,1);t.position.set(x,y-cs*.58,0);slots.add(b,t)}
+        const t=new THREE.Sprite(new THREE.SpriteMaterial({map:labTex('['+i+']','#9fe8ff'),transparent:true,depthTest:false}));t.scale.set(cs*.8,cs*.4,1);t.position.set(x,y-cs*.58,0);slots.add(b,t);
+        if(S.showNone&&i<mxk&&!a.some(q=>Lm[q.id].k==i)){const z=new THREE.Sprite(new THREE.SpriteMaterial({map:labTex('None','#ff8a9a'),transparent:true,depthTest:false}));z.scale.set(cs*.8,cs*.4,1);z.position.set(x,y,.01);slots.add(z)}}
       S.grow=0;S.spin=null;
     };
+    // vẽ cây: nếu bật "Hiện nút None" thì gắn tạm các nút giả vào cây khi vẽ, vẽ xong gỡ ra (dữ liệu cây không bị đổi)
+    sync=()=>{const rm=S.showNone&&S.view=='tree'&&root?addNone():null;try{syncCore()}finally{rm&&rm()}};
     const stepO=o=>{o.g.position.lerp(o.t,.15);for(const k in o.b)o.a[k]+=(o.b[k]-o.a[k])*.17;
       o.sph.scale.setScalar(Math.max(o.a.sph,1e-4));o.sph.rotation.y=o.spin>0?(o.spin-=.025)*12:0;o.rec.scale.setScalar(Math.max(o.a.rec,1e-4));
       o.lab.scale.set(o.a.lab*2.6,o.a.lab*1.3,1);o.lab.position.z=S.view=='ptr'?o.a.rec*.4:o.a.sph*1.05;
@@ -749,18 +785,14 @@ async function startAR(useCam){
       const pp=[];MP.forEach(m=>{const px=best[0]*m.x-best[1]*m.y+best[2],py=best[1]*m.x+best[0]*m.y+best[3];let q=null,bd=Math.max(6,Math.hypot(best[0],best[1])*m.r*.8);C.forEach(c=>{const d=Math.hypot(c.x-px,c.y-py);if(d<bd){bd=d;q=c}});if(q)pp.push([m,q])});
       return pp.length>=2?fitSim(pp):best};
     // ---- Bước 2/3: thanh xác nhận HÌNH gọn ở đáy; hình nhận diện vẫn hiện ngay trên giấy để đối chiếu ----
-    const ask2=(r,snap)=>{pend=true;say('');const ms=libMatch(r.tr.root,r.C);
-      bar(`<p style="margin:0 0 6px;font-size:13px">Bước 2/3 · ${esc(r.tr.info)}. Đối chiếu với giấy: <b>đủ nút</b> và <b>nối đúng</b> chưa? (vòng xanh = nút, nét hồng = đường nối)</p>`+
-        (ms.length?`<p style="margin:0 0 5px;font-size:13px">📚 Giống hình trong sách — chọn đúng hình để dùng luôn số chuẩn:</p>`+ms.map((m,k)=>`<button ${k?'':'class="or" '}data-x="lib${k}" style="width:100%;margin-bottom:5px;text-align:left">📚 ${esc(m.L.n)} · giống ${Math.round(m.sim*100)}%</button>`).join(''):'')+
-        `<div style="display:flex;gap:6px"><button ${ms.length?'':'class="or" '}data-x="s2ok" style="flex:2">${ms.length?'Dùng cây vừa quét':'✔ Đúng, dùng cây này'}</button><button data-x="s2re" style="flex:1">↻ Quét lại</button></div>`);
-      ms.forEach((m,k)=>X['lib'+k]=()=>{close();accept(r,snap,m.L)});
+    const ask2=(r,snap)=>{pend=true;say('');
+      bar(`<p style="margin:0 0 8px;font-size:13px">Bước 2/3 · ${esc(r.tr.info)}. Đối chiếu với giấy: <b>đủ nút</b> và <b>nối đúng</b> chưa? (vòng xanh = nút, nét hồng = đường nối)</p><div style="display:flex;gap:6px"><button class="or" data-x="s2ok" style="flex:2">✔ Đúng, dùng cây này</button><button data-x="s2re" style="flex:1">↻ Quét lại</button></div>`);
       X.s2ok=()=>{close();accept(r,snap)};
       X.s2re=()=>{close();pend=false;stable=0;lastSig='';og.clearRect(0,0,SW,SH);drawFrame();say('🔍 Quét lại…',1500)}};
-    const accept=(r,snap,L)=>{const vw=snap.width,vh=snap.height;const xs=r.C.flatMap(c=>[c.x-c.r,c.x+c.r]),ys=r.C.flatMap(c=>[c.y-c.r,c.y+c.r]),bw=Math.max(...xs)-Math.min(...xs),bh=Math.max(...ys)-Math.min(...ys);
+    const accept=(r,snap)=>{const vw=snap.width,vh=snap.height;const xs=r.C.flatMap(c=>[c.x-c.r,c.x+c.r]),ys=r.C.flatMap(c=>[c.y-c.r,c.y+c.r]),bw=Math.max(...xs)-Math.min(...xs),bh=Math.max(...ys)-Math.min(...ys);
             M={dd:r.dd,lo:r.lo||0,sm:r.sm||0,pts:r.C.map(c=>({x:c.x,y:c.y,r:c.r})),tree:r.tr.root,sig:r.tr.sig,cx:(Math.max(...xs)+Math.min(...xs))/2,cy:(Math.max(...ys)+Math.min(...ys))/2,pxS:Math.max(bw*1.18,bh*1.18/.77,60)};
             qr=1;qi=0;tx=ty=0;lost=0;mode='track';pend=false;og.clearRect(0,0,SW,SH);rig.visible=true;
             document.body.classList.remove('scan');document.body.classList.add('cfm');   // cây 3D hiện ra, chức năng CHƯA hiện cho tới khi xác nhận số
-            if(L){adoptLib(L,r.tr,r.C,M);locked=false;isLocked=false;document.body.classList.remove('locked','cfm');say('');ui();toast('📚 Đã nhận hình: '+L.n+' — dùng số chuẩn của sách');if(lockFn)lockFn(true);return}
             const map=adopt(r.tr,r.C,M);locked=false;isLocked=false;document.body.classList.remove('locked');say('');ui();
             ++scanId;bar('<p style="margin:0 0 8px;font-size:13px">Bước 3/3 · 🔤 Đang đọc số trong các nút… <b id="rd"></b></p><button data-x="s3re" style="width:100%">↻ Quét lại</button>');
             readDigits(snap,r.C,1/r.s,map)};
@@ -794,7 +826,7 @@ async function startAR(useCam){
     const fromStill=(src,iw,ih,snap,crop,ask)=>{                  // quét ảnh tĩnh độ phân giải cao (ảnh chụp hoặc ảnh tải lên)
       const r=scanSrc(src,iw,ih,1280,[2,4,8],undefined,crop),f=.5;r.C.forEach(c=>{c.x*=f;c.y*=f;c.r*=f});r.s*=f;r.dd=Math.max(1,(r.dd||2)>>1);
       if(!r.tr.ok){toast('Chưa nhận ra cây: '+r.tr.msg+(r.sh<2.2?' (ảnh mờ)':''));return null}
-      if(ask){drawDet(r,iw,ih);ask2(r,snap)}else{const ms=libMatch(r.tr.root,r.C),m=ms[0];accept(r,snap,m&&m.sim>=.85&&(!ms[1]||m.sim-ms[1].sim>=.15)?m.L:undefined)}return r};
+      if(ask){drawDet(r,iw,ih);ask2(r,snap)}else accept(r,snap);return r};
     $('#bMan').onclick=()=>{if(mode!='scan')return;root=parseStr('1(2(3,4),5)');S.orig=clone(root);S.view='tree';S.sel=null;S.grow=1;mode='track';locked=true;isLocked=true;pend=false;M=null;rig.visible=true;og.clearRect(0,0,SW,SH);document.body.classList.remove('scan');document.body.classList.add('locked');say('');clear();refresh();OP.str()};
     $('#bSnap').onclick=()=>{if(mode!='scan'||!vid.videoWidth)return toast('Chỉ chụp quét được khi đang ở chế độ quét camera');if(pend)return;
       const vw=vid.videoWidth,vh=vid.videoHeight,snap=document.createElement('canvas');snap.width=vw;snap.height=vh;snap.getContext('2d').drawImage(vid,0,0);
@@ -807,13 +839,13 @@ async function startAR(useCam){
     if(useCam){
       say('Bước 1/3 · 🔍 Đưa hình cây vào KHUNG VÀNG (kéo khung để dời, kéo chấm góc để đổi cỡ)');
       lockFn=q=>{if(mode!='track')return toast('Chưa nhận diện được cây để cố định');locked=!locked;isLocked=locked;document.body.classList.toggle('locked',locked);say('');if(!q)toast(locked?'📌 Đã cố định — cây giữ nguyên vị trí trên màn hình':'🔓 Đã bỏ cố định — cây bám theo hình giấy trở lại');ui()};
-      rescanFn=()=>{scanId++;close();root=null;S.sel=null;clear();Object.assign(S,{px:0,py:0,roll:0,yaw:0,pitch:0,zoom:1});sync();mode='scan';locked=false;isLocked=false;M=null;stable=0;lastSig='';pend=false;rig.visible=false;
+      rescanFn=()=>{scanId++;close();root=null;S.sel=null;clear();Object.assign(S,{px:0,py:0,roll:0,yaw:0,pitch:0,zoom:1,showNone:false,fig:null});sync();mode='scan';locked=false;isLocked=false;M=null;stable=0;lastSig='';pend=false;rig.visible=false;
         document.body.classList.remove('locked','cfm');document.body.classList.add('scan');og.clearRect(0,0,SW,SH);drawFrame();say('Bước 1/3 · 🔍 Đang quét lại…');ui()};
       ui();tick();
-    }else{                                                           // chế độ không cần camera: cây mẫu ở giữa màn hình, đổi cây bằng "Nhập cây"
+    }else{                                                           // chế độ không cần camera: cây mẫu ở giữa màn hình, đổi cây bằng "Nhập cây" hoặc "Thư viện hình sách"
       root=parseStr('1(2(3(5,6),4),)');S.orig=clone(root);S.sel=null;S.grow=1;rig.visible=true;
       lockFn=()=>toast('Chế độ không camera: cây luôn nằm giữa màn hình');rescanFn=()=>toast('Chế độ không camera không cần quét');rescanBtn.hidden=true;
-      say('');ui();sync();toast('Chế độ không cần camera — thử "⌨ Nhập cây", kéo nút, chơi game');
+      say('');ui();sync();toast('Chế độ không cần camera — thử "⌨ Nhập / Khởi tạo cây" → 📚 Thư viện hình sách')
     }
     // ---- chạm chọn nút · kéo NÚT để đặt vị trí · kéo chỗ trống để dời/xoay · chụm để thu phóng, vặn để xoay · kéo KHUNG VÀNG khi đang quét ----
     const ray=new THREE.Raycaster(),v2=new THREE.Vector2(),dom=renderer.domElement,pts=new Map(),pl=new THREE.Plane(),pt=new THREE.Vector3(),nw=new THREE.Vector3();
