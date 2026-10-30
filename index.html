@@ -218,9 +218,16 @@ const lvProf=C=>{if(!C||C.length<3)return null;const rs=C.map(c=>c.r).sort((a,b)
   for(let i=1;i<o.length;i++){const m=cur.reduce((u,c)=>u+c.y,0)/cur.length;if(o[i].y-m>1.2*mr){p.push(cur.length);cur=[o[i]]}else cur.push(o[i])}p.push(cur.length);return p};
 const lvOf=t=>{const p=[];(function f(u,d){if(!u)return;p[d]=(p[d]||0)+1;f(u.l,d+1);f(u.r,d+1)})(t,0);return p};
 const profSim=(a,b)=>{const n=Math.max(a.length,b.length);let df=0;for(let i=0;i<n;i++)df+=Math.abs((a[i]||0)-(b[i]||0));return 1-df/(a.reduce((u,v)=>u+v,0)+b.reduce((u,v)=>u+v,0))};
-function libMatch(sr,C){const na=lsz(sr);if(na<3)return[];const pf=lvProf(C);            // sr = cây vừa quét (chỉ cần hình dạng: .l / .r)
-  const all=LIB.map(L=>{const t=L.t||(L.t=LP(L.s)),d=lpd(sr,t),s1=1-d/Math.max(na,lsz(t)),s2=pf?profSim(pf,lvOf(t))-.1:0;return{L,d,sim:Math.max(s1,s2)}}).sort((a,b)=>b.sim-a.sim);
-  return all.filter(m=>m.sim>=.75&&m.sim>=all[0].sim-.25).slice(0,3)}   // tối đa 3 hình giống nhất
+const numCount=a=>{const m={};a.forEach(x=>{if(typeof x=='number')m[x]=(m[x]||0)+1});return m};
+const valSim=(a,b)=>{const A=numCount(a),B=numCount(b);let mn=0,mx=0;new Set([...Object.keys(A),...Object.keys(B)]).forEach(k=>{const x=A[k]||0,y=B[k]||0;mn+=Math.min(x,y);mx+=Math.max(x,y)});return mx?mn/mx:null};   // giống nhau về giá trị = phần chung / phần hợp của hai tập số (tính cả số trùng)
+const libVals=t=>{const a=[];(function f(u){if(!u)return;a.push(u.v=='None'?'None':+u.v);f(u.l);f(u.r)})(t);return a};
+const pct=x=>Math.round(x*100);
+const mlabel=m=>m.va==null?`giống ${pct(m.sim)}% (theo cấu trúc, chưa đọc được số)`:`giống ${pct(m.sim)}% = trung bình cấu trúc ${pct(m.st)}% và giá trị ${pct(m.va)}%`;
+// Nguyên lý 1 (cấu trúc): so hình dạng cây và số nút trên từng hàng. Nguyên lý 2 (giá trị): so các số đọc được trong nút với số của hình sách. Điểm chung = trung bình hai điểm.
+function libMatch(sr,C,vals){const na=lsz(sr);if(na<3)return[];const pf=lvProf(C),vs=vals&&vals.length?vals:null;            // sr = cây vừa quét (hình dạng .l / .r); vals = các số đọc được
+  const all=LIB.map(L=>{const t=L.t||(L.t=LP(L.s)),d=lpd(sr,t),s1=1-d/Math.max(na,lsz(t)),s2=pf?profSim(pf,lvOf(t))-.1:0,st=Math.max(s1,s2),va=vs?valSim(vs,libVals(t)):null;
+    return{L,st,va,sim:va==null?st:(st+va)/2}}).sort((a,b)=>b.sim-a.sim);
+  const th=vs?.6:.75;return all.filter(m=>m.sim>=th&&m.sim>=all[0].sim-.25).slice(0,3)}   // tối đa 3 hình giống nhất
 function adoptLib(L,tr,C,M){                                        // dựng cây MẪU, nút nào có trên giấy thì đặt đúng chỗ giấy; nút thiếu tự xếp theo nút cha
   root=parseStr(L.s);const pos={},rs=[],dys=[],dxs=[];
   (function z(u,p){if(!u)return;pos[p]=C[u.i];z(u.l,p+'l');z(u.r,p+'r')})(tr.root,'');
@@ -587,15 +594,18 @@ async function getOcr(){if(ocrW)return ocrW;
   if(!window.Tesseract)await new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';s.onload=ok;s.onerror=()=>no(new Error('không tải được Tesseract.js'));document.head.appendChild(s)});
   const w=await Tesseract.createWorker('eng');await w.setParameters({tessedit_char_whitelist:'0123456789',tessedit_pageseg_mode:'7'});return ocrW=w}
 // Bước 3/3: thanh xác nhận số GỌN. Bấm ✔ → kiểm tra số, TỰ ĐỘNG cố định cây, rồi mới hiện các chức năng.
-function cfm(msg){const L=lvl();
-  bar(`<p style="margin:0 0 6px;font-size:13px">Bước 3/3 · ${msg} Đối chiếu số trên cây với giấy, sai thì sửa (theo từng mức, trái → phải, ${L.length} số):</p><input id="f1" value="${esc(L.map(x=>x.v).join(' '))}"><div style="display:flex;gap:6px;margin-top:8px"><button class="or" data-x="s3ok" style="flex:2">✔ Xác nhận & cố định</button><button data-x="s3re" style="flex:1">↻ Quét lại</button></div>`)}
+function cfm(msg,ms,onLib){const L=lvl();
+  bar(`<p style="margin:0 0 6px;font-size:13px">Bước 3/3 · ${msg} Đối chiếu số trên cây với giấy, sai thì sửa (theo từng mức, trái → phải, ${L.length} số):</p><input id="f1" value="${esc(L.map(x=>x.v).join(' '))}">`+
+    (ms&&ms.length?`<p style="margin:8px 0 5px;font-size:13px">📚 Giống hình trong sách (cấu trúc + giá trị nút) — chọn nếu đúng hình để dùng số chuẩn:</p>`+ms.map((m,k)=>`<button data-x="lc${k}" style="width:100%;margin-bottom:5px;text-align:left">📚 ${esc(m.L.n)}<br><small style="font-weight:400">${mlabel(m)}</small></button>`).join(''):'')+
+    `<div style="display:flex;gap:6px;margin-top:8px"><button class="or" data-x="s3ok" style="flex:2">✔ Xác nhận & cố định</button><button data-x="s3re" style="flex:1">↻ Quét lại</button></div>`);
+  (ms||[]).forEach((m,k)=>X['lc'+k]=()=>onLib&&onLib(m.L))}
 X.s3ok=()=>{const L=lvl(),n=L.length,A=$('#f1').value.split(/[\s,;]+/).filter(Boolean).map(Number);
   if(A.length!=n||A.some(x=>!Number.isFinite(x)))return toast('Cần đúng '+n+' số');
   if(new Set(A).size<n)return toast('Có số trùng nhau — mỗi nút cần một số khác nhau');
   close();L.forEach((x,i)=>x.v=A[i]);document.body.classList.remove('cfm');   // hiện lại các chức năng
   afterScan();if(!isLocked&&lockFn)lockFn(true)};                              // tự động cố định, không cần bấm khóa
 X.s3re=()=>{rescanFn&&rescanFn()};
-async function readDigits(src,C,f,map){         // đọc số trong từng nút: cắt ruột nút, nhị phân hoá Otsu, thử 2 chế độ nhận dạng
+async function ocrDigits(src,C,f,prog){         // đọc số trong từng nút: cắt ruột nút, nhị phân hoá Otsu, thử 2 chế độ nhận dạng → {v:{chỉ số nút:số},got} hoặc {err}
   const my=scanId,n=C.length,v={};let got=0;
   const prep=c=>{const s=c.r*f*2.1,k=document.createElement('canvas');k.width=k.height=160;const g=k.getContext('2d',{willReadFrequently:true});
     g.fillStyle='#fff';g.fillRect(0,0,160,160);g.drawImage(src,c.x*f-s/2,c.y*f-s/2,s,s,0,0,160,160);
@@ -608,17 +618,23 @@ async function readDigits(src,C,f,map){         // đọc số trong từng nút
     const inv=blk>tot*.5;for(let i=0;i<25600;i++){const q=i*4,b=inv?(Math.hypot(i%160-80,((i/160)|0)-80)<R&&!bw[i]):bw[i],c=b?0:255;d[q]=d[q+1]=d[q+2]=c;d[q+3]=255}
     g.putImageData(im,0,0);return k};
   try{const w=await getOcr();
-    for(let i=0;i<n;i++){if(my!=scanId)return false;const rd=$('#rd');if(rd)rd.textContent=`${i+1}/${n}`;const k=prep(C[i]);let best=null;
+    for(let i=0;i<n;i++){if(my!=scanId)return null;prog&&prog(i+1,n);const k=prep(C[i]);let best=null;
       for(const m of['7','10']){await w.setParameters({tessedit_pageseg_mode:m});const {data}=await w.recognize(k),t=data.text.replace(/\D/g,'');
         if(t&&t.length<=3&&(!best||data.confidence>best.c))best={t,c:data.confidence};if(best&&best.c>70)break}
       if(best&&best.c>30){v[i]=+best.t;got++}}
-  }catch(e){if(my!=scanId)return false;cfm('⚠ Không đọc tự động được số ('+e.message+') — hãy nhập số theo giấy.');return}
-  if(my!=scanId)return false;
+  }catch(e){return my==scanId?{err:e.message}:null}
+  return my==scanId?{v,got}:null}
+async function readDigits(src,C,f,map,T,lm,onLib){   // dùng số đã đọc sẵn ở bước 2 (T) hoặc đọc mới, điền vào cây, rồi gợi ý hình sách theo cấu trúc + giá trị
+  const my=scanId,n=C.length;
+  const res=T?(T.res||await T.p):await ocrDigits(src,C,f,(i,k)=>{const e=$('#rd');if(e)e.textContent=i+'/'+k});
+  if(my!=scanId||!res)return false;
+  if(res.err){cfm('⚠ Không đọc tự động được số ('+res.err+') — hãy nhập số theo giấy.');return}
+  const v=Object.assign({},res.v),got=res.got,scanned=Object.values(v);
   const cnt={};Object.values(v).forEach(x=>cnt[x]=(cnt[x]||0)+1);const dup=Object.keys(cnt).filter(x=>cnt[x]>1);
   const used=new Set(Object.values(v));let nx=1;
   Object.keys(map).forEach(i=>{if(v[i]==null||dup.includes(String(v[i]))){while(used.has(nx))nx++;v[i]=nx;used.add(nx)}map[i].v=v[i]});
   clear();refresh();const ino=inord().map(n=>n.v);
-  cfm(got<Math.ceil(n*.7)?`⚠ Chỉ đọc được ${got}/${n} số, các số còn lại là số tạm.`:dup.length?'⚠ Có số đọc trùng nhau nên đã đổi tạm.':`🔤 Đã đọc ${got}/${n} số`+(ino.every((x,i)=>!i||x>ino[i-1])&&n>1?' · cây này cũng là BST':'')+'.')}
+  cfm(got<Math.ceil(n*.7)?`⚠ Chỉ đọc được ${got}/${n} số, các số còn lại là số tạm.`:dup.length?'⚠ Có số đọc trùng nhau nên đã đổi tạm.':`🔤 Đã đọc ${got}/${n} số`+(ino.every((x,i)=>!i||x>ino[i-1])&&n>1?' · cây này cũng là BST':'')+'.',lm?lm(scanned):[],onLib)}
 
 async function loadLibs(){try{THREE=await import('three');stt('✅ Sẵn sàng');$('#bAR').disabled=false;$('#bDemo').disabled=false}catch(e){stt('❌ Không tải được Three.js ('+(e&&e.message||e)+'). Kiểm tra mạng rồi tải lại trang.')}}
 loadLibs();
@@ -752,21 +768,26 @@ async function startAR(useCam){
       const pp=[];MP.forEach(m=>{const px=best[0]*m.x-best[1]*m.y+best[2],py=best[1]*m.x+best[0]*m.y+best[3];let q=null,bd=Math.max(6,Math.hypot(best[0],best[1])*m.r*.8);C.forEach(c=>{const d=Math.hypot(c.x-px,c.y-py);if(d<bd){bd=d;q=c}});if(q)pp.push([m,q])});
       return pp.length>=2?fitSim(pp):best};
     // ---- Bước 2/3: thanh xác nhận HÌNH gọn ở đáy; hình nhận diện vẫn hiện ngay trên giấy để đối chiếu ----
-    const ask2=(r,snap)=>{pend=true;say('');const ms=libMatch(r.tr.root,r.C);
-      bar(`<p style="margin:0 0 6px;font-size:13px">Bước 2/3 · ${esc(r.tr.info)}. Đối chiếu với giấy: <b>đủ nút</b> và <b>nối đúng</b> chưa? (vòng xanh = nút, nét hồng = đường nối)</p>`+
-        (ms.length?`<p style="margin:0 0 5px;font-size:13px">📚 Giống hình trong sách — chọn đúng hình để dùng luôn số chuẩn:</p>`+ms.map((m,k)=>`<button ${k?'':'class="or" '}data-x="lib${k}" style="width:100%;margin-bottom:5px;text-align:left">📚 ${esc(m.L.n)} · giống ${Math.round(m.sim*100)}%</button>`).join(''):'')+
-        `<div style="display:flex;gap:6px"><button ${ms.length?'':'class="or" '}data-x="s2ok" style="flex:2">${ms.length?'Dùng cây vừa quét':'✔ Đúng, dùng cây này'}</button><button data-x="s2re" style="flex:1">↻ Quét lại</button></div>`);
-      ms.forEach((m,k)=>X['lib'+k]=()=>{close();accept(r,snap,m.L)});
-      X.s2ok=()=>{close();accept(r,snap)};
-      X.s2re=()=>{close();pend=false;stable=0;lastSig='';og.clearRect(0,0,SW,SH);drawFrame();say('🔍 Quét lại…',1500)}};
-    const accept=(r,snap,L)=>{const vw=snap.width,vh=snap.height;const xs=r.C.flatMap(c=>[c.x-c.r,c.x+c.r]),ys=r.C.flatMap(c=>[c.y-c.r,c.y+c.r]),bw=Math.max(...xs)-Math.min(...xs),bh=Math.max(...ys)-Math.min(...ys);
+    let ocrT=null;
+    const ask2=(r,snap)=>{pend=true;say('');scanId++;const T=ocrT={res:null};
+      const render=()=>{if(ocrT!==T||!pend)return;const vals=T.res&&T.res.v?Object.values(T.res.v):null,ms=libMatch(r.tr.root,r.C,vals),rd=T.res?'':' · đang đọc số <b id="rd"></b>';
+        bar(`<p style="margin:0 0 6px;font-size:13px">Bước 2/3 · ${esc(r.tr.info)}. Đối chiếu với giấy: <b>đủ nút</b> và <b>nối đúng</b> chưa? (vòng xanh = nút, nét hồng = đường nối)</p>`+
+          (ms.length?`<p style="margin:0 0 5px;font-size:13px">📚 Giống hình trong sách (so theo <b>cấu trúc</b> + <b>giá trị nút</b>)${rd}:</p>`+ms.map((m,k)=>`<button ${k?'':'class="or" '}data-x="lib${k}" style="width:100%;margin-bottom:5px;text-align:left">📚 ${esc(m.L.n)}<br><small style="font-weight:400">${mlabel(m)}</small></button>`).join(''):(rd?`<p style="margin:0 0 5px;font-size:13px">🔤 Đang so với hình trong sách${rd}</p>`:''))+
+          `<div style="display:flex;gap:6px"><button ${ms.length?'':'class="or" '}data-x="s2ok" style="flex:2">${ms.length?'Dùng cây vừa quét':'✔ Đúng, dùng cây này'}</button><button data-x="s2re" style="flex:1">↻ Quét lại</button></div>`);
+        ms.forEach((m,k)=>X['lib'+k]=()=>{close();accept(r,snap,m.L)})};
+      X.s2ok=()=>{close();accept(r,snap,null,T)};
+      X.s2re=()=>{scanId++;ocrT=null;close();pend=false;stable=0;lastSig='';og.clearRect(0,0,SW,SH);drawFrame();say('🔍 Quét lại…',1500)};
+      T.p=ocrDigits(snap,r.C,1/r.s,(i,k)=>{const e=$('#rd');if(e)e.textContent=i+'/'+k}).then(res=>{if(res&&ocrT===T){T.res=res;render()}return res});
+      render()};
+    const accept=(r,snap,L,T)=>{const vw=snap.width,vh=snap.height;const xs=r.C.flatMap(c=>[c.x-c.r,c.x+c.r]),ys=r.C.flatMap(c=>[c.y-c.r,c.y+c.r]),bw=Math.max(...xs)-Math.min(...xs),bh=Math.max(...ys)-Math.min(...ys);
             M={dd:r.dd,lo:r.lo||0,sm:r.sm||0,pts:r.C.map(c=>({x:c.x,y:c.y,r:c.r})),tree:r.tr.root,sig:r.tr.sig,cx:(Math.max(...xs)+Math.min(...xs))/2,cy:(Math.max(...ys)+Math.min(...ys))/2,pxS:Math.max(bw*1.18,bh*1.18/.77,60)};
             qr=1;qi=0;tx=ty=0;lost=0;mode='track';pend=false;og.clearRect(0,0,SW,SH);rig.visible=true;
             document.body.classList.remove('scan');document.body.classList.add('cfm');   // cây 3D hiện ra, chức năng CHƯA hiện cho tới khi xác nhận số
-            if(L){adoptLib(L,r.tr,r.C,M);locked=false;isLocked=false;document.body.classList.remove('locked','cfm');say('');ui();toast('📚 Đã nhận hình: '+L.n+' — dùng số chuẩn của sách');if(lockFn)lockFn(true);return}
+            const onLib=L=>{close();scanId++;adoptLib(L,r.tr,r.C,M);locked=false;isLocked=false;document.body.classList.remove('locked','cfm');say('');ui();toast('📚 Đã nhận hình: '+L.n+' — dùng số chuẩn của sách');if(lockFn)lockFn(true)};
+            if(L){onLib(L);return}
             const map=adopt(r.tr,r.C,M);locked=false;isLocked=false;document.body.classList.remove('locked');say('');ui();
-            ++scanId;bar('<p style="margin:0 0 8px;font-size:13px">Bước 3/3 · 🔤 Đang đọc số trong các nút… <b id="rd"></b></p><button data-x="s3re" style="width:100%">↻ Quét lại</button>');
-            readDigits(snap,r.C,1/r.s,map)};
+            if(!T)++scanId;bar('<p style="margin:0 0 8px;font-size:13px">Bước 3/3 · 🔤 Đang đọc số trong các nút… <b id="rd"></b></p><button data-x="s3re" style="width:100%">↻ Quét lại</button>');
+            readDigits(snap,r.C,1/r.s,map,T,vals=>libMatch(r.tr.root,r.C,vals),onLib)};
     const step=()=>{
       const vw=vid.videoWidth,vh=vid.videoHeight;if(!vw)return;
       const isS=mode=='scan',r=scanSrc(vid,vw,vh,640,isS?undefined:[M.dd||2],isS?undefined:[M.lo||0],isS?roiSrc(vw,vh):null,isS?undefined:(M.sm?1:0)),k=Math.max(SW/vw,SH/vh),a=k/r.s,ox=(SW-vw*k)/2,oy=(SH-vh*k)/2;G={a,ox,oy};
@@ -797,7 +818,7 @@ async function startAR(useCam){
     const fromStill=(src,iw,ih,snap,crop,ask)=>{                  // quét ảnh tĩnh độ phân giải cao (ảnh chụp hoặc ảnh tải lên)
       const r=scanSrc(src,iw,ih,1280,[2,4,8],undefined,crop),f=.5;r.C.forEach(c=>{c.x*=f;c.y*=f;c.r*=f});r.s*=f;r.dd=Math.max(1,(r.dd||2)>>1);
       if(!r.tr.ok){toast('Chưa nhận ra cây: '+r.tr.msg+(r.sh<2.2?' (ảnh mờ)':''));return null}
-      if(ask){drawDet(r,iw,ih);ask2(r,snap)}else{const ms=libMatch(r.tr.root,r.C),m=ms[0];accept(r,snap,m&&m.sim>=.85&&(!ms[1]||m.sim-ms[1].sim>=.15)?m.L:undefined)}return r};
+      if(ask){drawDet(r,iw,ih);ask2(r,snap)}else accept(r,snap);return r};
     $('#bMan').onclick=()=>{if(mode!='scan')return;root=parseStr('1(2(3,4),5)');S.orig=clone(root);S.view='tree';S.sel=null;S.grow=1;mode='track';locked=true;isLocked=true;pend=false;M=null;rig.visible=true;og.clearRect(0,0,SW,SH);document.body.classList.remove('scan');document.body.classList.add('locked');say('');clear();refresh();OP.str()};
     $('#bSnap').onclick=()=>{if(mode!='scan'||!vid.videoWidth)return toast('Chỉ chụp quét được khi đang ở chế độ quét camera');if(pend)return;
       const vw=vid.videoWidth,vh=vid.videoHeight,snap=document.createElement('canvas');snap.width=vw;snap.height=vh;snap.getContext('2d').drawImage(vid,0,0);
