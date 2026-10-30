@@ -195,19 +195,22 @@ function afterScan(){                          // sau khi xác nhận số: ch�
 
 // ================= THƯ VIỆN HÌNH CÂY TRONG SÁCH (so khớp hình quét với hình mẫu) =================
 // Mỗi mẫu: tên + chuỗi cây v(trái,phải), con trống để trống, None = nút giả. Muốn thêm hình mới: thêm một dòng vào LIB.
+// Số trong sách được giữ nguyên, kể cả khi trùng nhau trong cùng một hình (vd Hình 7.5 a, 7.5 c, 7.1 b).
 const LIB=[
- {n:'Mẫu 1 · cây 1–6 nét đen',s:'1(2(3(5,6),4),)'},
- {n:'Mẫu 2 · Hình 6.6 cây hoàn chỉnh',s:'5(18(4(6,20),11(12,3)),7(9(1,),15))'},
- {n:'Mẫu 3 · a) cây nhị phân tổng quát',s:'5(8(,3),4(7,))'},
- {n:'Mẫu 4 · b) hoàn chỉnh có nút None',s:'5(8(None,3),4(7,))'},
- {n:'Mẫu 5 · a) gốc 5, con 2 và 10',s:'5(2(,4),10(8,11))'},
- {n:'Mẫu 6 · b) gốc 8, con 5 và 10',s:'8(5(1,4),10(8(,9),11))'},
- {n:'Mẫu 7 · 7a cây hoàn chỉnh 5–3–7',s:'5(3,7)'},
- {n:'Mẫu 8 · 7b cây tổng quát có nút 6',s:'5(3,7(6,))'},
- {n:'Mẫu 9 · 7c hoàn chỉnh có nút None',s:'5(3(None,None),7(6,))'},
- {n:'Mẫu 10 · a) cây tìm kiếm gốc 4',s:'4(2(1,3),12(7(6,9),15))'},
- {n:'Mẫu 11 · b) cây tìm kiếm suy biến',s:'10(,12(,15(,20)))'},
- {n:'Mẫu 12 · cây gốc 11',s:'11(4(1,7(6,)),20(15(,16),21))'}];
+ {n:'Hình 9.1 · Cây tìm kiếm nhị phân',s:'9(3(1,7(4,8)),15(12(10,14),19))'},
+ {n:'Hình 7.5 a) · Các cây nhị phân',s:'6(4(1,5),11(7(5,9),17))'},
+ {n:'Hình 7.5 b) · Các cây nhị phân',s:'4(2(1,3),12(7,15))'},
+ {n:'Hình 7.5 c) · Các cây nhị phân',s:'4(3(0,3),10(7(,8),14))'},
+ {n:'Hình 7.4 a) · Cây tìm kiếm, cây con có chiều cao gần bằng nhau',s:'4(2(1,3),12(7(6,9),15))'},
+ {n:'Hình 7.4 b) · Cây tìm kiếm suy biến, chiều cao lớn nhất',s:'10(,12(,15(,20)))'},
+ {n:'Hình 7.3 a) · Cây nhị phân hoàn chỉnh',s:'5(3,7)'},
+ {n:'Hình 7.3 b) · Cây nhị phân tổng quát',s:'5(3,7(6,))'},
+ {n:'Hình 7.3 c) · Hoàn chỉnh với các nút giả None',s:'5(3(None,None),7(6,))'},
+ {n:'Hình 7.1 a) · Cây nhị phân',s:'5(2(,4),10(8,11))'},
+ {n:'Hình 7.1 b) · Cây nhị phân',s:'8(5(1,4),10(8(,9),11))'},
+ {n:'Hình 6.8 a) · Cây nhị phân tổng quát',s:'5(8(,3),4(7,))'},
+ {n:'Hình 6.8 b) · Hoàn chỉnh biểu diễn cây tổng quát',s:'5(8(None,3),4(7,))'},
+ {n:'Hình 6.6 · Đánh chỉ số cây nhị phân hoàn chỉnh',s:'5(18(4(6,20),11(12,3)),7(9(1,),15))'}];
 const LP=s=>{let i=0;s=s.replace(/\s+/g,'');const nd=()=>{const m=/^(-?\d+|None)/.exec(s.slice(i));if(!m)return null;i+=m[0].length;const n={v:m[0],l:null,r:null};if(s[i]=='('){i++;n.l=nd();if(s[i]==',')i++;n.r=nd();if(s[i]==')')i++}return n};return nd()};
 const lsz=u=>u?1+lsz(u.l)+lsz(u.r):0;
 const lpd=(a,b)=>a&&b?lpd(a.l,b.l)+lpd(a.r,b.r):lsz(a||b);        // số vị trí nút có ở cây này mà thiếu ở cây kia (cùng vị trí trái/phải)
