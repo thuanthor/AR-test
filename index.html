@@ -849,7 +849,7 @@ $('#bPv').onclick=()=>{stopT();go(S.i-1)};
 $('#bLock').onclick=()=>lockFn?lockFn():toast('Chưa bật AR');
 const KS=[['pre','Duyệt trước (preorder)'],['in','Duyệt giữa (inorder)'],['post','Duyệt sau (postorder)'],['rin','Duyệt ngược (reverse order)']];
 const TS=[{t:'👆 Bước 1/3: chạm vào <b>một nút</b> trên cây để xem thông tin của nó.',ok:()=>S.sel!=null},
- {t:'🧮 Bước 2/3: chuyển sang <b>Thuật toán</b>, mở <b>☰ Chức năng</b> và chọn một kiểu duyệt để xem máy chạy từng bước kèm code.',sel:'[data-mode="duyet"]',ok:()=>S.mode=='duyet'||S.steps.length>0},
+ {t:'🧮 Bước 2/3: chuyển sang <b>Thuật toán</b>, mở <b>☰ Chức năng</b>, bấm <b>Duyệt cây</b> rồi chọn một kiểu duyệt để xem máy chạy từng bước kèm code.',sel:'[data-mode="duyet"]',ok:()=>S.mode=='duyet'||S.steps.length>0},
  {t:'🎮 Bước 3/3: thử chế độ <b>Trò chơi</b> — chạm các nút đúng thứ tự duyệt!',sel:'[data-mode="choi"]',ok:()=>GM.on||S.mode=='choi'}];
 function tour(){const el=$('#coach');document.querySelectorAll('.hl').forEach(x=>x.classList.remove('hl'));if(!S.notes){el.style.display='none';return}
   const blk=document.body.classList.contains('scan')||document.body.classList.contains('cfm')||!root||GM.on||$('#mo').style.display=='flex';
@@ -1277,7 +1277,7 @@ X.qagain=()=>startQuiz();
 
 // ---- hộp chọn chế độ, thành tích, luật chơi ----
 function rdCfg(){if(!$('#cf_s'))return;const c=QX.cfg,ar=q=>[...document.querySelectorAll(q)].map(x=>x.value);c.src=$('#cf_s').value;c.type=$('#cf_t').value;c.lv=+$('#cf_l').value;c.n=Math.max(3,Math.min(15,+$('#cf_n').value||7));c.tps=ar('.cf_tp:checked');c.tys=ar('.cf_ty:checked');c.cnt=+$('#cf_c').value;c.comp=$('#cf_k').checked?1:0;if($('#cf_f'))c.link=$('#cf_f').checked?1:0;c.name=$('#cf_u').value.trim().slice(0,16)||'Học sinh'}
-var HUBO={cf:0,tp:0,ty:0,md:1};   // nhớ mục nào đang mở
+var HUBO={cf:0,tp:0,ty:0,md:0};   // nhớ mục nào đang mở
 function hubCnt(){[['cf_tp','hc_tp'],['cf_ty','hc_ty']].forEach(([c,i])=>{const e=$('#'+i);if(e)e.textContent=document.querySelectorAll('.'+c+':checked').length+'/'+document.querySelectorAll('.'+c).length})}
 $('#mbd').addEventListener('change',e=>{rdCfg();hubCnt();if(e.target&&e.target.id=='cf_l'&&$('#cf_s'))hub()});
 $('#mbd').addEventListener('toggle',e=>{const k=e.target&&e.target.dataset&&e.target.dataset.k;if(k)HUBO[k]=e.target.open},true);
@@ -2806,11 +2806,11 @@ const _ui=ui;ui=function(){_ui();
   document.querySelectorAll('#tools .tgrp').forEach(l=>{let n=l.nextElementSibling,any=false;while(n&&!n.classList.contains('tgrp')){if((n.matches('[data-op]')&&!n.hidden)||n.querySelector('[data-op]:not([hidden])'))any=true;n=n.nextElementSibling}l.hidden=!any});
   {const t0=S.steps.length?S.steps[0].t:'';
    {const o=$('#tk').selectedOptions[0],kn=o?o.textContent.split(' (')[0]:'';   // tiêu đề = MÔ PHỎNG + việc đang chạy; ô chọn kiểu duyệt đã chuyển vào ☰ Chức năng
-    $('#tt').textContent='MÔ PHỎNG'+(t0=='avl'?' · Cân bằng AVL':t0=='path'?' · Đường đi':t0=='trav'&&kn?' · '+kn:'')}
+    $('#tt').textContent=(t0=='trav'&&S.mode=='duyet'&&!AL.on)?'DUYỆT CÂY':'MÔ PHỎNG'+(t0=='avl'?' · Cân bằng AVL':t0=='path'?' · Đường đi':t0=='trav'&&kn?' · '+kn:'')}
    if(S.mode=='duyet'&&(S.steps.length||(AL.on&&AL.vals))&&!S.run){const p=$('#bPlay'),first=S.i<0,end=S.i>=S.steps.length-1;
     p.textContent=first?'▶ Bắt đầu':end?'↻ Chạy lại':'▶';
     if(first&&!$('#nt').textContent)$('#nt').textContent='Bấm ▶ Bắt đầu để tự chạy, hoặc Bước tiếp ⏭ để xem từng bước'}
-   if(!AL.on)$('#tk').style.display='none'}   // chỉ còn ô chọn khi đang sắp xếp (đổi qua lại 4 thuật toán)
+   if(!AL.on&&!(t0=='trav'&&S.mode=='duyet'))$('#tk').style.display='none'}   // ô chọn chỉ hiện khi đang Duyệt cây (5 kiểu duyệt) hoặc đang sắp xếp (4 thuật toán)
   const bt=document.querySelector('[data-op="bst"]');
   if(bt){bt.innerHTML='🌳 Chèn giá trị';bt.title='Chèn một giá trị vào BST: nhỏ hơn đi trái, lớn hơn đi phải, đến chỗ trống thì chèn'}};
 /* nhóm nút gập / mở + khung "nút đang chọn" (thay cho Thêm / Cập nhật / Xóa phải nhớ chọn nút trước) */
@@ -2831,12 +2831,16 @@ const _ui=ui;ui=function(){_ui();
   const bs=[...tl.querySelectorAll('button[data-op]')].filter(b=>!b.hidden&&!b.closest('#tbar')),G={'':'',bst:'Cây BST',arr:'Mảng'},done=[];let h='';
   const runTrav=k=>{if(!root)return toast('Cây đang rỗng, hãy tạo cây trước');if(AL.on){AL.on=false;AL.vals=null;if(AL.pv)S.view=AL.pv}clear();S.kind=k;setSteps(tSteps(k),k)};
   ['','bst','arr'].forEach(g=>{const l=bs.filter(b=>{const gp=(b.closest('[data-grp]')||{dataset:{}}).dataset.grp;return(gp=='bst'||gp=='arr'?gp:'')==g});
-   const tr=g==''&&S.mode=='duyet'?KS.map(k=>({click:()=>runTrav(k[0]),textContent:k[1].split(' (')[0]})):[];
+   const tr=g==''&&S.mode=='duyet'?[{click:()=>{runTrav('pre');toast('🌲 Chọn kiểu duyệt ở ô bên trên, bấm ▶ để xem từng bước trên cây')},textContent:'🌲 Duyệt cây'}]:[];
    if(!l.length&&!tr.length)return;
-   h+=(g?'<h4>'+G[g]+'</h4>':'')+'<div class="tcg">'+tr.concat(l).map(b=>{done.push(b);return '<button class="bt" data-t="'+(done.length-1)+'">'+esc(b.textContent.trim())+'</button>'}).join('')+'</div>'});
+   h+=(g?'<h4>'+G[g]+'</h4>':'')+'<div class="tcg">'+l.concat(tr).map(b=>{done.push(b);return '<button class="bt" data-t="'+(done.length-1)+'">'+esc(b.textContent.trim())+'</button>'}).join('')+'</div>'});
   modal('Chức năng',h);
   $('#mbd').onclick=e=>{const x=e.target.closest('[data-t]');if(!x)return;close();done[+x.dataset.t].click()}};
 })();
+/* Duyệt cây: đổi kiểu duyệt ở ô chọn thì nạp lại ngay các bước của kiểu mới */
+{const tk=document.getElementById('tk');let was=false;
+ tk.addEventListener('change',()=>{was=!AL.on&&S.mode=='duyet'&&S.steps.length>0&&S.steps[0].t=='trav'},true);   // chụp trạng thái TRƯỚC khi bộ xử lý gốc xóa các bước
+ tk.addEventListener('change',()=>{if(was&&root){was=false;setSteps(tSteps(tk.value),tk.value)}})}
 /* cây thường bấm nút BST / AVL: báo không phải cây BST, không chạy */
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-op="bst"],[data-op="avl"],[data-op="avlcmp"]');if(!b||isBst()||(typeof AV!='undefined'&&AV.on))return;
   e.stopImmediatePropagation();e.preventDefault();
