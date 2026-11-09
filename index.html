@@ -312,6 +312,11 @@ html[data-theme] #out span{padding:4px 10px;border-radius:999px;background:var(-
 html[data-theme] #out span.cu{color:#fff;background:var(--u-or);border-color:transparent;box-shadow:0 2px 10px rgba(247,103,7,.5)}
 html[data-theme] #nt{margin-top:6px;color:var(--u-mut);font-size:12.5px}
 
+/* Nút ▶ Bắt đầu / ↻ Chạy lại: khung tự giãn theo chữ, không còn bị chữ tràn ra ngoài */
+html[data-theme] #trav #bPlay{flex:0 0 auto!important;width:auto!important;min-width:42px!important;height:auto!important;min-height:40px;border-radius:22px!important;padding:0 18px!important;white-space:nowrap;line-height:1.2}
+/* Chừa chỗ bên phải thanh mô phỏng cho nút thu gọn ▾ → không đè lên ô tốc độ */
+html[data-theme] #trav:not(.cl){padding-right:50px}
+
 /* ---------- Bong bóng hướng dẫn, toast ---------- */
 html[data-theme] #coach{border-color:rgba(250,176,5,.55);border-radius:999px;padding:7px 8px 7px 16px;gap:10px;font-size:13.5px}
 html[data-theme] #coach button{min-height:30px;padding:4px 12px;border-radius:999px;font-size:12.5px}
@@ -524,8 +529,6 @@ addEventListener('unhandledrejection',function(e){var r=e.reason;showErr((r&&((r
 </script>
 <style>
 /* nút "Bước tiếp" dạng viên thuốc, nổi bật: bấm một lần = xem một bước */
-html[data-theme] #trav #bNx{flex:0 0 auto!important;width:auto!important;min-width:0!important;height:auto!important;min-height:40px;border-radius:22px!important;padding:0 16px!important;font-weight:800;color:#fff;background:#1d8c52;border-color:#5be39a;white-space:nowrap}
-html[data-theme="light"] #trav #bNx{background:#2fb344;border-color:#8ce99a}
 </style>
 </head>
 <body>
@@ -541,7 +544,7 @@ html[data-theme="light"] #trav #bNx{background:#2fb344;border-color:#8ce99a}
 <div id="tools" class="gl">
 <button id="tg" class="cx tgl" title="Thu gọn / mở rộng thanh công cụ"></button><div id="nsel" hidden><div id="nselT"></div><div class="nrow"><button data-n="add">＋ Thêm con</button><button data-n="upd">✎ Sửa</button><button data-n="del">－ Xóa</button></div></div><div id="tbar"><button id="bMenu">☰ Chức năng</button><button data-op="undo" title="Hoàn tác thao tác trước (Ctrl+Z)">↶</button><button data-op="redo" title="Làm lại thao tác vừa hoàn tác (Ctrl+Y)">↷</button><button data-op="lay" title="Đưa các nút và góc nhìn về vị trí ban đầu">↺</button></div><button data-op="search" title="Tìm một giá trị trên cây và xem đường đi">🔍 Tìm kiếm</button><div class="tgrp" data-g="edit"></div><button data-grp="edit" data-op="ad" title="Thêm nút mới hoặc xóa nút đang chọn (cùng một hộp)">＋/－ Thêm / Xóa</button><button data-grp="edit" data-op="upd" title="Đổi giá trị của nút đang chọn">✎ Cập nhật</button><button data-grp="edit" data-op="inp" title="Tạo cây mới, chỉnh sửa giá trị các nút, tạo cây mẫu, khôi phục cây ban đầu">⌨ Tạo / sửa cây</button><div class="tgrp" data-g="bst"></div><button data-grp="bst" data-op="avl" title="Kiểm tra cây có phải AVL không, rồi cân bằng bằng quay đơn / quay kép — xem từng bước">⚖ Cân bằng AVL</button><button data-grp="bst" data-op="avlcmp" title="So sánh cấu trúc cây trước và sau khi cân bằng AVL">↔ So sánh AVL</button><button data-grp="bst" data-op="algo" title="Sắp xếp các nút của cây bằng Insertion, Selection, Bubble, Merge — xem từng bước ngay trên cây">↕ Thuật toán sắp xếp</button><div class="tgrp" data-g="view"></div><button data-grp="view" data-op="img" title="Lưu ảnh cây thành tệp PNG để đưa vào bài tập, báo cáo">💾 Lưu ảnh cây</button><button data-op="game" title="Chơi game và làm trắc nghiệm trên chính cây này">🎮 Chọn trò chơi</button></div>
 <div id="trav" class="gl"><div class="r"><b id="tt"></b><select id="tk" title="Chọn kiểu duyệt cây"></select><span class="sp"></span>
-<span class="ctl"><button id="bPv" title="Lùi lại một bước">⏮</button><button id="bPlay" title="Phát / tạm dừng mô phỏng">▶</button><button id="bNx" title="Chạy từng bước: mỗi lần bấm xem đúng một bước">Bước tiếp ⏭</button>
+<span class="ctl"><button id="bPv" title="Lùi lại một bước">⏮</button><button id="bPlay" title="Phát / tạm dừng mô phỏng">▶</button><button id="bNx" title="Bước tiếp: mỗi lần bấm xem đúng một bước">⏭</button>
 <select id="spd" title="Tốc độ phát"><option value="0.25">0.25x</option><option value="0.5" selected>0.5x</option><option value="1">1x</option><option value="1.5">1.5x</option><option value="2">2x</option></select></span></div>
 <div id="out"></div><div id="nt"></div></div>
 <div id="mo"><div class="gl"><h3 id="mh"></h3><div id="mbd"></div><div class="b"><button id="mx">Đóng</button><button id="mok" class="or"></button></div></div></div>
@@ -567,7 +570,7 @@ const rn=a=>a[Math.random()*a.length|0],sh=a=>[...a].sort(()=>Math.random()-.5);
 // ================= DỮ LIỆU CÂY (chính là cây vừa quét) =================
 let nid=1,root=null;
 const mk=(v,o)=>Object.assign({v},o,{id:nid++,l:null,r:null});
-const MODES={kham:{n:'Khám phá',ops:'ad undo redo inp img lay ana'},duyet:{n:'Thuật toán',ops:'search algo avl avlcmp img lay'},choi:{n:'Trò chơi',ops:'game'}};
+const MODES={kham:{n:'Khám phá',ops:'ad undo redo inp img lay ana'},duyet:{n:'Thuật toán',ops:'search algo avl avlcmp img lay ana'},choi:{n:'Trò chơi',ops:'game'}};
 let TR={off:0,i:0};try{TR.off=localStorage.getItem('arbt_tour')=='1'?1:0}catch(e){}
 const S={mode:'kham',notes:true,view:'tree',sel:null,kind:'pre',steps:[],i:-1,run:0,tm:0,speed:.5,bright:1,size:1,snd:true,orig:null,yaw:0,pitch:0,zoom:1,grow:0,spin:null,px:0,py:0,roll:0,mv:'orbit',dm:'rot',showCode:true,lang:'gia',ck:null};
 const AL={on:false,vals:null,V:{},gen:0,MAX:15,K:[['ins','Insertion Sort (sắp xếp chèn)'],['sel','Selection Sort (sắp xếp chọn)'],['bub','Bubble Sort (sắp xếp nổi bọt)'],['mer','Merge Sort (sắp xếp trộn)']],
@@ -2806,7 +2809,7 @@ const _ui=ui;ui=function(){_ui();
   document.querySelectorAll('#tools .tgrp').forEach(l=>{let n=l.nextElementSibling,any=false;while(n&&!n.classList.contains('tgrp')){if((n.matches('[data-op]')&&!n.hidden)||n.querySelector('[data-op]:not([hidden])'))any=true;n=n.nextElementSibling}l.hidden=!any});
   {const t0=S.steps.length?S.steps[0].t:'';
    {const o=$('#tk').selectedOptions[0],kn=o?o.textContent.split(' (')[0]:'';   // tiêu đề = MÔ PHỎNG + việc đang chạy; ô chọn kiểu duyệt đã chuyển vào ☰ Chức năng
-    $('#tt').textContent=(t0=='trav'&&S.mode=='duyet'&&!AL.on)?'DUYỆT CÂY':'MÔ PHỎNG'+(t0=='avl'?' · Cân bằng AVL':t0=='path'?' · Đường đi':t0=='trav'&&kn?' · '+kn:'')}
+    $('#tt').textContent=(t0=='trav'&&S.mode=='duyet'&&!AL.on)?'THUẬT TOÁN':'MÔ PHỎNG'+(t0=='avl'?' · Cân bằng AVL':t0=='path'?' · Đường đi':t0=='trav'&&kn?' · '+kn:'')}
    if(S.mode=='duyet'&&(S.steps.length||(AL.on&&AL.vals))&&!S.run){const p=$('#bPlay'),first=S.i<0,end=S.i>=S.steps.length-1;
     p.textContent=first?'▶ Bắt đầu':end?'↻ Chạy lại':'▶';
     if(first&&!$('#nt').textContent)$('#nt').textContent='Bấm ▶ Bắt đầu để tự chạy, hoặc Bước tiếp ⏭ để xem từng bước'}
