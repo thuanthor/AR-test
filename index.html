@@ -565,6 +565,12 @@ html[data-theme] body.compact #mbd .compact-grid{display:grid;grid-template-colu
 html[data-theme] body.compact #mbd .compact-grid button{margin:0;min-height:52px;text-align:left;padding:10px;font-size:14px}
 html[data-theme] body.compact #mbd .compact-grid button:disabled{opacity:.45;cursor:not-allowed}
 @media(max-width:760px){
+ html[data-theme] body.compact #tools{width:min(420px,calc(100vw - 16px))!important}
+ html[data-theme] body.compact #trav{max-height:24dvh;padding:7px 9px}
+ html[data-theme] body.compact #trav #out{max-height:38px}
+ html[data-theme] body.compact #trav #nt{max-height:4.5em;overflow:auto;margin-top:4px}
+ html[data-theme] body.compact #code{max-height:25dvh}
+ html[data-theme] body.compact #nsel .nrow{flex-basis:190px}
  html[data-theme] body.compact #mo.compact-sheet{align-items:flex-end;padding:10px 10px max(10px,env(safe-area-inset-bottom))}
  html[data-theme] body.compact #mo.compact-sheet>div{max-height:72dvh;border-radius:22px;padding:18px}
  html[data-theme] body.compact #mo.compact-sheet h3{font-size:18px;margin-bottom:8px}
@@ -2374,8 +2380,8 @@ function digitVariants(k){const out=[];[[-10,1],[10,1],[0,1.4]].forEach(([deg,z]
     const g=c.getContext('2d',{willReadFrequently:true});g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.translate(c.width/2,c.height/2);g.rotate(deg*Math.PI/180);g.scale(z,z);g.drawImage(k,-k.width/2,-k.height/2);out.push(c)});return out}
 // Đọc số của từng nút. on(i,{t,flag,c,src}) được gọi ngay khi đọc xong từng nút. Không dùng cấu trúc cây để đoán/đổi số.
 async function readNodeValues(src,C,f,on,alive){const n=C.length,tess={},crops={},alts={};
-  for(let i=0;i<n;i++){crops[i]=digitCrop(src,C[i],f,1);if(!crops[i]){on(i,{t:'',flag:1,c:0,src:'none'});continue}
-    alts[i]=[.82,.62].map(m=>digitCrop(src,C[i],f,m)).filter(Boolean)}        // cắt ô số trước, KHÔNG phụ thuộc Tesseract (mất mạng vẫn còn bộ đọc viết tay trong trình duyệt)
+  for(let i=0;i<n;i++){const variants=[1,.82,.62,1.16].map(m=>digitCrop(src,C[i],f,m)).filter(Boolean);crops[i]=variants.shift();if(!crops[i]){on(i,{t:'',flag:1,c:0,src:'none'});continue}
+    alts[i]=variants}        // cắt ô số trước, KHÔNG phụ thuộc Tesseract (mất mạng vẫn còn bộ đọc viết tay trong trình duyệt)
   try{const w=await getOcr();
     for(let i=0;i<n;i++){if(alive&&!alive())return;const k=crops[i];if(!k)continue;
       let best=null;const tryK=async(cv,m)=>{await w.setParameters({tessedit_pageseg_mode:m});const {data}=await w.recognize(cv),t=data.text.replace(/\D/g,'');
@@ -3056,6 +3062,7 @@ try{ui()}catch(e){}
   // The compact toolbar has a fixed set of visible actions; disable the old overflow routine.
   fitTop=()=>{$('#top').classList.remove('cp');['bPre','bMore'].forEach(id=>$('#'+id).classList.remove('nf','ic'))};
   const originalUI=ui;
+  if(matchMedia('(max-width:760px)').matches)$('#info').classList.add('cl');
   ui=function(){originalUI();$('#info').hidden=$('#info').hidden||!selected();$('#bMenu').disabled=S.mode!=='kham';$('#compactAlgorithms').disabled=S.mode!=='kham';fitTop()};
   const measure=()=>document.documentElement.style.setProperty('--compact-dock',$('#tools').getBoundingClientRect().height+'px');
   new ResizeObserver(measure).observe($('#tools'));
