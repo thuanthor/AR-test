@@ -527,6 +527,56 @@ addEventListener('unhandledrejection',function(e){var r=e.reason;showErr((r&&((r
 <style>
 /* nút "Bước tiếp" dạng viên thuốc, nổi bật: bấm một lần = xem một bước */
 </style>
+<style id="compact-layout">
+/* Compact layout: presentation only; tree and animation code stays intact. */
+html[data-theme] body.compact #top{flex-wrap:nowrap;gap:6px;padding:6px 8px;left:10px;right:10px;top:max(8px,env(safe-area-inset-top));border-radius:16px}
+html[data-theme] body.compact #top>span:not(.sp),html[data-theme] body.compact #top :is(#vw,#bAna,#bMv,#bLock,#bMan,#bImg,#bSet){display:none!important}
+html[data-theme] body.compact #top button{min-height:44px;white-space:nowrap;font-size:13px;padding:7px 12px}
+html[data-theme] body.compact #top #bHome .tx{display:none!important}
+html[data-theme] body.compact #top #bMore{display:block!important;min-width:44px;font-size:24px;line-height:1}
+html[data-theme] body.compact #top .tx{display:inline!important}
+html[data-theme] body.compact #modes{padding:3px;gap:3px}
+html[data-theme] body.compact #mdesc{display:none!important}
+html[data-theme] body.compact #modes button{min-height:34px;font-size:12px;padding:5px 12px}
+html[data-theme] body.compact #tools{left:50%!important;right:auto!important;transform:translateX(-50%);bottom:max(8px,env(safe-area-inset-bottom));width:min(460px,calc(100vw - 20px))!important;padding:6px;gap:6px}
+html[data-theme] body.compact #tbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;width:100%}
+html[data-theme] body.compact #tbar>button[data-op]{display:none!important}
+html[data-theme] body.compact #tbar>button{min-height:44px;padding:6px 5px;text-align:center;font-size:13px;white-space:nowrap}
+html[data-theme] body.compact #nsel{padding:7px;margin:0;display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+html[data-theme] body.compact #nselT{margin:0;flex:1;font-size:12px}
+html[data-theme] body.compact #nsel .nrow{display:flex;gap:5px;flex:1 0 220px}
+html[data-theme] body.compact #nsel .nrow button{min-height:40px;padding:5px 8px}
+html[data-theme] body.compact #trav{left:50%!important;right:auto!important;transform:translateX(-50%);width:min(620px,calc(100vw - 20px));bottom:calc(var(--compact-dock,60px) + max(8px,env(safe-area-inset-bottom)) + 8px)!important;padding:12px;max-height:38dvh;overflow:auto}
+html[data-theme] body.compact #trav.cl{width:auto!important;padding:4px!important;overflow:visible}
+html[data-theme] body.compact #trav.cl>.cx{position:static;min-height:36px}
+html[data-theme] body.compact #trav .r{gap:6px;padding-right:22px}
+html[data-theme] body.compact #trav .ctl{flex-wrap:wrap;gap:5px}
+html[data-theme] body.compact #trav .sp{display:none}
+html[data-theme] body.compact #trav #tt{font-size:11px;letter-spacing:.4px}
+html[data-theme] body.compact #nt{font-size:13px;line-height:1.5;margin-top:8px}
+html[data-theme] body.compact #out{max-height:66px;overflow:auto;min-height:0}
+html[data-theme] body.compact #info{width:200px;right:10px;font-size:12px}
+html[data-theme] body.compact:not(.compact-code) #code{display:none!important}
+html[data-theme] body.compact #code{max-height:34dvh;width:min(350px,calc(100vw - 20px));left:10px}
+html[data-theme] body.compact #code>.cx{display:none}
+html[data-theme] body.compact #mo.compact-sheet>div{width:min(480px,100%)}
+html[data-theme] body.compact .compact-caption{font-size:13px;line-height:1.5;color:var(--u-mut);margin:0 0 12px}
+html[data-theme] body.compact #mbd .compact-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+html[data-theme] body.compact #mbd .compact-grid button{margin:0;min-height:52px;text-align:left;padding:10px;font-size:14px}
+html[data-theme] body.compact #mbd .compact-grid button:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:760px){
+ html[data-theme] body.compact #mo.compact-sheet{align-items:flex-end;padding:10px 10px max(10px,env(safe-area-inset-bottom))}
+ html[data-theme] body.compact #mo.compact-sheet>div{max-height:72dvh;border-radius:22px;padding:18px}
+ html[data-theme] body.compact #mo.compact-sheet h3{font-size:18px;margin-bottom:8px}
+ html[data-theme] body.compact #info{max-width:46vw;max-height:27dvh;padding:9px}
+ html[data-theme] body.compact #info .nhelp{display:none}
+ html[data-theme] body.compact #trav .ctl{flex:1 0 100%}
+ html[data-theme] body.compact #trav #tk{flex:1 1 120px;max-width:100%}
+ html[data-theme] body.compact #trav #compactCode{margin-left:auto;font-size:12px;padding:5px 8px}
+}
+@media(max-width:360px){html[data-theme] body.compact #top button{padding:6px 8px;font-size:12px}html[data-theme] body.compact #tbar>button{font-size:12px}}
+
+</style>
 </head>
 <body>
 <div id="ar"></div>
@@ -2950,6 +3000,68 @@ const _u=ui;ui=function(){_u();if(!AL.on||!AL.vals)return;
  $('#nt').innerHTML=esc(st?st.note:'Chọn thuật toán rồi bấm ▶')+'<br><small style="opacity:.75"><b style="color:#ff6b35">●</b> so sánh · <b style="color:#e64980">●</b> đổi chỗ / dịch chuyển · <b style="color:#be4bdb">●</b> key · <b style="color:#fab005">●</b> min · <b style="color:#40c057">●</b> đã xếp xong</small>'};
 try{ui()}catch(e){}
 })();
+</script>
+<script id="compact-behaviour">
+/* Separate UI layer: dispatch to the existing, unchanged tree actions. */
+(() => {
+  document.body.classList.add('compact');
+  const makeButton=(id,label,fn)=>{const b=document.createElement('button');b.id=id;b.type='button';b.textContent=label;b.onclick=fn;return b};
+  let actions=[],showCode=false;
+  function sheet(title,items,caption=''){
+    actions=items;
+    modal(title,(caption?'<p class="compact-caption">'+esc(caption)+'</p>':'')+'<div class="compact-grid">'+items.map((a,i)=>'<button type="button" data-compact-action="'+i+'"'+(a.disabled?' disabled':'')+'>'+esc(a.label)+'</button>').join('')+'</div>');
+    $('#mo').classList.add('compact-sheet');
+  }
+  $('#mbd').addEventListener('click',e=>{
+    const b=e.target.closest('[data-compact-action]');if(!b||b.disabled)return;
+    const a=actions[+b.dataset.compactAction];if(!a)return;close();a.run();
+  });
+  const source=(id,label)=>({label,run:()=>$(id).click(),disabled:$(id).hidden||$(id).disabled});
+  const operation=(op,label)=>{const b=document.querySelector('#tools [data-op="'+op+'"]');return {label,run:()=>b?b.click():OP[op](),disabled:b?b.hidden||b.disabled:false}};
+  const selected=()=>!!byId(S.sel);
+  function editMenu(){sheet('Chỉnh sửa cây',[
+    {label:'＋ Thêm con',run:()=>OP.add(),disabled:!!root&&!selected()},
+    {label:'✎ Sửa giá trị',run:()=>OP.upd(),disabled:!selected()},
+    {label:'− Xóa nút',run:()=>OP.del(),disabled:!selected()},
+    operation('bst','🌳 Chèn giá trị BST'),
+    {label:'⌨ Tạo / sửa cây',run:()=>$('#bPre').click()},
+    operation('lay','↺ Đặt lại góc nhìn'),operation('undo','↶ Hoàn tác'),operation('redo','↷ Làm lại')
+  ],selected()?'Đang chọn nút '+disp(byId(S.sel))+'.':'Chạm một nút trên cây để thêm con, sửa hoặc xóa.');}
+  function algorithms(){sheet('Thuật toán',[
+    {label:'🌿 Duyệt cây',disabled:!root,run:()=>{if(AL.on){AL.on=false;AL.vals=null;if(AL.pv)S.view=AL.pv}clear();S.kind='pre';setSteps(tSteps('pre'),'pre')}},
+    operation('search','⌕ Tìm kiếm'),operation('avl','⚖ Cân bằng AVL'),operation('avlcmp','↔ So sánh AVL'),operation('algo','↕ Sắp xếp'),
+    {label:showCode?'Ẩn bảng mã':'Hiện bảng mã',run:toggleCode}
+  ],'Chọn một thao tác, sau đó bấm Phát hoặc Tiếp để xem từng bước.');}
+  function toggleCode(){showCode=!showCode;document.body.classList.toggle('compact-code',showCode);$('#code').classList.remove('cl');$('#compactCode').textContent=showCode?'Ẩn mã':'Mã giả';$('#compactCode').setAttribute('aria-expanded',String(showCode));}
+  $('#bMenu').textContent='✎ Chỉnh sửa';$('#bMenu').onclick=editMenu;
+  $('#tbar').append(makeButton('compactAlgorithms','▷ Thuật toán',algorithms),makeButton('compactGames','🎮 Trò chơi',()=>S.mode==='choi'?OP.game():document.querySelector('[data-mode="choi"]').click()));
+  const cb=makeButton('compactCode','Mã giả',toggleCode);cb.setAttribute('aria-controls','code');cb.setAttribute('aria-expanded','false');$('#trav .ctl').append(cb);
+  $('#bPre').innerHTML='🌳<span class="tx"> Tạo cây</span>';
+  $('#bPre').title='Nhập cây bằng tay hoặc chọn cây mẫu';$('#bPre').setAttribute('aria-label',$('#bPre').title);
+  $('#bMore').title='Thêm chức năng và cài đặt';$('#bMore').setAttribute('aria-label',$('#bMore').title);
+  $('#bMore').onclick=()=>{
+    const scan=document.body.classList.contains('scan'),items=[];
+    if(scan)items.push(source('#bMan','⌨ Nhập tay'));
+    if(!scan){
+      if(!$('#bAna').hidden)items.push(source('#bAna','📐 Thông số cây'));
+      if(!$('#bImg').hidden)items.push(source('#bImg','💾 Lưu ảnh cây'));
+      if(!$('#bMv').hidden)items.push(source('#bMv',$('#bMv').textContent.trim()));
+      if(!$('#vw').hidden)items.push({label:S.view==='tree'?'▦ Xem dạng mảng':'🌳 Xem cây 3D',run:()=>{const v=$('#vw');v.value=S.view==='tree'?'arr':'tree';v.dispatchEvent(new Event('change',{bubbles:true}))}});
+      if(!$('#bLock').hidden)items.push(source('#bLock',$('#bLock').textContent.trim()));
+      items.push({label:showCode?'Ẩn bảng mã':'Hiện bảng mã',run:toggleCode});
+    }
+    items.push(source('#bSet','⚙ Cài đặt'),{label:'? Hướng dẫn',run:()=>showHelp()});
+    sheet('Thêm chức năng',items,'Trạng thái: '+$('#st').textContent.toLowerCase());
+  };
+  // The compact toolbar has a fixed set of visible actions; disable the old overflow routine.
+  fitTop=()=>{$('#top').classList.remove('cp');['bPre','bMore'].forEach(id=>$('#'+id).classList.remove('nf','ic'))};
+  const originalUI=ui;
+  ui=function(){originalUI();$('#info').hidden=$('#info').hidden||!selected();$('#bMenu').disabled=S.mode!=='kham';$('#compactAlgorithms').disabled=S.mode!=='kham';fitTop()};
+  const measure=()=>document.documentElement.style.setProperty('--compact-dock',$('#tools').getBoundingClientRect().height+'px');
+  new ResizeObserver(measure).observe($('#tools'));
+  ui();measure();
+})();
+
 </script>
 </body>
 </html>
