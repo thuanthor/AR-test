@@ -99,9 +99,8 @@ body.scan #sweep{display:block}@keyframes sw{to{top:78%}}
 #coach button{padding:3px 10px;font-size:12px;white-space:nowrap}
 .hl{outline:3px solid #ffc93c!important;outline-offset:2px;animation:hlp 1s ease-in-out infinite}@keyframes hlp{50%{outline-color:#ffc93c00}}
 body.hp #tools,body.hp #trav,body.hp #info,body.hp #code{display:none!important}
-body.scan #bSnap,body.scan #bUp,body.scan #bMan{display:inline-block!important}
-#bSnap,#bUp,#bMan{display:none}
-body.nocam #bUp{display:inline-block!important}
+body.scan #bSnap,body.scan #bMan{display:inline-block!important}
+#bSnap,#bMan{display:none}
 body.scan #tools,body.scan #trav,body.scan #info,body.scan #code,body.scan #modes,body.scan #vw,body.scan #bAna,body.scan #bLock,body.scan #bRe,body.scan #bMv{display:none!important}body.cfm #bMv{display:none!important}
 /* đang xác nhận số (bước 3/3): chưa hiện chức năng, chỉ còn thanh gọn ở dưới */
 body.cfm #tools,body.cfm #trav,body.cfm #info,body.cfm #code,body.cfm #modes,body.cfm #vw,body.cfm #bAna,body.cfm #bLock,body.cfm #bRe,body.cfm #coach{display:none!important}
@@ -312,6 +311,11 @@ html[data-theme] #out span{padding:4px 10px;border-radius:999px;background:var(-
 html[data-theme] #out span.cu{color:#fff;background:var(--u-or);border-color:transparent;box-shadow:0 2px 10px rgba(247,103,7,.5)}
 html[data-theme] #nt{margin-top:6px;color:var(--u-mut);font-size:12.5px}
 
+/* Nút ▶ Bắt đầu / ↻ Chạy lại: khung tự giãn theo chữ, không còn bị chữ tràn ra ngoài */
+html[data-theme] #trav #bPlay{flex:0 0 auto!important;width:auto!important;min-width:42px!important;height:auto!important;min-height:40px;border-radius:22px!important;padding:0 18px!important;white-space:nowrap;line-height:1.2}
+/* Chừa chỗ bên phải thanh mô phỏng cho nút thu gọn ▾ → không đè lên ô tốc độ */
+html[data-theme] #trav:not(.cl){padding-right:50px}
+
 /* ---------- Bong bóng hướng dẫn, toast ---------- */
 html[data-theme] #coach{border-color:rgba(250,176,5,.55);border-radius:999px;padding:7px 8px 7px 16px;gap:10px;font-size:13.5px}
 html[data-theme] #coach button{min-height:30px;padding:4px 12px;border-radius:999px;font-size:12.5px}
@@ -506,7 +510,7 @@ function viErr(m){m=String(m||'');if(VI_RE.test(m))return m;
  if(/NotAllowedError|Permission (denied|dismissed)|permission/i.test(m))return 'Chưa được phép dùng camera. Hãy cho phép camera trong cài đặt trình duyệt, hoặc dùng nút ⌨ để nhập cây bằng chuỗi số.';
  if(/NotFoundError|DevicesNotFound|Requested device not found/i.test(m))return 'Không tìm thấy camera trên thiết bị này. Bạn vẫn có thể nhập cây bằng chuỗi số.';
  if(/NotReadableError|TrackStartError|Could not start video/i.test(m))return 'Không mở được camera (có thể ứng dụng khác đang dùng). Hãy đóng ứng dụng đó rồi thử lại.';
- if(/OverconstrainedError|ConstraintNotSatisfied/i.test(m))return 'Camera không hỗ trợ cấu hình yêu cầu. Hãy thử 🖼 Tải ảnh có sẵn.';
+ if(/OverconstrainedError|ConstraintNotSatisfied/i.test(m))return 'Camera không hỗ trợ cấu hình yêu cầu. Hãy thử 📸 Chụp quét hoặc ⌨ Nhập tay.';
  if(/secure context|mediaDevices|getUserMedia/i.test(m))return 'Camera chỉ hoạt động khi trang được mở bằng HTTPS (hoặc localhost).';
  if(/WebGL|webgl/i.test(m))return 'Thiết bị hoặc trình duyệt chưa hỗ trợ đồ họa 3D (WebGL). Hãy thử trình duyệt khác hoặc bật tăng tốc phần cứng.';
  if(/dynamically imported module|Importing a module script|Failed to resolve module|Failed to fetch|NetworkError|Load failed|Script error/i.test(m))return 'Không tải được một thành phần của trang (có thể do mạng yếu). Hãy kiểm tra Internet rồi tải lại trang.';
@@ -524,8 +528,6 @@ addEventListener('unhandledrejection',function(e){var r=e.reason;showErr((r&&((r
 </script>
 <style>
 /* nút "Bước tiếp" dạng viên thuốc, nổi bật: bấm một lần = xem một bước */
-html[data-theme] #trav #bNx{flex:0 0 auto!important;width:auto!important;min-width:0!important;height:auto!important;min-height:40px;border-radius:22px!important;padding:0 16px!important;font-weight:800;color:#fff;background:#1d8c52;border-color:#5be39a;white-space:nowrap}
-html[data-theme="light"] #trav #bNx{background:#2fb344;border-color:#8ce99a}
 </style>
 </head>
 <body>
@@ -535,13 +537,13 @@ html[data-theme="light"] #trav #bNx{background:#2fb344;border-color:#8ce99a}
 <p style="font-size:13px">💡 <b>Mẹo quét:</b> Đủ sáng, cách giấy 30–40 cm và giữ máy yên 1–2 giây. Vẽ nét đậm, khép kín các nút và đặt hình trong <b>khung vàng</b>. Ảnh mờ? Hãy chụp lại hoặc tải ảnh lên.</p><p id="stt">⏳ Đang khởi động...</p><button id="bAR" disabled>Bắt đầu quét AR</button><button id="bDemo" disabled>⌨ Không cần camera (nhập cây bằng chuỗi số)</button></div>
 <div id="top" class="gl"><button id="bHome" title="Quay lại màn hình chính">🏠<span class="tx"> Màn hình chính</span></button><span>TRẠNG THÁI AR: <b id="st"></b></span><span class="sp"></span>
 <select id="vw" title="Cách hiển thị: cây 3D hoặc mảng 1 chiều T[]"><option value="tree">Cây 3D AR</option><option value="arr">Mảng 1 chiều T[]</option></select>
-<button id="bAna" title="Xem chiều cao, số lá, số mức… của cây">📐</button><button id="bMv" title="Đổi cách kéo 1 ngón: Xoay cây ⟷ Kéo nút"></button><button id="bLock" class="or" hidden></button><button id="bMan" title="Không quét được? nhập cây bằng tay">⌨<span class="tx"> Nhập tay</span></button><button id="bSnap" title="Chụp 1 ảnh nét để nhận diện">📸<span class="tx"> Chụp quét</span></button><button id="bUp" title="Tải ảnh có sẵn">🖼<span class="tx"> Tải ảnh</span></button><button id="bSet" title="Cài đặt: giao diện, độ sáng, âm thanh, ghi chú hướng dẫn">⚙<span class="tx"> Cài đặt</span></button><button id="bHelp" title="Trợ giúp: cách dùng và ý nghĩa màu nút">?<span class="tx"> Trợ giúp</span></button><button id="bMore" title="Thêm: đo thông số, cài đặt, trợ giúp">⋯</button></div>
-<div id="modes" class="gl" role="tablist"><button data-mode="kham" title="Khám phá: xem thông số, thông tin nút, thêm / xóa / sửa nút">🔎<span> Khám phá</span></button><button data-mode="duyet" title="Thuật toán: duyệt, tìm kiếm, chèn, cân bằng AVL, sắp xếp — xem từng bước kèm mã">🧮<span> Thuật toán</span></button><button data-mode="choi" title="Trò chơi: duyệt đúng thứ tự, săn nút, trắc nghiệm">🎮<span> Trò chơi</span></button><small id="mdesc"></small></div>
+<button id="bAna" title="Xem chiều cao, số lá, số mức… của cây">📐</button><button id="bMv" title="Đổi cách kéo 1 ngón: Xoay cây ⟷ Kéo nút"></button><button id="bLock" class="or" hidden></button><button id="bMan" title="Không quét được? nhập cây bằng tay">⌨<span class="tx"> Nhập tay</span></button><button id="bSnap" title="Chụp 1 ảnh nét để nhận diện">📸<span class="tx"> Chụp quét</span></button><button id="bSet" title="Cài đặt và trợ giúp: giao diện, độ sáng, âm thanh, cách dùng">⚙<span class="tx"> Cài đặt</span></button><button id="bMore" title="Thêm: đo thông số, cài đặt">⋯</button></div>
+<div id="modes" class="gl" role="tablist"><button data-mode="kham" title="Khám phá: xem thông số, thêm / xóa / sửa nút, duyệt, tìm kiếm, cân bằng AVL, sắp xếp — xem từng bước kèm mã">🔎<span> Khám phá</span></button><button data-mode="choi" title="Trò chơi: duyệt đúng thứ tự, săn nút, trắc nghiệm">🎮<span> Trò chơi</span></button><small id="mdesc"></small></div>
 <div id="info" class="gl"></div><div id="code" class="gl"></div><div id="gm" class="gl"></div>
 <div id="tools" class="gl">
 <button id="tg" class="cx tgl" title="Thu gọn / mở rộng thanh công cụ"></button><div id="nsel" hidden><div id="nselT"></div><div class="nrow"><button data-n="add">＋ Thêm con</button><button data-n="upd">✎ Sửa</button><button data-n="del">－ Xóa</button></div></div><div id="tbar"><button id="bMenu">☰ Chức năng</button><button data-op="undo" title="Hoàn tác thao tác trước (Ctrl+Z)">↶</button><button data-op="redo" title="Làm lại thao tác vừa hoàn tác (Ctrl+Y)">↷</button><button data-op="lay" title="Đưa các nút và góc nhìn về vị trí ban đầu">↺</button></div><button data-op="search" title="Tìm một giá trị trên cây và xem đường đi">🔍 Tìm kiếm</button><div class="tgrp" data-g="edit"></div><button data-grp="edit" data-op="ad" title="Thêm nút mới hoặc xóa nút đang chọn (cùng một hộp)">＋/－ Thêm / Xóa</button><button data-grp="edit" data-op="upd" title="Đổi giá trị của nút đang chọn">✎ Cập nhật</button><button data-grp="edit" data-op="inp" title="Tạo cây mới, chỉnh sửa giá trị các nút, tạo cây mẫu, khôi phục cây ban đầu">⌨ Tạo / sửa cây</button><div class="tgrp" data-g="bst"></div><button data-grp="bst" data-op="avl" title="Kiểm tra cây có phải AVL không, rồi cân bằng bằng quay đơn / quay kép — xem từng bước">⚖ Cân bằng AVL</button><button data-grp="bst" data-op="avlcmp" title="So sánh cấu trúc cây trước và sau khi cân bằng AVL">↔ So sánh AVL</button><button data-grp="bst" data-op="algo" title="Sắp xếp các nút của cây bằng Insertion, Selection, Bubble, Merge — xem từng bước ngay trên cây">↕ Thuật toán sắp xếp</button><div class="tgrp" data-g="view"></div><button data-grp="view" data-op="img" title="Lưu ảnh cây thành tệp PNG để đưa vào bài tập, báo cáo">💾 Lưu ảnh cây</button><button data-op="game" title="Chơi game và làm trắc nghiệm trên chính cây này">🎮 Chọn trò chơi</button></div>
 <div id="trav" class="gl"><div class="r"><b id="tt"></b><select id="tk" title="Chọn kiểu duyệt cây"></select><span class="sp"></span>
-<span class="ctl"><button id="bPv" title="Lùi lại một bước">⏮</button><button id="bPlay" title="Phát / tạm dừng mô phỏng">▶</button><button id="bNx" title="Chạy từng bước: mỗi lần bấm xem đúng một bước">Bước tiếp ⏭</button>
+<span class="ctl"><button id="bPv" title="Lùi lại một bước">⏮</button><button id="bPlay" title="Phát / tạm dừng mô phỏng">▶</button><button id="bNx" title="Bước tiếp: mỗi lần bấm xem đúng một bước">⏭</button>
 <select id="spd" title="Tốc độ phát"><option value="0.25">0.25x</option><option value="0.5" selected>0.5x</option><option value="1">1x</option><option value="1.5">1.5x</option><option value="2">2x</option></select></span></div>
 <div id="out"></div><div id="nt"></div></div>
 <div id="mo"><div class="gl"><h3 id="mh"></h3><div id="mbd"></div><div class="b"><button id="mx">Đóng</button><button id="mok" class="or"></button></div></div></div>
@@ -567,7 +569,7 @@ const rn=a=>a[Math.random()*a.length|0],sh=a=>[...a].sort(()=>Math.random()-.5);
 // ================= DỮ LIỆU CÂY (chính là cây vừa quét) =================
 let nid=1,root=null;
 const mk=(v,o)=>Object.assign({v},o,{id:nid++,l:null,r:null});
-const MODES={kham:{n:'Khám phá',ops:'ad undo redo inp img lay ana'},duyet:{n:'Thuật toán',ops:'search algo avl avlcmp img lay'},choi:{n:'Trò chơi',ops:'game'}};
+const MODES={kham:{n:'Khám phá',ops:'ad undo redo inp search algo avl avlcmp img lay ana'},choi:{n:'Trò chơi',ops:'game'}};
 let TR={off:0,i:0};try{TR.off=localStorage.getItem('arbt_tour')=='1'?1:0}catch(e){}
 const S={mode:'kham',notes:true,view:'tree',sel:null,kind:'pre',steps:[],i:-1,run:0,tm:0,speed:.5,bright:1,size:1,snd:true,orig:null,yaw:0,pitch:0,zoom:1,grow:0,spin:null,px:0,py:0,roll:0,mv:'orbit',dm:'rot',showCode:true,lang:'gia',ck:null};
 const AL={on:false,vals:null,V:{},gen:0,MAX:15,K:[['ins','Insertion Sort (sắp xếp chèn)'],['sel','Selection Sort (sắp xếp chọn)'],['bub','Bubble Sort (sắp xếp nổi bọt)'],['mer','Merge Sort (sắp xếp trộn)']],
@@ -674,7 +676,7 @@ const NM={pre:'preorder',in:'inorder',post:'postorder',rin:'reverseorder'},OR={p
 const CODE={};for(const k in OR)CODE[k]={gia:[NM[k]+'(cây v)','  Nếu cây v khác rỗng',...[...OR[k]].map(c=>c=='v'?'    Duyệt nút v':`    ${NM[k]}(cây con ${c=='l'?'trái':'phải'} của v)`)],
   py:[`def ${NM[k]}(A,k):`,'    if k < len(A) and A[k] != None:',...[...OR[k]].map(c=>c=='v'?'        print(A[k], end=" ")':`        ${NM[k]}(A,${c=='l'?'left':'right'}(k))`)]};
 function drawCode(){const el=$('#code'),tv=!S.steps.length||S.steps[0].t=='trav'||S.steps[0].t=='avl'||(S.steps[0].t=='path'&&S.steps[0].l!==undefined);
-  if(!S.showCode||!tv||S.mode=='kham'||!S.steps.length){el.style.display='none';return}
+  if(!S.showCode||!tv||!S.steps.length){el.style.display='none';return}
   const k=S.steps.length&&S.ck?S.ck:S.kind,CK=CODE[k]||CODE.pre,lg=CK[S.lang]?S.lang:'gia',L=CK[lg],st=S.steps[S.i],on=st&&S.ck==k?[st.l,...(st.ls||[])]:[],sc=el.scrollTop;el.style.display='';
   el.innerHTML=`<div class="tb"><button data-lg="gia" class="${lg=='gia'?'on':''}">Mã giả</button><button data-lg="py" class="${lg=='py'?'on':''}">Python</button>${CK.cpp?`<button data-lg="cpp" class="${lg=='cpp'?'on':''}">C++</button>`:''}</div>`+L.map((t,i)=>`<div class="ln${on.includes(i)?' on':''}">${esc(t)}</div>`).join('')+(k=='avl'&&typeof avlLegend=='function'?avlLegend(st):'');
   const h=k=='avl'?el.querySelector('.ln.on'):null;el.scrollTop=h?Math.max(0,h.offsetTop-el.clientHeight/2+h.offsetHeight/2):sc}
@@ -696,7 +698,7 @@ function go(i){S.i=Math.max(-1,Math.min(S.steps.length-1,i));const st=S.steps[S.
   if(st){beep(380+S.i*35);if(st.fin){const f=st.fin;delete st.fin;f()}}
   if(S.run&&S.i>=S.steps.length-1)stopT();refresh()}
 function startT(){stopT();S.run=1;S.tm=setInterval(()=>go(S.i+1),950/S.speed);go(S.i+1)}
-function setSteps(s,k){clear();S.steps=s;S.ck=k||s.ck||null;if(s.length){if(S.mode=='duyet'){S.i=-1;refresh()}   // tab Thuật toán: chờ học sinh bấm ▶ Bắt đầu
+function setSteps(s,k){clear();S.steps=s;S.ck=k||s.ck||null;if(s.length){if(S.mode=='kham'){S.i=-1;refresh()}   // chờ học sinh bấm ▶ Bắt đầu
   else startT()}else refresh()}
 const show=(ids,note)=>setSteps([{t:'path',cur:ids[0],out:ids,note}]);
 const refresh=()=>{try{sync()}catch(e){showErr(e,'khi vẽ cây 3D')}ui()};
@@ -826,16 +828,17 @@ const RB=(k,nm)=>()=>{if(!root){const b=H.snap();X.build(k);H.push(b);return}
   sure('Tạo '+nm,'Cây hiện tại sẽ được thay bằng một cây mới hoàn toàn (số ngẫu nhiên, không dựa vào cây đang có). Muốn quay lại: Tạo / chỉnh sửa cây → Khôi phục cây ban đầu (hoặc ↶ Hoàn tác).',()=>X.build(k),'Tạo')};
 X.rand=RB('rand','cây ngẫu nhiên');X.rndL=RB('let','cây chữ / từ ngẫu nhiên');X.deg=RB('deg','cây suy biến');X.bal=RB('bal','cây cân bằng');X.balInfo=()=>modal('⚖ Cây cân bằng là gì?',BALX,null,null,null,'Đóng');
 X.orig=()=>sure('Khôi phục cây ban đầu','Mọi thay đổi (thêm / xóa / sửa nút, vị trí đã kéo) sẽ mất, cây trở về lúc vừa quét.',()=>{if(!S.orig)return;root=clone(S.orig);S.grow=1;S.sel=null;clear();close();refresh()},'Khôi phục');
-$('#bSet').onclick=()=>modal('Cài đặt',`<label>Giao diện</label><select id="sth"><option value="dark" ${TH.m=='dark'?'selected':''}>Tối (mặc định)</option><option value="light" ${TH.m=='light'?'selected':''}>Sáng</option></select><label>Độ sáng hiệu ứng</label><input id="sb" type="range" min=".4" max="2" step=".1" value="${S.bright}"><label><input id="sn" type="checkbox" style="width:auto" ${S.snd?'checked':''}> Âm thanh tương tác</label><label><input id="sg" type="checkbox" style="width:auto" ${S.notes?'checked':''}> Hiện ghi chú hướng dẫn (bong bóng gợi ý)</label>`);
-$('#bHelp').onclick=()=>modal('Trợ giúp',`<button class="bt or" data-x="tour">↺ Xem lại hướng dẫn 3 bước</button><p><span class="hand">👆</span> Chạm một nút để xem thông tin. Thanh trên có 3 chế độ: <b>🔎 Khám phá</b> (xem và sửa cây), <b>🧮 Thuật toán</b> (xem từng bước kèm code), <b>🎮 Trò chơi</b>. Nút trên thanh trên đổi cách kéo 1 ngón: <b>⟳ Xoay cây</b> (kéo để xoay 3D) hoặc <b>✋ Kéo nút</b> (kéo từng nút; kéo chỗ trống để dời cả cây).<br>Hai ngón: chụm để thu/phóng, vặn để xoay cây.<br>📌 Cây tự cố định ngay khi bạn xác nhận quét đúng. Muốn đổi cây: bấm 🔍 Quét lại. Giữ lâu một nút bất kỳ để xem ghi chú tác dụng.</p><p><b style="color:#fab005">●</b> Nút gốc &nbsp;<b style="color:#4dabf7">●</b> Nút trong (nhánh) &nbsp;<b style="color:#40c057">●</b> Nút lá<br><b style="color:#ff6b35">●</b> Đang duyệt &nbsp;<b style="color:#ffd43b">●</b> Đã duyệt &nbsp;<b style="color:#fa5252">●</b> Không tìm thấy</p><p class="tm"><b>Thuật ngữ:</b> <b>Gốc</b> – nút trên cùng, không có cha · <b>Cha / con</b> – nút nối ngay phía trên / ngay phía dưới · <b>Lá</b> – nút không có con · <b>Độ sâu</b> của nút = số cạnh từ gốc xuống nút (gốc = 0) · <b>Chiều cao</b> của nút = số cạnh trên đường dài nhất từ nút xuống lá (lá = 0); chiều cao cây = chiều cao của gốc · <b>Cây cân bằng</b> – với mọi nút, chiều cao hai cây con chênh nhau không quá 1 (xem 📐 Đo thông số).</p><p class="tm"><b>Giá trị nút:</b> là số nguyên, <b>chữ cái hoặc từ</b> như táo, chuối (chữ luôn được đổi thành chữ thường; số nhỏ hơn chữ, chữ / từ so theo thứ tự bảng chữ cái). <b>BST không cho phép hai nút cùng giá trị</b>: thêm, sửa, nhập chuỗi hay quét ra giá trị trùng đều bị báo lỗi.</p><p class="tm"><b>Giới hạn:</b> tối đa 5 mức, 31 nút.</p>`);
-// nút ⋯ trên màn hình hẹp: gom Cài đặt / Trợ giúp / Đo thông số
-$('#bMore').onclick=()=>{const nf=q=>$(q).classList.contains('nf');modal('Thêm',(nf('#bSet')?'<button class="bt" data-x="mSet">⚙ Cài đặt</button>':'')+(nf('#bHelp')?'<button class="bt" data-x="mHelp">? Trợ giúp</button>':'')+(nf('#bAna')&&S.mode=='kham'&&root?'<button class="bt" data-x="mAna">📐 Đo thông số</button>':''))};
-X.mSet=()=>{close();$('#bSet').click()};X.mHelp=()=>{close();$('#bHelp').click()};X.mAna=()=>{close();OP.ana()};
+$('#bSet').onclick=()=>modal('Cài đặt',`<label>Giao diện</label><select id="sth"><option value="dark" ${TH.m=='dark'?'selected':''}>Tối (mặc định)</option><option value="light" ${TH.m=='light'?'selected':''}>Sáng</option></select><label>Độ sáng hiệu ứng</label><input id="sb" type="range" min=".4" max="2" step=".1" value="${S.bright}"><label><input id="sn" type="checkbox" style="width:auto" ${S.snd?'checked':''}> Âm thanh tương tác</label><label><input id="sg" type="checkbox" style="width:auto" ${S.notes?'checked':''}> Hiện ghi chú hướng dẫn (bong bóng gợi ý)</label><button class="bt" data-x="help" style="margin-top:12px">? Trợ giúp: cách dùng và ý nghĩa màu nút</button>`);
+const showHelp=()=>modal('Trợ giúp',`<button class="bt or" data-x="tour">↺ Xem lại hướng dẫn 3 bước</button><p><span class="hand">👆</span> Chạm một nút để xem thông tin. Thanh trên có 2 chế độ: <b>🔎 Khám phá</b> (xem, sửa cây và xem thuật toán từng bước kèm code), <b>🎮 Trò chơi</b>. Nút trên thanh trên đổi cách kéo 1 ngón: <b>⟳ Xoay cây</b> (kéo để xoay 3D) hoặc <b>✋ Kéo nút</b> (kéo từng nút; kéo chỗ trống để dời cả cây).<br>Hai ngón: chụm để thu/phóng, vặn để xoay cây.<br>📌 Cây tự cố định ngay khi bạn xác nhận quét đúng. Muốn đổi cây: bấm 🔍 Quét lại. Giữ lâu một nút bất kỳ để xem ghi chú tác dụng.</p><p><b style="color:#fab005">●</b> Nút gốc &nbsp;<b style="color:#4dabf7">●</b> Nút trong (nhánh) &nbsp;<b style="color:#40c057">●</b> Nút lá<br><b style="color:#ff6b35">●</b> Đang duyệt &nbsp;<b style="color:#ffd43b">●</b> Đã duyệt &nbsp;<b style="color:#fa5252">●</b> Không tìm thấy</p><p class="tm"><b>Thuật ngữ:</b> <b>Gốc</b> – nút trên cùng, không có cha · <b>Cha / con</b> – nút nối ngay phía trên / ngay phía dưới · <b>Lá</b> – nút không có con · <b>Độ sâu</b> của nút = số cạnh từ gốc xuống nút (gốc = 0) · <b>Chiều cao</b> của nút = số cạnh trên đường dài nhất từ nút xuống lá (lá = 0); chiều cao cây = chiều cao của gốc · <b>Cây cân bằng</b> – với mọi nút, chiều cao hai cây con chênh nhau không quá 1 (xem 📐 Đo thông số).</p><p class="tm"><b>Giá trị nút:</b> là số nguyên, <b>chữ cái hoặc từ</b> như táo, chuối (chữ luôn được đổi thành chữ thường; số nhỏ hơn chữ, chữ / từ so theo thứ tự bảng chữ cái). <b>BST không cho phép hai nút cùng giá trị</b>: thêm, sửa, nhập chuỗi hay quét ra giá trị trùng đều bị báo lỗi.</p><p class="tm"><b>Giới hạn:</b> tối đa 5 mức, 31 nút.</p>`);
+X.help=()=>{close();showHelp()};
+// nút ⋯ trên màn hình hẹp: gom Cài đặt / Đo thông số
+$('#bMore').onclick=()=>{const nf=q=>$(q).classList.contains('nf');modal('Thêm',(nf('#bSet')?'<button class="bt" data-x="mSet">⚙ Cài đặt</button>':'')+(nf('#bAna')&&S.mode=='kham'&&root?'<button class="bt" data-x="mAna">📐 Đo thông số</button>':''))};
+X.mSet=()=>{close();$('#bSet').click()};X.mAna=()=>{close();OP.ana()};
 document.querySelectorAll('[data-op]').forEach(b=>b.onclick=()=>OP[b.dataset.op]());
 $('#bAna').onclick=OP.ana;
 const MVL={rot:['⟳','Xoay cây'],node:['✋','Kéo nút']},MVT={rot:'⟳ Xoay cây: kéo 1 ngón để xoay 3D · 2 ngón để thu/phóng',node:'✋ Kéo nút: kéo từng nút · kéo chỗ trống để dời cả cây'};
 $('#bMv').onclick=()=>{S.dm=S.dm=='rot'?'node':'rot';S.mv=S.dm=='rot'?'orbit':'pan';toast(MVT[S.dm]);ui()};
-const MDESC={kham:'Xem thông số & thông tin nút · thêm / xóa / sửa nút · nhập cây',duyet:'Mở ☰ Chức năng để xem từng bước duyệt, tìm kiếm, chèn, cân bằng AVL, sắp xếp, kèm mã giả / Python',choi:'Trắc nghiệm sinh từ cây · đoán nút tiếp theo · sửa cây lỗi · duyệt · săn nút · tìm khóa'};
+const MDESC={kham:'Xem thông số & thông tin nút · thêm / xóa / sửa nút · nhập cây · mở ☰ Chức năng để xem từng bước duyệt, tìm kiếm, cân bằng AVL, sắp xếp kèm mã',choi:'Trắc nghiệm sinh từ cây · đoán nút tiếp theo · sửa cây lỗi · duyệt · săn nút · tìm khóa'};
 const setMode=m=>{if(m==S.mode&&!GM.on)return;
   if(GM.on)gAbort();   // đang chơi mà đổi chế độ → thoát game
   S.mode=m;if(m=='choi'){S.dm='rot';S.mv='orbit'}                                  // chế độ chơi chỉ chạm nút, không kéo nút
@@ -853,7 +856,7 @@ $('#bPv').onclick=()=>{stopT();go(S.i-1)};
 $('#bLock').onclick=()=>lockFn?lockFn():toast('Chưa bật AR');
 const KS=[['pre','Duyệt trước (preorder)'],['in','Duyệt giữa (inorder)'],['post','Duyệt sau (postorder)'],['rin','Duyệt ngược (reverse order)']];
 const TS=[{t:'👆 Bước 1/3: chạm vào <b>một nút</b> trên cây để xem thông tin của nó.',ok:()=>S.sel!=null},
- {t:'🧮 Bước 2/3: chuyển sang <b>Thuật toán</b>, mở <b>☰ Chức năng</b> và chọn một kiểu duyệt để xem máy chạy từng bước kèm code.',sel:'[data-mode="duyet"]',ok:()=>S.mode=='duyet'||S.steps.length>0},
+ {t:'🧮 Bước 2/3: mở <b>☰ Chức năng</b>, bấm <b>Duyệt cây</b> rồi chọn một kiểu duyệt để xem máy chạy từng bước kèm code.',sel:'#bMenu',ok:()=>S.steps.length>0},
  {t:'🎮 Bước 3/3: thử chế độ <b>Trò chơi</b> — chạm các nút đúng thứ tự duyệt!',sel:'[data-mode="choi"]',ok:()=>GM.on||S.mode=='choi'}];
 function tour(){const el=$('#coach');document.querySelectorAll('.hl').forEach(x=>x.classList.remove('hl'));if(!S.notes){el.style.display='none';return}
   const blk=document.body.classList.contains('scan')||document.body.classList.contains('cfm')||!root||GM.on||$('#mo').style.display=='flex';
@@ -862,7 +865,7 @@ function tour(){const el=$('#coach');document.querySelectorAll('.hl').forEach(x=
   if(TR.i>=TS.length){TR.off=1;try{localStorage.setItem('arbt_tour','1')}catch(e){}el.style.display='none';toast('🎉 Xong hướng dẫn! Bấm ? để xem lại');return}
   const c=TS[TR.i];$('#ct').innerHTML=c.t;el.style.display='flex';if(c.sel){const t=$(c.sel);t&&t.classList.add('hl')}}
 $('#cs').onclick=()=>{TR.off=1;try{localStorage.setItem('arbt_tour','1')}catch(e){}tour()};
-function fitTop(){const t=$('#top'),A=[$('#bAna'),$('#bSet'),$('#bHelp')],mo=$('#bMore');
+function fitTop(){const t=$('#top'),A=[$('#bAna'),$('#bSet')],mo=$('#bMore');
   [...A,mo].forEach(b=>b.classList.remove('ic','nf'));t.classList.remove('cp');
   if(!matchMedia('(max-width:760px)').matches)return;
   const wr=()=>{if(t.scrollWidth>t.clientWidth+1)return true;const k=[...t.children].filter(e=>e.offsetParent);if(k.length<2)return false;const c=e=>e.offsetTop+e.offsetHeight/2,y=c(k[0]);return k.some(e=>Math.abs(c(e)-y)>12)};   // tràn ngang hoặc xuống dòng đều tính là hết chỗ
@@ -1281,7 +1284,7 @@ X.qagain=()=>startQuiz();
 
 // ---- hộp chọn chế độ, thành tích, luật chơi ----
 function rdCfg(){if(!$('#cf_s'))return;const c=QX.cfg,ar=q=>[...document.querySelectorAll(q)].map(x=>x.value);c.src=$('#cf_s').value;c.type=$('#cf_t').value;c.lv=+$('#cf_l').value;c.n=Math.max(3,Math.min(15,+$('#cf_n').value||7));c.tps=ar('.cf_tp:checked');c.tys=ar('.cf_ty:checked');c.cnt=+$('#cf_c').value;c.comp=$('#cf_k').checked?1:0;if($('#cf_f'))c.link=$('#cf_f').checked?1:0;c.name=$('#cf_u').value.trim().slice(0,16)||'Học sinh'}
-var HUBO={cf:0,tp:0,ty:0,md:1};   // nhớ mục nào đang mở
+var HUBO={cf:0,tp:0,ty:0,md:0};   // nhớ mục nào đang mở
 function hubCnt(){[['cf_tp','hc_tp'],['cf_ty','hc_ty']].forEach(([c,i])=>{const e=$('#'+i);if(e)e.textContent=document.querySelectorAll('.'+c+':checked').length+'/'+document.querySelectorAll('.'+c).length})}
 $('#mbd').addEventListener('change',e=>{rdCfg();hubCnt();if(e.target&&e.target.id=='cf_l'&&$('#cf_s'))hub()});
 $('#mbd').addEventListener('toggle',e=>{const k=e.target&&e.target.dataset&&e.target.dataset.k;if(k)HUBO[k]=e.target.open},true);
@@ -1708,7 +1711,7 @@ function avlFix(still){                                   // still=true: dừng 
   const P=AVL.plan(root);
   if(!P.rots){toast('✅ Cây đã là AVL, không cần quay');return}
   clear();AV.bak=AVL.CL(root);AV.plan=P;AV.on=1;AV.hs=0;const sid=++AV.sid;P.steps.forEach(x=>x.sid=sid);
-  S.steps=P.steps;S.ck='avl';S.i=-1;S.sel=null;if(still)go(0);else if(S.mode=='duyet'){refresh()}else startT()}
+  S.steps=P.steps;S.ck='avl';S.i=-1;S.sel=null;if(still)go(0);else if(S.mode=='kham'){refresh()}else startT()}
 
 const AVA={
   undo(){avlRestore(true);clear();refresh();toast('↶ Đã quay về cây ban đầu')},
@@ -1735,7 +1738,7 @@ X.avlSkip=()=>close();
 X.avlGo2=()=>{close();avlFix(true)};
 // ---- Sau khi THÊM / XÓA node (Khám phá): nếu cây hết cân bằng thì báo ngay và chỉ cách cân bằng ----
 function avlAfterEdit(kind){
-  if(S.mode!='duyet'||AV.on||!root)return;   // Khám phá chỉ để xem nhẹ: gợi ý cân bằng (có mã) chỉ hiện ở Duyệt cây
+  if(S.mode!='kham'||AV.on||!root)return;   // gợi ý cân bằng AVL (có mã) hiện ở Khám phá
   const L=AVL.scan(root);if(!L.length)return;
   const c=L[0],how={LL:'quay phải',RR:'quay trái',LR:'quay kép (trái rồi phải)',RL:'quay kép (phải rồi trái)'}[c.type];
   bar(`<p style="margin:0 0 6px;font-size:13px">⚖ Cây vừa bị <b>lệch</b> ở node <b>${esc(trunc(c.z.v))}</b>${L.length>1?` và ${L.length-1} node khác`:''}. Trường hợp <b>${{LL:'LL (Left-Left)',RR:'RR (Right-Right)',LR:'LR (Left-Right)',RL:'RL (Right-Left)'}[c.type]}</b> — chữa bằng: <b>${how}</b>.</p><div style="display:flex;gap:6px"><button class="or" data-x="avlGo2" style="flex:2">⚖ Xem cách cân bằng</button><button data-x="avlSkip" style="flex:1">Bỏ qua</button></div>`)}
@@ -1784,7 +1787,7 @@ function avlTheory(){
    `<tr><td>Case 3a</td><td>q là <b class="sy">-</b></td><td><b>Quay đơn trái</b>: q thành <b class="sy">/</b>, p thành <b class="sy">${S1}</b>; chiều cao <b>không đổi</b>.</td></tr>`+
    `<tr><td>Case 3b</td><td>q là <b class="sy">${S1}</b></td><td><b>Quay đơn trái</b>: p và q đều thành <b class="sy">-</b>; chiều cao <b>giảm</b>.</td></tr>`+
    `<tr><td>Case 3c</td><td>q là <b class="sy">/</b>, r là con trái của q</td><td><b>Quay kép trái</b>: r thành gốc và là <b class="sy">-</b>, p và q tuỳ r; chiều cao <b>giảm</b>.</td></tr></table>`+
-   `<small>Trong ứng dụng: thêm/xóa node ở các chế độ khác rồi quay lại <b>Thuật toán → ⚖ Cân bằng AVL</b> để xem đúng các phép quay này, từng bước.</small>`);
+   `<small>Trong ứng dụng: thêm/xóa node ở các chế độ khác rồi mở <b>☰ Chức năng → ⚖ Cân bằng AVL</b> để xem đúng các phép quay này, từng bước.</small>`);
   const g=document.querySelector('#mo>.gl');if(g)g.style.maxWidth='min(96vw,820px)'}
 // ---------- so sánh cấu trúc trước / sau ----------
 function avSvg(t,mk){
@@ -2468,7 +2471,6 @@ async function startAR(useCam){
         o.hit.scale.setScalar(Math.max(ptr?cw*1.8:rad*1.7,.05));o.hit.userData.id=id;if(!hide)hits.push(o.hit)});
       Object.keys(E).forEach(id=>{if(!live.has(+id)||!Lm[id].p){content.remove(E[id].g);delete E[id]}});
       a.forEach(x=>{const e=Lm[x.id];if(!e.p)return;const q=E[x.id]||(E[x.id]=newE());q.pid=e.p;q.left=e.left;
-        q.g.visible=pendingInsert!==x.id;
         q.cyl.material=vis.includes(x.id)&&vis.includes(e.p)?mEg:S.sel==x.id||S.sel==e.p?mEs:mEn});
       Object.keys(O).forEach(id=>{if(!live.has(+id)){const o=O[id];delete O[id];o.m1.color.set('#fa5252');o.m1.emissive.set('#fa5252');o.b={sph:0,rec:0,lab:0};o.ring.visible=false;dying.push({o,f:60})}});
       while(slots.children.length){const c=slots.children[0];slots.remove(c);if(c.isSprite)c.material.dispose()}
@@ -2607,7 +2609,7 @@ async function startAR(useCam){
             review(r,snap)}}
         else if(r.tr.needConfirm){fail=0;stable=r.tr.psig==lastSig?stable+1:1;lastSig=r.tr.psig;say(`Bước 1/3 · ⚠ ${esc(r.tr.msg)} — giữ máy yên… ${Math.min(stable,4)}/4`);
           if(stable>=4&&!pend){const snap=document.createElement('canvas');snap.width=vw;snap.height=vh;snap.getContext('2d').drawImage(vid,0,0);review(r,snap)}}
-        else{stable=0;lastSig='';fail++;say(r.tr.code==='grid'?'⚠ '+r.tr.msg:r.C.length?`Bước 1/3 · 🔍 Thấy ${r.C.length} nút, ${r.ed.length} đường nối — ${r.tr.msg}`:(r.sh<2.2?'🌫 Ảnh đang mờ — giữ máy yên, lau ống kính, hoặc bấm 📸 Chụp quét / 🖼 Tải ảnh':'Bước 1/3 · 🔍 Đưa hình cây vào KHUNG VÀNG (kéo khung để dời, kéo chấm góc để đổi cỡ)')+(fail>25?'<br><small>Quét mãi không được? Bấm 📸 Chụp quét, 🖼 Tải ảnh hoặc ⌨ Nhập tay</small>':''))}
+        else{stable=0;lastSig='';fail++;say(r.tr.code==='grid'?'⚠ '+r.tr.msg:r.C.length?`Bước 1/3 · 🔍 Thấy ${r.C.length} nút, ${r.ed.length} đường nối — ${r.tr.msg}`:(r.sh<2.2?'🌫 Ảnh đang mờ — giữ máy yên, lau ống kính, hoặc bấm 📸 Chụp quét':'Bước 1/3 · 🔍 Đưa hình cây vào KHUNG VÀNG (kéo khung để dời, kéo chấm góc để đổi cỡ)')+(fail>25?'<br><small>Quét mãi không được? Bấm 📸 Chụp quét hoặc ⌨ Nhập tay</small>':''))}
         return}
       if(r.tr.ok&&r.tr.sig==M.sig){const pp=[];(function z(a,b){if(!a||!b)return;pp.push([M.pts[a.i],r.C[b.i]]);z(a.l,b.l);z(a.r,b.r)})(M.tree,r.tr.root);
         if(pp.length>=2){const[nr,ni,nx,ny]=fitSim(pp),al=lost>0?1:.85;qr+=(nr-qr)*al;qi+=(ni-qi)*al;tx+=(nx-tx)*al;ty+=(ny-ty)*al;if(lost>=8)say('');lost=0;return}}
@@ -2625,7 +2627,7 @@ async function startAR(useCam){
           [qr,qi,tx,ty]=fitSim(pp);lost=0;say('')}}
     };
     let manualScan=false;const tick=()=>{if(!running)return;if(!locked&&!busy&&!(manualScan&&mode==='scan')){busy=true;try{step()}catch(e){console.error(e)}busy=false}setTimeout(tick,mode=='scan'?400:120)};
-    document.getElementById('perfScan')?.remove();const perfBtn=document.createElement('button');perfBtn.id='perfScan';perfBtn.textContent='📱 Tiết kiệm máy: tắt';perfBtn.title='Dừng nhận diện liên tục, dùng Chụp quét';$('#bSnap').after(perfBtn);perfBtn.onclick=()=>{manualScan=!manualScan;perfBtn.textContent='📱 Tiết kiệm máy: '+(manualScan?'bật':'tắt');if(manualScan)say('Đã dừng quét liên tục. Đưa hình vào khung rồi bấm Chụp quét.',4000)};
+    
     const fromStill=(src,iw,ih,snap,crop,ask,post)=>{ANX.track=0;                  // quét ảnh tĩnh độ phân giải cao (ảnh chụp hoặc ảnh tải lên)
       const q=imageQuality(snap,crop),warnings=[];if(q.light<65)warnings.push('Ảnh tối: tăng ánh sáng');if(q.sharp<2.2)warnings.push('Ảnh có thể mờ: giữ máy yên và chụp lại');
       let r=scanSrc(src,iw,ih,1280,[2,4,8],[0,1],crop);
@@ -2672,23 +2674,6 @@ async function startAR(useCam){
         document.body.classList.remove('scan','cfm');document.body.classList.add('locked');
         og.clearRect(0,0,SW,SH);say('');
         toast('✅ Đã dựng cây từ ảnh hỗ trợ OCR. Hãy kiểm tra lại các nút và đường nối.')},'Dựng cây 3D')}
-    $('#bUp').onclick=()=>{const inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.style.display='none';document.body.appendChild(inp);
-      inp.onchange=()=>{const fl=inp.files[0];inp.remove();if(!fl)return;if(!(fl.type||'').startsWith('image/')&&!/\.(jpe?g|png|webp|gif|bmp|heic|heif)$/i.test(fl.name))return toast('Vui lòng chọn file ảnh.');
-        toast('⏳ Đang mở ảnh…');const url=URL.createObjectURL(fl);
-        const im=new Image();im.onerror=()=>{URL.revokeObjectURL(url);toast('Không mở được ảnh này (định dạng chưa hỗ trợ). Hãy thử ảnh JPG hoặc PNG.')};
-        im.onload=()=>{try{
-          const k0=Math.min(1,2400/Math.max(im.naturalWidth,im.naturalHeight)),iw=Math.round(im.naturalWidth*k0),ih=Math.round(im.naturalHeight*k0),snap=document.createElement('canvas');snap.width=iw;snap.height=ih;snap.getContext('2d').drawImage(im,0,0,iw,ih);URL.revokeObjectURL(url);
-          const runA=()=>{close();try{
-            const upPost=r=>{const k=Math.max(SW/iw,SH/ih);G={a:k/r.s,ox:(SW-iw*k)/2,oy:(SH-ih*k)/2};locked=true;isLocked=true;document.body.classList.add('locked');ui();toast('🖼 Cây dựng từ ảnh tải lên — đã cố định tại chỗ')};
-            fromStill(snap,iw,ih,snap,undefined,true)}catch(e){console.error(e);toast('Không xử lý được ảnh: '+(e.message||e))}};
-          const runB=async()=>{close();try{toast('Đang đọc chữ số trên ảnh…');
-            const items=await readPaperDigits(snap);
-            if(!items.length){toast('OCR chưa đọc được chữ số. Hãy dùng ảnh rõ hơn hoặc nhập cây bằng tay.');return}
-            loadPaperTree(snap,items)}catch(e){console.error(e);toast('Không đọc được chữ số: '+(e.message||e))}};
-          runA();   // tải ảnh lên: nhận diện và dựng cây 3D trực tiếp, không hỏi kiểu sơ đồ
-        }catch(e){console.error(e);toast('Không xử lý được ảnh: '+(e.message||e))}};
-        im.src=url};
-      document.body.appendChild(inp);inp.click()};
     if(useCam){
       say('Bước 1/3 · 🔍 Đưa hình cây vào KHUNG VÀNG (kéo khung để dời, kéo chấm góc để đổi cỡ)');
       lockFn=q=>{if(mode!='track')return toast('Chưa nhận diện được cây để cố định');locked=!locked;isLocked=locked;document.body.classList.toggle('locked',locked);say('');if(!q)toast(locked?'📌 Đã cố định — cây giữ nguyên vị trí trên màn hình':'🔓 Đã bỏ cố định — cây bám theo hình giấy trở lại');ui()};
@@ -2751,6 +2736,10 @@ TNm.lvl='duyệt theo mức';NM.lvl='level_order';OR.lvl='';
 CODE.lvl={
  gia:['duyệt_theo_mức(gốc)','  Đưa gốc vào hàng đợi Q','  Lặp lại khi Q khác rỗng','    v ← lấy nút ở đầu hàng đợi Q','    Duyệt nút v','    Nếu v có con trái: đưa con trái vào cuối Q','    Nếu v có con phải: đưa con phải vào cuối Q'],
  py:['def level_order(root):','    q = [root]','    while q:','        v = q.pop(0)','        print(v.key, end=" ")','        if v.left: q.append(v.left)','        if v.right: q.append(v.right)']};
+/* Mã C++ cho 5 kiểu duyệt — số dòng khớp với Mã giả / Python để dòng đang chạy được tô sáng đúng chỗ */
+for(const k of ['pre','in','post','rin'])CODE[k].cpp=[`void ${NM[k]}(Node* v) {`,'  if (v != nullptr) {',
+  ...[...OR[k]].map((c,i,a)=>{const e=i==a.length-1?' } }':'';return c=='v'?'    cout << v->key << " ";'+e:`    ${NM[k]}(v->${c=='l'?'left':'right'});`+e})];
+CODE.lvl.cpp=['void level_order(Node* root) {','  queue<Node*> q; q.push(root);','  while (!q.empty()) {','    Node* v = q.front(); q.pop();','    cout << v->key << " ";','    if (v->left) q.push(v->left);','    if (v->right) q.push(v->right); } }'];
 const _tSteps=window.tSteps;
 window.tSteps=function(k){
   if(k!='lvl')return _tSteps(k);
@@ -2802,7 +2791,7 @@ OP.bins=function(){                                              // chèn THEO G
     setSteps(s)},'Chèn')};
 
 /* nút trên thanh công cụ + hiện ở hai chế độ Khám phá / Duyệt cây */
-MODES.kham.ops+=' bst';MODES.duyet.ops+=' bst';
+MODES.kham.ops+=' bst';
 const tl=document.getElementById('tools'),ref=tl&&tl.querySelector('[data-op="avl"]');
 if(tl){const b=document.createElement('button');b.dataset.op='bst';b.dataset.grp='bst';b.title='Chèn một giá trị vào BST: web tự đi từ gốc, nhỏ hơn sang trái, lớn hơn sang phải';b.innerHTML='🌳 Chèn giá trị';b.onclick=()=>OP.bins();tl.insertBefore(b,ref||null)}
 /* Cây thường: ẩn nhóm BST/AVL (chỉ hiện khi cây rỗng hoặc đúng là BST); nút BST ghi rõ trạng thái */
@@ -2812,11 +2801,11 @@ const _ui=ui;ui=function(){_ui();
   document.querySelectorAll('#tools .tgrp').forEach(l=>{let n=l.nextElementSibling,any=false;while(n&&!n.classList.contains('tgrp')){if((n.matches('[data-op]')&&!n.hidden)||n.querySelector('[data-op]:not([hidden])'))any=true;n=n.nextElementSibling}l.hidden=!any});
   {const t0=S.steps.length?S.steps[0].t:'';
    {const o=$('#tk').selectedOptions[0],kn=o?o.textContent.split(' (')[0]:'';   // tiêu đề = MÔ PHỎNG + việc đang chạy; ô chọn kiểu duyệt đã chuyển vào ☰ Chức năng
-    $('#tt').textContent='MÔ PHỎNG'+(t0=='avl'?' · Cân bằng AVL':t0=='path'?' · Đường đi':t0=='trav'&&kn?' · '+kn:'')}
-   if(S.mode=='duyet'&&(S.steps.length||(AL.on&&AL.vals))&&!S.run){const p=$('#bPlay'),first=S.i<0,end=S.i>=S.steps.length-1;
+    $('#tt').textContent=(t0=='trav'&&S.mode=='kham'&&!AL.on)?'THUẬT TOÁN':'MÔ PHỎNG'+(t0=='avl'?' · Cân bằng AVL':t0=='path'?' · Đường đi':t0=='trav'&&kn?' · '+kn:'')}
+   if(S.mode=='kham'&&(S.steps.length||(AL.on&&AL.vals))&&!S.run){const p=$('#bPlay'),first=S.i<0,end=S.i>=S.steps.length-1;
     p.textContent=first?'▶ Bắt đầu':end?'↻ Chạy lại':'▶';
     if(first&&!$('#nt').textContent)$('#nt').textContent='Bấm ▶ Bắt đầu để tự chạy, hoặc Bước tiếp ⏭ để xem từng bước'}
-   if(!AL.on)$('#tk').style.display='none'}   // chỉ còn ô chọn khi đang sắp xếp (đổi qua lại 4 thuật toán)
+   if(!AL.on&&!(t0=='trav'&&S.mode=='kham'))$('#tk').style.display='none'}   // ô chọn chỉ hiện khi đang Duyệt cây (5 kiểu duyệt) hoặc đang sắp xếp (4 thuật toán)
   const bt=document.querySelector('[data-op="bst"]');
   if(bt){bt.innerHTML='🌳 Chèn giá trị';bt.title='Chèn một giá trị vào BST: nhỏ hơn đi trái, lớn hơn đi phải, đến chỗ trống thì chèn'}};
 /* nhóm nút gập / mở + khung "nút đang chọn" (thay cho Thêm / Cập nhật / Xóa phải nhớ chọn nút trước) */
@@ -2837,18 +2826,22 @@ const _ui=ui;ui=function(){_ui();
   const bs=[...tl.querySelectorAll('button[data-op]')].filter(b=>!b.hidden&&!b.closest('#tbar')),G={'':'',bst:'Cây BST',arr:'Mảng'},done=[];let h='';
   const runTrav=k=>{if(!root)return toast('Cây đang rỗng, hãy tạo cây trước');if(AL.on){AL.on=false;AL.vals=null;if(AL.pv)S.view=AL.pv}clear();S.kind=k;setSteps(tSteps(k),k)};
   ['','bst','arr'].forEach(g=>{const l=bs.filter(b=>{const gp=(b.closest('[data-grp]')||{dataset:{}}).dataset.grp;return(gp=='bst'||gp=='arr'?gp:'')==g});
-   const tr=g==''&&S.mode=='duyet'?KS.map(k=>({click:()=>runTrav(k[0]),textContent:k[1].split(' (')[0]})):[];
+   const tr=g==''&&S.mode=='kham'?[{click:()=>{runTrav('pre');toast('🌲 Chọn kiểu duyệt ở ô bên trên, bấm ▶ để xem từng bước trên cây')},textContent:'🌲 Duyệt cây'}]:[];
    if(!l.length&&!tr.length)return;
-   h+=(g?'<h4>'+G[g]+'</h4>':'')+'<div class="tcg">'+tr.concat(l).map(b=>{done.push(b);return '<button class="bt" data-t="'+(done.length-1)+'">'+esc(b.textContent.trim())+'</button>'}).join('')+'</div>'});
+   h+=(g?'<h4>'+G[g]+'</h4>':'')+'<div class="tcg">'+l.concat(tr).map(b=>{done.push(b);return '<button class="bt" data-t="'+(done.length-1)+'">'+esc(b.textContent.trim())+'</button>'}).join('')+'</div>'});
   modal('Chức năng',h);
   $('#mbd').onclick=e=>{const x=e.target.closest('[data-t]');if(!x)return;close();done[+x.dataset.t].click()}};
 })();
+/* Duyệt cây: đổi kiểu duyệt ở ô chọn thì nạp lại ngay các bước của kiểu mới */
+{const tk=document.getElementById('tk');let was=false;
+ tk.addEventListener('change',()=>{was=!AL.on&&S.mode=='kham'&&S.steps.length>0&&S.steps[0].t=='trav'},true);   // chụp trạng thái TRƯỚC khi bộ xử lý gốc xóa các bước
+ tk.addEventListener('change',()=>{if(was&&root){was=false;setSteps(tSteps(tk.value),tk.value)}})}
 /* cây thường bấm nút BST / AVL: báo không phải cây BST, không chạy */
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-op="bst"],[data-op="avl"],[data-op="avlcmp"]');if(!b||isBst()||(typeof AV!='undefined'&&AV.on))return;
   e.stopImmediatePropagation();e.preventDefault();
   const v=bad(root);toast('⚠ Cây này không phải cây BST'+(v&&v.v!==undefined?' (nút '+v.v+' không đúng luật trái nhỏ hơn, phải lớn hơn)':'')+', nên chưa dùng được chức năng này.')},true);
 /* Khám phá chỉ để xem nhẹ: thao tác nào có chạy từng bước thì nhắc qua Duyệt cây để hiểu rõ hơn */
-{const _ss=setSteps;setSteps=function(s){const r=_ss.apply(this,arguments);if(S.mode=='kham'&&s&&s.length)toast('💡 Muốn hiểu rõ từng bước và xem mã giả, hãy qua tab Thuật toán');return r}}
+
 /* ===== mã giả cho Tìm kiếm: BST đi trái / phải · cây thường duyệt cả cây ===== */
 CODE.tim={gia:['timkiem_BST(root, x)','  p ← root','  Khi p ≠ NULL','    Nếu x = p.key → trả về p   (tìm thấy)','    Nếu x < p.key → p ← p.left','    Ngược lại → p ← p.right','  Trả về NULL   (không có x)'],
  py:['def search(root, x):','    p = root','    while p is not None:','        if x == p.key: return p','        if x < p.key: p = p.left','        else: p = p.right','    return None'],
