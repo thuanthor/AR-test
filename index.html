@@ -111,7 +111,7 @@ body.cfm #tools,body.cfm #trav,body.cfm #info,body.cfm #code,body.cfm #modes,bod
 #modes{position:fixed;top:var(--tm,60px);left:50%;transform:translateX(-50%);z-index:6;display:flex;gap:6px;align-items:center;padding:5px;max-width:96vw}
 #modes button{padding:7px 16px;font-weight:700;white-space:nowrap;border-radius:10px}
 #modes button.or{box-shadow:0 0 0 2px #ffc93c66,0 2px 10px #ff8a2a55}
-#mdesc{opacity:.75;font-weight:400;font-size:12px;padding:0 8px 0 4px;max-width:260px;line-height:1.25}
+#mdesc{display:none!important}
 /* ===== Nút thu gọn / mở rộng thanh công cụ ===== */
 #tools>.cx.tgl{position:static;width:100%;padding:6px 10px;font-size:13px;line-height:1.35;text-align:left;border-radius:10px;background:#ffffff26;font-weight:800;flex:none}
 #tools.cl>.cx.tgl{white-space:nowrap}
@@ -272,6 +272,8 @@ html[data-theme] #mo>.gl{
   box-shadow:0 24px 60px rgba(0,0,0,.5);animation:uPop .22s var(--u-ease);
 }
 html[data-theme] #mo h3{margin:0 0 10px;font-size:18px;font-weight:800;letter-spacing:.2px}
+html[data-theme] #mo h3.mgrp{margin:18px 0 10px;font-size:18px;font-weight:800;letter-spacing:.2px;color:inherit}
+html[data-theme] #mo h3.mgrp-algo{margin-top:18px}
 html[data-theme] #mbd{font-size:14px;line-height:1.55;color:var(--u-text)}
 html[data-theme] #mbd label{display:block;margin:12px 0 5px;font-size:12.5px;font-weight:700;color:var(--u-mut);letter-spacing:.3px}
 html[data-theme] #mbd label:has(input[type=checkbox]){display:flex;align-items:center;gap:8px;color:var(--u-text);font-weight:600}
@@ -976,7 +978,7 @@ const QG=[
  ()=>{const k=rn(['pre','in','post','rin']),f=x=>seqIds(x).map(dv).join(' ');return mc('Kết quả '+TNm[k]+' của cây đang hiển thị là:',f(k),[...['pre','in','post','rin'].filter(x=>x!=k).map(f),sh(seqIds(k)).map(dv).join(' ')],'Thứ tự đúng: '+f(k)+'.',()=>setSteps(tSteps(k),k))},
  ()=>{const{list}=wk(),n=list.length,h=Math.max(...list.map(e=>e.d)),mx=Math.max(...list.map(e=>e.k)),c=n==2**(h+1)-1?'Hoàn hảo':mx==n-1?'Hoàn chỉnh (nhưng không hoàn hảo)':'Không hoàn hảo và không hoàn chỉnh';return mc('Cây đang hiển thị thuộc loại nào?',c,['Hoàn hảo','Hoàn chỉnh (nhưng không hoàn hảo)','Không hoàn hảo và không hoàn chỉnh'],'Hoàn hảo: n = 2^(h+1) − 1. Hoàn chỉnh: chỉ số mảng liên tục 0…n−1, không có None. Ở đây n = '+n+', h = '+h+'.')}];
 // ================= PHÂN HỆ TRÒ CHƠI & TRẮC NGHIỆM (sinh câu hỏi từ cây thật, có gợi ý, điểm, huy hiệu) =================
-const NAM={pre:'Preorder (NLR)',in:'Inorder (LNR)',post:'Postorder (LRN)'},TP={cau:'Cấu trúc cây',dut:'Phép duyệt',pt:'Phân tích cây',bst:'Cây BST',vd:'Vận dụng',dk:'Điền khuyết',sx:'Sắp xếp'};
+const NAM={pre:'Preorder (NLR)',in:'Inorder (LNR)',post:'Postorder (LRN)'},TP={cau:'Cấu trúc cây',dut:'Phép duyệt',pt:'Phân tích cây',bst:'Cây tìm kiếm nhị phân',vd:'Vận dụng',dk:'Điền khuyết',sx:'Sắp xếp'};
 const RU={pre:'thăm nút gốc N trước, rồi cây con trái L, rồi cây con phải R',in:'duyệt cây con trái L, rồi thăm nút N, rồi cây con phải R',post:'duyệt cây con trái L, rồi cây con phải R, cuối cùng mới thăm nút N'};
 const HT={pt:'Nhớ quy ước: gốc ở mức 0, nút lá có chiều cao 0, bậc của nút là số con của nó.'};
 const LS={g:(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}},s:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
@@ -1042,7 +1044,7 @@ function gfx(k,txt,quiet){                       // k: ok | bad | win ; quiet = 
 const ansText=q=>q.k=='mc'?String(q.o[q.a]):q.k=='fill'?String(q.ans):q.k=='ord'?q.ans.map(id=>{const it=q.items.find(x=>x.id==id);return it?it.v:'?'}).join(' → '):String(q.model||'');
 
 // Mục 1: CHỦ ĐỀ · Mục 2: DẠNG CÂU HỎI
-const TOP=[['cau','Nhận biết cấu trúc cây'],['dut','Phép duyệt cây'],['pt','Phân tích cây'],['bst','Cây BST'],['vd','Vận dụng']];
+const TOP=[['cau','Nhận biết cấu trúc cây'],['dut','Phép duyệt cây'],['pt','Phân tích cây'],['bst','Cây tìm kiếm nhị phân'],['vd','Vận dụng']];
 const TYP=[['mc','Trắc nghiệm'],['tf','Đúng / Sai'],['fill','Điền khuyết'],['ord','Sắp xếp thứ tự'],['essay','Tự luận']];
 const qTitle=()=>CH.on?'🌟 Toàn diện · chặng '+CH.i+'/'+CHP.length:QX.timed?'⏱ Thử thách thời gian':'📖 Luyện tập';
 const sq=(t,k)=>{const a=[];if(k=='lvl'){const q=t?[t]:[];for(let i=0;i<q.length;i++){a.push(q[i]);q[i].l&&q.push(q[i].l);q[i].r&&q.push(q[i].r)}}else(function f(n){if(!n)return;k=='pre'&&a.push(n);f(n.l);k=='in'&&a.push(n);f(n.r);k=='post'&&a.push(n)})(t);return a};
@@ -1420,7 +1422,7 @@ function gRound(){clearInterval(GM.tm);GM.lock=0;
   const a=wk().list;if(a.length<3)return gEnd('Cây cần ≥ 3 nút');
   const d=dfl(),df=dfi();let T,need='order',txt;
   if(m==1){const k=pkK(d==1?['pre','in']:d==2?['pre','in','post']:['pre','in','post','rin'],'o');T=seqIds(k);GM.k4=k;txt='Chạm các nút theo thứ tự <b>'+TNm[k]+'</b>'+(d==1?'<br><small>'+NAM[k]+': '+RU[k]+'</small>':'')}
-  else if(m==4){const k=pkK(d==1?['pre','in']:['pre','in','post'],'n');T=seqIds(k);GM.k4=k;GM.pre=Math.max(1,T.length-Math.min(T.length-1,[2,3,4][d-1]));txt='Đang duyệt <b>'+NAM[k]+'</b> — chạm nút được thăm <b>tiếp theo</b>'+(d==1?'<br><small>'+RU[k]+'</small>':'')}
+  else if(m==4){const k=pkK(d==1?['pre','in']:d==2?['pre','in','post']:['pre','in','post','rin'],'n');T=seqIds(k);GM.k4=k;GM.pre=Math.max(1,T.length-Math.min(T.length-1,[2,3,4][d-1]));txt='Đang duyệt <b>'+NAM[k]+'</b> — chạm nút được thăm <b>tiếp theo</b>'+(d==1?'<br><small>'+RU[k]+'</small>':'')}
   else if(m==2){const mx=Math.max(...a.map(e=>e.d)),Lv=1+(Math.random()*mx|0),
       PR=[['nút lá',e=>!e.n.l&&!e.n.r,1],['nút có đủ 2 con',e=>e.n.l&&e.n.r,1],['nút nhánh (có ít nhất 1 con)',e=>e.n.l||e.n.r,2],['nút ở mức '+Lv,e=>e.d==Lv,2],['nút chỉ có đúng 1 con',e=>!e.n.l!=!e.n.r,3],['nút lá ở mức từ '+Lv+' trở xuống',e=>!e.n.l&&!e.n.r&&e.d>=Lv,3]].filter(p=>d==1?p[2]<=1:d==2?p[2]<=2:p[2]>=2);
     for(let t=0;t<14;t++){const p=rn(fr(PR,x=>'s'+x[0])),ids=a.filter(p[1]).map(e=>e.n.id);if(ids.length>=1&&ids.length<a.length){T=ids;GM.cat=p[0];txt='Chạm <b>tất cả '+p[0]+'</b> (thứ tự tùy ý)';need='set';hp('s'+p[0]);break}}
@@ -2426,7 +2428,7 @@ async function startAR(useCam){
     const mEn=em('#748ffc',.8,.9),mEg=em('#ff922b',1.2),mEs=em('#ffa94d',1.4),mSlot=new THREE.MeshBasicMaterial({color:'#748ffc',transparent:true,opacity:.16});
     const tc={},labTex=(t,col='#fff')=>{const k=t+col;if(tc[k])return tc[k];const c=document.createElement('canvas');c.width=256;c.height=128;const g=c.getContext('2d');let f=92;g.font=`bold ${f}px sans-serif`;while(g.measureText(t).width>236&&f>28)g.font=`bold ${f-=6}px sans-serif`;
       g.textAlign='center';g.textBaseline='middle';g.lineJoin='round';g.lineWidth=12;g.strokeStyle='#07202c';g.strokeText(t,128,68);g.fillStyle=col;g.fillText(t,128,68);const x=new THREE.CanvasTexture(c);x.colorSpace=THREE.SRGBColorSpace;return tc[k]=x};
-    const rc=document.createElement('canvas');rc.width=rc.height=128;const rg=rc.getContext('2d');rg.strokeStyle='#f76707';rg.lineWidth=9;rg.shadowColor='#ff922b';rg.shadowBlur=14;rg.beginPath();rg.arc(64,64,52,0,7);rg.stroke();const ringTex=new THREE.CanvasTexture(rc);
+    const rc=document.createElement('canvas');rc.width=rc.height=128;const rg=rc.getContext('2d');rg.strokeStyle='#ffe066';rg.lineWidth=9;rg.shadowColor='#ffd43b';rg.shadowBlur=18;rg.beginPath();rg.arc(64,64,52,0,7);rg.stroke();const ringTex=new THREE.CanvasTexture(rc);
     const O={},E={},dying=[];let hits=[];
     const sortG=new THREE.Group(),SC={};let sGen=-1;spin.add(sortG);sortG.visible=false;
     const SCOL={cmp:'#ff6b35',sw:'#e64980',key:'#be4bdb',min:'#fab005',rng:'#7c8cf8'};
@@ -2448,7 +2450,7 @@ async function startAR(useCam){
       const lab=sp(),pl=sp(),pr=sp(),mr=new THREE.MeshStandardMaterial({roughness:.3}),rec=new THREE.Group();
       [-1,0,1].forEach(i=>{const b=new THREE.Mesh(geoB,mr);b.scale.set(.96,1.2,.5);b.position.x=i;rec.add(b)});
       pl.position.set(-1,0,.4);pr.position.set(1,0,.4);pl.scale.set(.9,.45,1);pr.scale.set(.9,.45,1);rec.add(pl,pr);
-      const ring=new THREE.Sprite(new THREE.SpriteMaterial({map:ringTex,transparent:true,depthTest:false}));ring.renderOrder=6;ring.visible=false;
+      const ring=new THREE.Sprite(new THREE.SpriteMaterial({map:ringTex,transparent:true,opacity:0,depthTest:false}));ring.renderOrder=6;ring.visible=false;
       const hit=new THREE.Mesh(geoS,new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}));
       g.add(sph,rec,lab,ring,hit);content.add(g);return{g,m1,m2,mr,sph,rec,lab,pl,pr,ring,hit,t:new THREE.Vector3(),a:{sph:0,rec:0,lab:0},b:{sph:0,rec:0,lab:0},spin:0}};
     const newE=()=>{const g=new THREE.Group(),cyl=new THREE.Mesh(geoC,mEn);g.add(cyl);content.add(g);return{g,cyl}};
@@ -2494,7 +2496,15 @@ async function startAR(useCam){
       else{rig.position.set(SW/2,-SH/2,0);rig.rotation.z=S.roll;rig.scale.setScalar(Math.min(SW,SH)*.95*S.size*S.zoom)}
       rig.position.x+=S.px;rig.position.y-=S.py;                          // dời cả cây bằng cách kéo vào chỗ trống
       tilt.rotation.x=(root&&root.P0&&S.view=='tree'?0:-.32)+S.pitch;spin.rotation.y=S.yaw;
-      for(const id in O){const o=O[id];stepO(o);{const fl=S.flash>Date.now(),pu=fl&&S.sel!=+id?1+.18*Math.sin(Date.now()/110):1;o.ring.visible=(S.sel==+id||fl||(S.steps[S.i]&&S.steps[S.i].cur==+id))&&!o.hide;o.ring.scale.setScalar((S.view=='ptr'?o.a.rec*3.6:o.a.sph*3.1+.001)*pu)}}
+      for(const id in O){const o=O[id];stepO(o);{
+        // Chỉ nút đang được tương tác mới được làm nổi bật: chọn nút hoặc nút hiện tại của bước duyệt.
+        // Mọi nút còn lại hoàn toàn không có vòng sáng/halo.
+        const active=!o.hide&&(S.sel==+id||(S.steps[S.i]&&S.steps[S.i].cur==+id));
+        o.ring.visible=active;
+        o.ring.material.opacity=active?1:0;
+        o.ring.scale.setScalar((S.view=='ptr'?o.a.rec*3.6:o.a.sph*3.1+.001));
+        o.m2.opacity=.12+.12*S.bright;
+      }}
       for(let i=dying.length-1;i>=0;i--){const d=dying[i];stepO(d.o);if(--d.f<=0){content.remove(d.o.g);dying.splice(i,1)}}
       const arr=S.view=='arr',ptr=S.view=='ptr';
       for(const id in E){const e=E[id],c=O[id],p=O[e.pid];if(!c||!p||arr||c.hide||p.hide){e.g.visible=false;continue}
@@ -2796,7 +2806,7 @@ const _ui=ui;ui=function(){_ui();
   if(bt){bt.innerHTML='🌳 Chèn giá trị';bt.title='Chèn một giá trị vào BST: nhỏ hơn đi trái, lớn hơn đi phải, đến chỗ trống thì chèn'}};
 /* nhóm nút gập / mở + khung "nút đang chọn" (thay cho Thêm / Cập nhật / Xóa phải nhớ chọn nút trước) */
 (()=>{const tl=document.getElementById('tools');if(!tl)return;
- const GN={edit:'Sửa cây',bst:'Cây BST',view:'Xem cây',arr:'Mảng'},shut=new Set(['view']);
+ const GN={edit:'Sửa cây',bst:'Cây tìm kiếm nhị phân',view:'Xem cây',arr:'Mảng'},shut=new Set(['view']);
  const paint=()=>{tl.dataset.shut=[...shut].join(' ');tl.querySelectorAll('.tgrp').forEach(h=>{h.textContent=(shut.has(h.dataset.g)?'▸ ':'▾ ')+GN[h.dataset.g]})};
  tl.addEventListener('click',e=>{const h=e.target.closest('.tgrp');if(!h)return;const k=h.dataset.g;shut.has(k)?shut.delete(k):shut.add(k);paint()});
  paint();
@@ -2809,17 +2819,17 @@ const _ui=ui;ui=function(){_ui();
 (()=>{const tl=document.getElementById('tools'),ns=document.getElementById('nsel');if(!tl||!ns)return;
  const mb=document.getElementById('bMenu');
  mb.onclick=()=>{
-  const bs=[...tl.querySelectorAll('button[data-op]')].filter(b=>!b.hidden&&!b.closest('#tbar')),G={'':'',bst:'Cây BST',arr:'Mảng'},done=[];let h='';
+  const bs=[...tl.querySelectorAll('button[data-op]')].filter(b=>!b.hidden&&!b.closest('#tbar')),G={'':'',bst:'Cây tìm kiếm nhị phân',arr:'Mảng'},done=[];let h='';
    const runTrav=k=>{if(!root)return toast('Cây đang rỗng, hãy tạo cây trước');if(AL.on){AL.on=false;AL.vals=null;if(AL.pv)S.view=AL.pv}clear();S.kind=k;setSteps(tSteps(k),k)};
    const bt=b=>{done.push(b);return '<button class="bt" data-t="'+(done.length-1)+'">'+esc(b.textContent.trim())+'</button>'};
    const isAl=b=>b.dataset.op=='algo';
    // phần "Tương tác": tìm kiếm, thêm / xóa, chèn, cân bằng AVL…
    ['','bst','arr'].forEach(g=>{const l=bs.filter(b=>{const gp=(b.closest('[data-grp]')||{dataset:{}}).dataset.grp;return(gp=='bst'||gp=='arr'?gp:'')==g&&!isAl(b)});
     if(!l.length)return;
-    h+=(g?'<h4>'+G[g]+'</h4>':'')+'<div class="tcg">'+l.map(bt).join('')+'</div>'});
+    h+=(g?'<h3 class="mgrp">'+G[g]+'</h3>':'')+'<div class="tcg">'+l.map(bt).join('')+'</div>'});
    // phần "Thuật toán": duyệt cây, sắp xếp
    const tr=S.mode=='kham'?[{click:()=>{runTrav('pre');toast('🌲 Chọn kiểu duyệt ở ô bên trên, bấm ▶ để xem từng bước trên cây')},textContent:'🌲 Duyệt cây'}]:[],al=bs.filter(isAl);
-   if(tr.length||al.length)h+='<h3 style="margin:18px 0 10px">Thuật toán</h3><div class="tcg">'+tr.concat(al).map(bt).join('')+'</div>';
+   if(tr.length||al.length)h+='<h3 class="mgrp mgrp-algo">Thuật toán</h3><div class="tcg">'+tr.concat(al).map(bt).join('')+'</div>';
    modal('Tương tác',h);
   $('#mbd').onclick=e=>{const x=e.target.closest('[data-t]');if(!x)return;close();done[+x.dataset.t].click()}};
 })();
