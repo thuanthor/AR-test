@@ -576,7 +576,9 @@ html[data-theme] #top .sp{display:none}
 html[data-theme] #modes{max-width:calc(100vw - 16px)}
 html[data-theme] #modes button{min-height:44px;padding:7px 16px;font-size:14px}
 html[data-theme] #tools{left:8px;right:8px!important;bottom:calc(var(--tb,16px) + env(safe-area-inset-bottom));width:calc(100vw - 16px)!important;max-width:none;max-height:34dvh!important;padding:6px;gap:6px}
-html[data-theme] #tools>.cx.tgl{display:none!important}
+html[data-theme] #tools>.cx.tgl{display:block!important;width:100%;min-height:40px;padding:6px 10px}
+html[data-theme] #tools.cl{right:auto!important;width:auto!important;max-height:none!important;overflow:visible!important}
+html[data-theme] #tools.cl>.cx.tgl{width:auto}
 html[data-theme] #tbar{display:flex;gap:5px}
 html[data-theme] #tbar button{min-height:44px;font-size:12px;padding:6px 3px;white-space:normal}
 html[data-theme] #nsel{flex-wrap:wrap;justify-content:space-between}
@@ -601,6 +603,16 @@ html[data-theme] #tools{max-height:calc(100dvh - var(--ti,130px) - 16px)!importa
 html[data-theme] #trav{left:230px!important;max-height:40dvh}
 html[data-theme] #start{justify-content:flex-start}
 html[data-theme] #start p:nth-of-type(2){display:none}
+/* màn hình thấp (điện thoại xoay ngang): thu gọn các thanh để chừa nhiều chỗ cho cây 3D */
+html[data-theme] #top{padding:4px 8px}
+html[data-theme] #top button,html[data-theme] #top select{min-height:38px;padding-top:4px;padding-bottom:4px}
+html[data-theme] #modes{padding:3px}
+html[data-theme] #modes button{min-height:38px;padding-top:4px;padding-bottom:4px}
+html[data-theme] #trav{padding:6px 48px 6px 8px;max-height:34dvh}
+html[data-theme] #trav :is(#bPv,#bNx,#bPlay,#spd),html[data-theme] #trav #tk{min-height:38px;height:38px}
+html[data-theme] #out{max-height:34px;margin-top:3px}
+html[data-theme] #trav #nt{max-height:34px;overflow:auto}
+html[data-theme] #nsel .nrow button{min-height:38px}
 }
 </style>
 </head>
@@ -854,14 +866,8 @@ const OP={
    if(!root)root=mk(r.v);else{const p=byId(S.sel);if(!p){toast('Chạm chọn nút cha trước');return false}if(p.l&&p.r){toast('Nút này đã có đủ 2 con');return false}if(lsz(root)>=NMAX){toast('Cây đã đủ '+NMAX+' nút (tối đa '+MAXLV+' mức)');return false}if(depth(p)+1>=MAXLV){toast('Không thể thêm: cây chỉ được tối đa '+MAXLV+' mức');return false}const d=p.l?'r':p.r?'l':$('#f3').value;p[d]=mk(r.v);S.grow=0}clear()},'＋ Thêm');
    if(sn){const x=document.createElement('button');x.id='mxd';x.className='bad';x.textContent='－ Xóa nút '+sn.v;x.onclick=()=>{close();OP.del()};$('#mx').parentNode.insertBefore(x,$('#mx'))}},
  del(){const n=byId(S.sel);if(!n)return hint('👆 Chưa chọn nút: hãy chạm vào nút cần xóa trên cây (các nút đang nhấp nháy), rồi bấm lại Xóa',1);
-   const c=!n.l&&!n.r?'<b>Trường hợp 1 — nút lá (không có con):</b> xóa trực tiếp, con trỏ của nút cha được đặt về NULL.'
-     :n.l&&n.r?'<b>Trường hợp 3 — nút có 2 con:</b> chọn <b>nút trái nhất của cây con phải</b> (giá trị nhỏ nhất bên phải) = <b>'+esc(succ(n).v)+'</b>. Nút này lên thay vị trí của <b>'+esc(n.v)+'</b>, rồi được gỡ khỏi vị trí cũ.'
-     :'<b>Trường hợp 2 — nút có 1 con:</b> con <b>'+esc((n.l||n.r).v)+'</b> nối thẳng lên cha của nút '+esc(n.v)+', thay thế vị trí nút bị xóa.';
-   modal('Xóa nút '+disp(n),'<p class="tm">'+c+'</p>',()=>{const id=n.id,original=H.sig(),route=pathTo(n),steps=[],seen=[];
-     route.forEach(k=>{seen.push(k);const v=byId(k);steps.push({t:'path',cur:k,out:[...seen],note:'Đi tới nút '+disp(v)})});
-     if(n.l&&n.r){let p=n.r;while(p){seen.push(p.id);steps.push({t:'path',cur:p.id,out:[...seen],note:'Tìm nút kế nhiệm: '+disp(p)});p=p.l}}
-     steps.push({t:'path',cur:id,out:[...seen],note:'Xóa nút '+disp(n),fin:()=>{if(H.sig()!==original)return toast('Cây đã thay đổi; không thực hiện xóa');const target=byId(id);if(!target)return;const before=H.snap(),m=bstRemove(target);S.sel=null;H.push(before);beep(220);toast(m)}});
-     setSteps(steps)},'Xóa')},
+   // Xóa NGAY khi bấm: nút biến mất tức thì, không cần chạy bước duyệt. Có thể hoàn tác bằng ↶.
+   const before=H.snap(),m=bstRemove(n);S.sel=null;clear();H.push(before);beep(220);toast(m);refresh()},
 
  search(){modal('Tìm kiếm',F('f1','Giá trị cần tìm (số, chữ cái hoặc từ)','','text'),()=>{const r=parseVal($('#f1').value);if(r.err){toast(r.err);return false}if(!root){toast(EM);return false}setSteps(sSteps(r.v))},'Tìm')},
  upd(){const n=byId(S.sel);if(!n)return hint('👆 Chưa chọn nút: hãy chạm vào nút cần cập nhật trên cây (các nút đang nhấp nháy), rồi bấm ✎ Sửa ở khung Đang chọn nút',1);
