@@ -3061,10 +3061,23 @@ try{ui()}catch(e){}
 <script>
 /* giữ ô chức năng luôn nằm phía trên khung Mô phỏng, kể cả khi khung này đổi chiều cao (thêm hàng kết quả, mở/thu gọn) */
 (()=>{const tv=document.getElementById('trav');if(!tv)return;
- const set=()=>{const vis=!tv.hidden&&getComputedStyle(tv).display!=='none';document.documentElement.style.setProperty('--tb',((vis?tv.offsetHeight:0)+16)+'px')};
- if(window.ResizeObserver)new ResizeObserver(set).observe(tv);
- new MutationObserver(set).observe(tv,{attributes:true,attributeFilter:['hidden','class','style']});
- addEventListener('resize',set);set()})();
+ const root=document.documentElement,mq=matchMedia('(max-width:760px)');
+ const set=()=>{
+  const vis=!tv.hidden&&getComputedStyle(tv).display!=='none';
+  let tb=16;
+  if(vis){
+   // Điện thoại: đo theo vị trí thực của khung Mô phỏng + khe hở 14px để 2 thanh luôn tách nhau
+   // Máy tính / máy tính bảng: giữ công thức cũ
+   tb=mq.matches?Math.ceil(innerHeight-tv.getBoundingClientRect().top)+14:tv.offsetHeight+16;
+  }
+  root.style.setProperty('--tb',tb+'px');
+ };
+ if(window.ResizeObserver){const ro=new ResizeObserver(set);ro.observe(tv);['out','nt'].forEach(id=>{const e=document.getElementById(id);if(e)ro.observe(e)})}
+ // nội dung khung Mô phỏng (dãy số, chú giải màu của Sort…) được vẽ sau khi ui() chạy → đo lại ngay sau đó
+ new MutationObserver(set).observe(tv,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['hidden','class','style']});
+ addEventListener('resize',set);
+ if(mq.addEventListener)mq.addEventListener('change',set);
+ set();setTimeout(set,0);requestAnimationFrame(set)})();
 </script>
 
 </body>
