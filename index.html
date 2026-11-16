@@ -614,6 +614,18 @@ html[data-theme] #out{max-height:34px;margin-top:3px}
 html[data-theme] #trav #nt{max-height:34px;overflow:auto}
 html[data-theme] #nsel .nrow button{min-height:38px}
 }
+/* điện thoại: ô chức năng — nút Thu gọn nằm cùng hàng với ☰ Chức năng; nút ↶ ↷ ↺ to hơn */
+@media(max-width:760px){
+html[data-theme] #tools{display:flex;flex-direction:row!important;flex-wrap:wrap;align-items:center;align-content:flex-start}
+html[data-theme] #tools>*{flex:1 1 100%;min-width:0}
+html[data-theme] #tools>.cx.tgl{flex:0 0 auto;width:auto!important;min-width:0;min-height:44px;padding:6px 10px;white-space:nowrap}
+html[data-theme] #tools>.cx.tgl{order:0}
+html[data-theme] #tools>#tbar{flex:1 1 0;display:flex;gap:5px;align-items:stretch;order:1}
+html[data-theme] #tools>#nsel{flex:1 1 100%;order:2}
+html[data-theme] #tools>:not(.cx):not(#tbar):not(#nsel){order:3}
+html[data-theme] #tbar #bMenu{flex:1 1 auto;min-height:44px;font-size:12.5px;padding:6px 6px;white-space:nowrap}
+html[data-theme] #tbar button[data-op]{flex:0 0 44px;min-width:44px!important;min-height:44px;font-size:22px;line-height:1;padding:2px!important}
+}
 </style>
 </head>
 <body>
@@ -872,7 +884,7 @@ const OP={
  search(){modal('Tìm kiếm',F('f1','Giá trị cần tìm (số, chữ cái hoặc từ)','','text'),()=>{const r=parseVal($('#f1').value);if(r.err){toast(r.err);return false}if(!root){toast(EM);return false}setSteps(sSteps(r.v))},'Tìm')},
  upd(){const n=byId(S.sel);if(!n)return hint('👆 Chưa chọn nút: hãy chạm vào nút cần cập nhật trên cây (các nút đang nhấp nháy), rồi bấm ✎ Sửa ở khung Đang chọn nút',1);
    modal('Cập nhật nút',fields(n),()=>{const r=recFrom(n);if(!r)return false;n.v=r.v;S.spin=n.id;clear()},'Lưu')},
- inp(){modal('Tạo / chỉnh sửa cây','<div class="tcg"><button class="bt or" data-x="i1"><span class="ti">⌨</span>Nhập chuỗi số</button><button class="bt or" data-x="i2"><span class="ti">☰</span>Sửa giá trị nút</button></div><hr><h4 class="tcs">Tạo cây mẫu</h4><div class="tcg tcg3"><button class="bt" data-x="rand"><span class="ti">🎲</span>Ngẫu nhiên</button><button class="bt" data-x="deg"><span class="ti">📏</span>Suy biến</button><button class="bt" data-x="bal"><span class="ti">⚖</span>Cân bằng</button></div><div class="tcg" style="margin-top:8px"><button class="bt" data-x="rndL"><span class="ti">🔤</span>Cây chữ / từ</button><button class="bt" data-x="balInfo"><span class="ti">❓</span>Cây cân bằng là gì?</button></div>');
+ inp(){modal('Tạo / chỉnh sửa cây','<div class="tcg"><button class="bt or" data-x="i1"><span class="ti">⌨</span>Nhập chuỗi số</button><button class="bt or" data-x="i2"><span class="ti">☰</span>Sửa giá trị nút</button></div><hr><h4 class="tcs">Tạo cây mẫu</h4><div class="tcg tcg3" style="grid-template-columns:1fr 1fr"><button class="bt" data-x="rand"><span class="ti">🎲</span>Ngẫu nhiên</button><button class="bt" data-x="deg"><span class="ti">📏</span>Suy biến</button><button class="bt" data-x="bal"><span class="ti">⚖</span>Cân bằng</button><button class="bt" data-x="rndL"><span class="ti">🔤</span>Cây chữ / từ</button></div>');
   const r=document.createElement('button');r.id='mxd';r.className='lnk';r.textContent='↶ Khôi phục cây ban đầu';r.disabled=!S.orig;r.title=S.orig?'Đưa cây về lúc vừa quét / nhập':'Chưa có cây ban đầu để khôi phục';r.onclick=()=>X.orig();$('#mx').parentNode.insertBefore(r,$('#mx'))},
  str(){modal('Nhập cây bằng chuỗi số','<p class="tm">Nhập các <b>số nguyên</b>, <b>chữ cái</b> hoặc <b>từ</b> như táo, chuối (mỗi giá trị là 1 số, 1 chữ hoặc 1 từ tối đa 20 ký tự; tối đa '+NMAX+' giá trị, cây cao tối đa '+MAXLV+' mức), cách nhau bằng dấu cách hoặc dấu phẩy (từ có nhiều tiếng như <i>xoài cát</i> thì dùng dấu phẩy để ngăn cách các giá trị). Giá trị <b>đầu tiên là gốc</b>; các giá trị sau lần lượt được thêm vào: <b>nhỏ hơn → sang trái</b>, <b>lớn hơn → sang phải</b>. Chữ / từ so theo thứ tự bảng chữ cái, số nhỏ hơn chữ. <b>BST không cho phép hai nút cùng giá trị.</b></p><label>Dãy giá trị</label><input id="f1" type="text" placeholder="ví dụ: 8 3 10 1 6  hoặc  táo chuối cam nho" autocomplete="off">'+(root?'<small>⚠ Cây đang hiển thị sẽ bị thay bằng cây mới (có thể khôi phục cây quét ở Tạo / chỉnh sửa cây).</small>':''),()=>{
    const r=bstFromList($('#f1').value);if(!r){toast('Chưa có số hợp lệ, ví dụ: 8 3 10 1 6');return false}
@@ -894,7 +906,7 @@ const OP={
    full=a.every(x=>!x.l==!x.r),comp=Math.max(...wk().list.map(e=>e.k))==n-1,perf=n==2**(h+1)-1,
    kinds=perf?['hoàn hảo (cũng đầy đủ và hoàn chỉnh)']:[full&&'đầy đủ',comp&&'hoàn chỉnh'].filter(Boolean),
     bl=a.find(x=>Math.abs(ht(x.l)-ht(x.r))>1),dupN=dupCount(root),isB=!bad(root);
-   modal('Thông số cây',`<table><tr><td>Số nút n</td><td>${n}</td></tr><tr><td>Số cạnh (n − 1)</td><td>${n-1}</td></tr><tr><td>Chiều cao cây h</td><td>${h}</td></tr><tr><td>Số mức</td><td>${h+1} (mức 0…${h})</td></tr><tr><td>Số lá</td><td>${lv}</td></tr><tr><td>Số nút nhánh</td><td>${n-lv}</td></tr><tr><td>Nút có đủ 2 con</td><td>${two}</td></tr><tr><td>Giá trị nhỏ nhất</td><td>${esc(ks[0]??'—')}</td></tr><tr><td>Giá trị lớn nhất</td><td>${esc(ks[ks.length-1]??'—')}</td></tr><tr><td>Cân bằng chiều cao</td><td>${bl?'Không — nút '+esc(bl.v)+' lệch '+Math.abs(ht(bl.l)-ht(bl.r)):'Có'}</td></tr><tr><td>Là BST</td><td>${isB?'Có':'Không'}</td></tr><tr><td>Nút trùng giá trị</td><td>${dupN?dupN+' (không hợp lệ với BST)':'Không (BST không cho phép trùng)'}</td></tr><tr><td>Giới hạn cây</td><td>${n}/${NMAX} nút · ${h+1}/${MAXLV} mức</td></tr></table><p>Loại: ${kinds.length?kinds.join(', '):'thường'}</p><details><summary>⚖ Cây cân bằng là gì?</summary>${BALX}</details><small>Quy ước: độ sâu của gốc = 0 · chiều cao của lá = 0 · chiều cao cây = số cạnh trên đường dài nhất từ gốc xuống lá (= độ sâu lớn nhất).</small>`)}};
+   modal('Thông số cây',`<table><tr><td>Số nút n</td><td>${n}</td></tr><tr><td>Số cạnh (n − 1)</td><td>${n-1}</td></tr><tr><td>Chiều cao cây h</td><td>${h}</td></tr><tr><td>Số mức</td><td>${h+1} (mức 0…${h})</td></tr><tr><td>Số lá</td><td>${lv}</td></tr><tr><td>Số nút nhánh</td><td>${n-lv}</td></tr><tr><td>Nút có đủ 2 con</td><td>${two}</td></tr><tr><td>Giá trị nhỏ nhất</td><td>${esc(ks[0]??'—')}</td></tr><tr><td>Giá trị lớn nhất</td><td>${esc(ks[ks.length-1]??'—')}</td></tr><tr><td>Cân bằng chiều cao</td><td>${bl?'Không — nút '+esc(bl.v)+' lệch '+Math.abs(ht(bl.l)-ht(bl.r)):'Có'}</td></tr><tr><td>Là BST</td><td>${isB?'Có':'Không'}</td></tr><tr><td>Giới hạn cây</td><td>${n}/${NMAX} nút · ${h+1}/${MAXLV} mức</td></tr></table><p>Loại: ${kinds.length?kinds.join(', '):'thường'}</p><details><summary>⚖ Cây cân bằng là gì?</summary>${BALX}</details><small>Quy ước: độ sâu của gốc = 0 · chiều cao của lá = 0 · chiều cao cây = số cạnh trên đường dài nhất từ gốc xuống lá (= độ sâu lớn nhất).</small>`)}};
 X.build=k=>{const N={rand:8+(Math.random()*5|0),deg:MAXLV,bal:rn([7,11,15]),let:8+(Math.random()*5|0)}[k],
   V=(k=='let'?sh(['táo','chuối','cam','xoài','nho','dưa hấu','ổi','mận','lê','bưởi','dừa','mít','vải','nhãn','na','khế']):sh(Array.from({length:99},(_,i)=>i+1))).slice(0,N);let t=null;                       // N số ngẫu nhiên khác nhau, KHÔNG lấy từ cây hiện tại
   if(k=='bal'){V.sort(cmp);const b=(l,h)=>{if(l>h)return null;const m=(l+h+1)>>1,n=mk(V[m]);n.l=b(l,m-1);n.r=b(m+1,h);return n};t=b(0,V.length-1)}
@@ -3044,6 +3056,15 @@ try{ui()}catch(e){}
  };
  ui();
 })();
+</script>
+
+<script>
+/* giữ ô chức năng luôn nằm phía trên khung Mô phỏng, kể cả khi khung này đổi chiều cao (thêm hàng kết quả, mở/thu gọn) */
+(()=>{const tv=document.getElementById('trav');if(!tv)return;
+ const set=()=>{const vis=!tv.hidden&&getComputedStyle(tv).display!=='none';document.documentElement.style.setProperty('--tb',((vis?tv.offsetHeight:0)+16)+'px')};
+ if(window.ResizeObserver)new ResizeObserver(set).observe(tv);
+ new MutationObserver(set).observe(tv,{attributes:true,attributeFilter:['hidden','class','style']});
+ addEventListener('resize',set);set()})();
 </script>
 
 </body>
