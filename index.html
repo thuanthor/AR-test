@@ -3,6 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="screen-orientation" content="portrait">
+<meta name="x5-orientation" content="portrait">
+<style>
+/* Khóa chiều dọc trên điện thoại: nếu bị xoay ngang thì phủ lớp nhắc xoay lại */
+#rotLock{position:fixed;inset:0;z-index:99999;background:#0b1118;color:#eaf6ff;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:20px;font:700 16px/1.4 system-ui,sans-serif;touch-action:none}
+#rotLock b{font-size:44px;display:block}
+@media (orientation:landscape) and (max-height:500px) and (pointer:coarse){#rotLock{display:flex}}
+</style>
 <title>AR Cây nhị phân 3D</title>
 <style>
 :root{--g:#0e1822cc;--l:#ffffff30;--t:#eaf6ff}
@@ -627,8 +635,20 @@ html[data-theme] #tbar #bMenu{flex:1 1 auto;min-height:44px;font-size:12.5px;pad
 html[data-theme] #tbar button[data-op]{flex:0 0 44px;min-width:44px!important;min-height:44px;font-size:22px;line-height:1;padding:2px!important}
 }
 </style>
+
+<style id="game-clear-view">
+/* Khi đang làm câu hỏi / chơi game: không làm mờ và không phủ tối cây AR phía sau */
+html[data-theme] #mo.q,
+html[data-theme] #mo.q.c{
+  background:none!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+}
+</style>
+
 </head>
 <body>
+<div id="rotLock"><div><b>📱↻</b>Vui lòng xoay dọc điện thoại<br><small style="font-weight:400;opacity:.75">Trang chỉ hỗ trợ chiều dọc</small></div></div>
 <div id="ar"></div>
 <div id="start"><h1>AR Cây nhị phân 3D</h1>
 <p>Đưa camera vào hình cây nhị phân (in hoặc vẽ tay). Web tự nhận diện nút và đường nối, dựng cây 3D để bạn khám phá, chỉnh sửa, tìm kiếm và luyện tập qua các trò chơi. Nếu trùng hình trong sách, web sẽ gợi ý mẫu chuẩn.</p>
@@ -931,7 +951,7 @@ X.mSet=()=>{close();$('#bSet').click()};X.mImg=()=>{close();OP.img()};X.mPre=()=
 document.querySelectorAll('[data-op]').forEach(b=>b.onclick=()=>OP[b.dataset.op]());
 $('#bAna').onclick=OP.ana;
 const MVL={rot:['⟳','Xoay cây'],node:['✋','Kéo nút']},MVT={rot:'⟳ Xoay cây: kéo 1 ngón để xoay 3D · 2 ngón để thu/phóng',node:'✋ Kéo nút: kéo từng nút · kéo chỗ trống để dời cả cây'};
-$('#bMv').onclick=()=>{S.dm=S.dm=='rot'?'node':'rot';S.mv=S.dm=='rot'?'orbit':'pan';toast(MVT[S.dm]);ui()};
+$('#bMv').onclick=()=>{S.dm=S.dm=='rot'?'node':'rot';S.mv=S.dm=='rot'?'orbit':'pan';toast(S.mode=='choi'&&S.dm=='node'?'✋ Dời cây: kéo 1 ngón để dời cả cây · 2 ngón để thu/phóng':MVT[S.dm]);ui()};
 const MDESC={kham:'Xem thông số & thông tin nút · thêm / xóa / sửa nút · nhập cây · mở ☰ Chức năng để xem từng bước duyệt, tìm kiếm, cân bằng AVL, sắp xếp kèm mã',choi:'Trắc nghiệm sinh từ cây · đoán nút tiếp theo · sửa cây lỗi · duyệt · săn nút · tìm khóa'};
 const setMode=m=>{if(m==S.mode&&!GM.on)return;
   if(GM.on)gAbort();   // đang chơi mà đổi chế độ → thoát game
@@ -974,12 +994,12 @@ function ui(){H.ui();qWatch();
   const sc=document.body.classList.contains('scan'),st=S.steps[S.i];
   $('#st').textContent=sc?'ĐANG QUÉT':isLocked?'ĐÃ CỐ ĐỊNH':'ĐÃ HOẠT ĐỘNG';$('#st').style.color=sc||isLocked?'#e67700':'#2f9e44';
   const b=$('#bLock');b.innerHTML=isLocked?'🔓<span class="tx"> BỎ CỐ ĐỊNH</span>':'📌<span class="tx"> CỐ ĐỊNH CÂY</span>';b.className=isLocked?'gr':'or';
-  $('#bMv').innerHTML=MVL[S.dm][0]+'<span class="tx"> '+MVL[S.dm][1]+'</span>';$('#bMv').className=S.dm=='node'?'or':'gr';
+  {const _m=S.mode=='choi'&&S.dm=='node'?['✋','Dời cây']:MVL[S.dm];$('#bMv').innerHTML=_m[0]+'<span class="tx"> '+_m[1]+'</span>'};$('#bMv').className=S.dm=='node'?'or':'gr';
   $('#vw').value=S.view;document.querySelectorAll('[data-mode]').forEach(b=>b.className=b.dataset.mode==S.mode?'or':'');
   const MO=MODES[S.mode].ops.split(' '),md=S.mode;document.querySelectorAll('[data-op]').forEach(x=>{x.hidden=!MO.includes(x.dataset.op)});$('#bAna').hidden=!MO.includes('ana');$('#bImg').hidden=!MO.includes('img');$('#bPre').hidden=md=='choi';
   $('#trav').hidden=md=='choi'||!(S.steps.length>0||(AL.on&&AL.vals));      // thanh phát mô phỏng: chỉ hiện khi đã chọn một chức năng chạy từng bước
   $('#info').hidden=md!='kham';                                         // thông tin nút: chỉ Khám phá
-  $('#vw').hidden=md=='choi';$('#bMv').hidden=md=='choi';               // đổi cách hiển thị / cách kéo: Khám phá + Duyệt cây
+  $('#vw').hidden=md=='choi';$('#bMv').hidden=false;               // đổi cách hiển thị / cách kéo: Khám phá + Duyệt cây
   $('#mdesc').textContent=MDESC[md];
   const tg=$('#tg');tg.innerHTML=$('#tools').classList.contains('cl')?'🧰 ▸':'▾ Thu gọn';tg.title=$('#tools').classList.contains('cl')?'Mở rộng thanh công cụ':'Thu gọn thanh công cụ';
   const ks=AL.on?AL.K:KS;if(!ks.some(k=>k[0]==S.kind))S.kind=AL.on?ks[0][0]:'in';
@@ -2804,7 +2824,7 @@ async function startAR(useCam){
     const ang=()=>{const q=[...pts.values()];return Math.atan2(q[1][1]-q[0][1],q[1][0]-q[0][0])};
     dom.addEventListener('pointerdown',e=>{try{dom.setPointerCapture(e.pointerId)}catch(_){}pts.set(e.pointerId,[e.clientX,e.clientY]);moved=0;dragging=false;roiD=null;
       if(mode=='scan'&&useCam&&!pend&&pts.size==1){roiD=Math.hypot(e.clientX-(ROI.x+ROI.w),e.clientY-(ROI.y+ROI.h))<44?'rs':(e.clientX>ROI.x&&e.clientX<ROI.x+ROI.w&&e.clientY>ROI.y&&e.clientY<ROI.y+ROI.h)?'mv':null}
-      if(pts.size==1){dragId=rig.visible&&!GM.on&&S.view!='arr'&&S.dm=='node'?pick(e):null;dnNode=!GM.on&&S.dm!='node'&&rig.visible&&pick(e)!=null}else{dragId=null;pd=dist();pa=ang()}});
+      if(pts.size==1){dragId=rig.visible&&!GM.on&&S.mode!='choi'&&S.view!='arr'&&S.dm=='node'?pick(e):null;dnNode=!GM.on&&S.dm!='node'&&rig.visible&&pick(e)!=null}else{dragId=null;pd=dist();pa=ang()}});
     dom.addEventListener('pointermove',e=>{const p=pts.get(e.pointerId);if(!p)return;const dx=e.clientX-p[0],dy=e.clientY-p[1];p[0]=e.clientX;p[1]=e.clientY;
       if(roiD&&pts.size==1){if(roiD=='rs'){ROI.w=Math.max(120,ROI.w+dx);ROI.h=Math.max(120,ROI.h+dy)}else{ROI.x+=dx;ROI.y+=dy}og.clearRect(0,0,SW,SH);drawFrame();return}
       if(pts.size==1){moved+=Math.abs(dx)+Math.abs(dy);
@@ -3080,5 +3100,15 @@ try{ui()}catch(e){}
  set();setTimeout(set,0);requestAnimationFrame(set)})();
 </script>
 
+<script>
+/* Khóa hướng dọc (portrait): dùng Screen Orientation API khi trình duyệt cho phép; nếu không, lớp #rotLock sẽ nhắc xoay lại */
+(function(){
+ const lock=()=>{try{const o=screen.orientation;if(o&&o.lock){const p=o.lock('portrait');if(p&&p.catch)p.catch(()=>{})}}catch(e){}};
+ lock();
+ ['click','touchend','pointerup'].forEach(t=>addEventListener(t,lock,{passive:true}));
+ addEventListener('orientationchange',lock);
+ document.addEventListener('fullscreenchange',lock);
+})();
+</script>
 </body>
 </html>
