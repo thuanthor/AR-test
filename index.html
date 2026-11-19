@@ -494,7 +494,7 @@ html[data-theme] #mbd .tcs{margin:0 0 8px;font-size:14px;font-weight:800}
 html[data-theme] #mo .b #mxd.lnk{margin-right:auto;min-width:0;background:none;border:0;box-shadow:none;color:var(--u-mut);padding:6px 4px;font-weight:600}
 html[data-theme] #mo .b #mxd.lnk:hover:not(:disabled){color:var(--u-text);background:none}
 html[data-theme] #mo .b #mxd.lnk:disabled{opacity:.4;cursor:not-allowed}
-@media (max-width:760px){#top #bHome .tx{display:none}#top>#bHome{flex:none}}
+@media (max-width:760px){#top>#bHome{flex:none}}
 
 /* ===== CÂN BẰNG AVL (dùng chung khung code / thanh phát của "Duyệt cây") ===== */
 .sy{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:800;color:var(--u-ort)}
@@ -572,7 +572,7 @@ html[data-theme] #start p{max-width:560px;line-height:1.65}
 html[data-theme] #bTheme{min-width:44px}
 @media(max-width:1024px){
 html[data-theme] #top>span:not(.sp){display:none}
-html[data-theme] #top .tx{display:none}
+html[data-theme] #top #bSet .tx{display:none}
 html[data-theme] #top{flex-wrap:nowrap}
 html[data-theme] #top button{flex:0 0 auto}
 html[data-theme] #vw{min-width:70px;max-width:130px;flex:1}
@@ -1078,16 +1078,21 @@ function tour(){const el=$('#coach');document.querySelectorAll('.hl').forEach(x=
   if(TR.i>=TS.length){TR.off=1;try{localStorage.setItem('arbt_tour','1')}catch(e){}el.style.display='none';toast('🎉 Xong hướng dẫn! Bấm ? để xem lại');return}
   const c=TS[TR.i];$('#ct').innerHTML=c.t;el.style.display='flex';if(c.sel){const t=$(c.sel);t&&t.classList.add('hl')}}
 $('#cs').onclick=()=>{TR.off=1;try{localStorage.setItem('arbt_tour','1')}catch(e){}tour()};
-function fitTop(){const t=$('#top'),A=[$('#bPre'),$('#bAna'),$('#bImg'),$('#bSet')],mo=$('#bMore');
-  [...A,mo].forEach(b=>b.classList.remove('ic','nf'));t.classList.remove('cp');
-  if(!matchMedia('(max-width:760px)').matches)return;
+function fitTop(){const t=$('#top'),A=[$('#bPre'),$('#bAna'),$('#bImg'),$('#bSet')],mo=$('#bMore'),L=[...t.querySelectorAll(':scope>button')].filter(b=>b!==mo);
+  [...L,mo].forEach(b=>b.classList.remove('ic','nf'));t.classList.remove('cp');
+  if(!matchMedia('(max-width:1024px)').matches)return;                 // máy tính: luôn đủ chữ
+  const small=matchMedia('(max-width:760px)').matches;
   const wr=()=>{if(t.scrollWidth>t.clientWidth+1)return true;const k=[...t.children].filter(e=>e.offsetParent);if(k.length<2)return false;const c=e=>e.offsetTop+e.offsetHeight/2,y=c(k[0]);return k.some(e=>Math.abs(c(e)-y)>12)};   // tràn ngang hoặc xuống dòng đều tính là hết chỗ
-  A.forEach(b=>b.classList.add('nf'));if(wr())t.classList.add('cp');   // vẫn chưa vừa 1 hàng: các nút chỉ còn biểu tượng (ẩn chữ)
-  // bắt đầu: tất cả nằm trong ⋯, rồi đưa ra ngoài nếu còn chỗ
-  let full=true;                                              // hết chỗ ở nút nào thì các nút sau cũng nằm trong ⋯ (đúng thứ tự ưu tiên)
-  A.forEach((b,i)=>{if(b.hidden)return;if(!full)return;b.classList.remove('nf');if(i>0)b.classList.add('ic');   // 📐 thử cả chữ; ⚙ và ? chỉ biểu tượng
-    if(wr()){b.classList.add('ic');if(wr()){b.classList.add('nf');full=false}}});
-  if(A.every(b=>!b.classList.contains('nf'))){mo.classList.add('nf');if(wr())mo.classList.remove('nf')}}   // ra hết thì bỏ nút ⋯
+  // Bước 1: bắt đầu từ bố cục chỉ có biểu tượng (gọn nhất)
+  L.forEach(b=>b.classList.add('ic'));
+  // Bước 2 (điện thoại): nút nào không còn chỗ thì cho vào ⋯ theo đúng thứ tự ưu tiên; ra hết thì bỏ nút ⋯
+  if(small){A.forEach(b=>b.classList.add('nf'));let full=true;
+    A.forEach(b=>{if(b.hidden||!full)return;b.classList.remove('nf');if(wr()){b.classList.add('nf');full=false}});
+    if(A.every(b=>!b.classList.contains('nf'))){mo.classList.add('nf');if(wr())mo.classList.remove('nf')}}
+  // Bước 3: còn chỗ thì thêm chữ cho từng nút, theo thứ tự ưu tiên (⚙ Cài đặt và ⋯ luôn chỉ là biểu tượng)
+  ['bMv','bRe','bLock','bMan','bSnap','bPre','bImg','bHome'].forEach(id=>{const b=document.getElementById(id);
+    if(!b||b.hidden||b.classList.contains('nf')||!b.offsetParent||!b.querySelector('.tx'))return;
+    b.classList.remove('ic');if(wr())b.classList.add('ic')})}
 addEventListener('resize',()=>{try{ui()}catch(e){}});
 function ui(){H.ui();qWatch();
   const sc=document.body.classList.contains('scan'),st=S.steps[S.i];
