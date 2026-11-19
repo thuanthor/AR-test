@@ -660,7 +660,7 @@ html[data-theme] #mo details[data-k="md"] summary{border-left-color:var(--g-oran
 html[data-theme] #mo details[data-k][open] summary{background:color-mix(in srgb,var(--g-blue) 8%,transparent)}
 html[data-theme] #mo details[data-k] input[type=checkbox]{accent-color:var(--g-teal)}
 /* Nút chế độ */
-html[data-theme] #mbd button.bt[data-x^="m"]{border-left:3px solid var(--acc,var(--g-blue))}
+html[data-theme] #mbd button.bt[data-x="mAll"]{border-left:3px solid var(--acc,var(--g-blue))}
 html[data-theme] #mbd button.bt[data-x="mPrac"]{--acc:var(--g-blue)}
 html[data-theme] #mbd button.bt[data-x="mTime"]{--acc:var(--g-orange)}
 html[data-theme] #mbd button.bt[data-x="mFix"]{--acc:var(--g-pink)}
@@ -689,7 +689,7 @@ html[data-theme] #gm button[data-g="quit"]{background:color-mix(in srgb,var(--g-
 html[data-theme] #mbd .qbar i{background:linear-gradient(90deg,var(--g-blue),var(--g-teal))}
 html[data-theme] #mbd .qinf span:first-child{color:var(--g-blue)}
 html[data-theme] #mbd .qinf span:last-child{color:var(--g-orange)}
-html[data-theme] #mbd button.bt:not(.or):not(.ok):not(.bad):not(.qchip):not([data-x]):not(.qtl button){border-left:3px solid var(--g-blue)}
+html[data-theme] #mbd button.bt:not(.or):not(.ok):not(.bad):not(.qchip):not([data-x]):not(.qtl button):not(.tcg button){border-left:3px solid var(--g-blue)}
 html[data-theme] #mbd button.bt.ok{background:color-mix(in srgb,var(--g-green) 18%,transparent);border-color:var(--g-green)}
 html[data-theme] #mbd button.bt.bad{background:color-mix(in srgb,var(--g-red) 18%,transparent);border-color:var(--g-red)}
 html[data-theme] #mbd .qchip.on{background:color-mix(in srgb,var(--g-green) 25%,transparent);border-color:var(--g-green);color:var(--g-green)}
@@ -715,6 +715,12 @@ html[data-theme] #mo.q.c{
   -webkit-backdrop-filter:none!important;
   backdrop-filter:none!important;
 }
+/* ===== Cấp độ: nút đang chọn tô xanh lá như nút "Xoay cây"; nút chưa chọn để trung tính ===== */
+html[data-theme] #mbd .dfr button.bt[data-x^="df"]:not(.on){background:var(--u-btn);border-color:var(--u-bd)}
+html[data-theme] #mbd .dfr button.bt[data-x^="df"]:not(.on):hover{background:var(--u-btn-h)}
+html[data-theme] #mbd .dfr button.bt[data-x^="df"].on{color:#fff;font-weight:800;background:linear-gradient(180deg,var(--u-gr),var(--u-gr2));border-color:transparent;box-shadow:0 4px 12px rgba(43,138,62,.35),inset 0 1px 0 rgba(255,255,255,.25);outline:none}
+/* ===== Nút chế độ chơi: không còn vạch màu; rê / chạm / focus vào nút nào thì nút đó sáng màu riêng ===== */
+html[data-theme] #mbd button.bt:is([data-x="mPrac"],[data-x="mTime"],[data-x="mFix"],[data-x="mNext"],[data-x="mHunt"],[data-x="mMix"]):is(:hover,:focus-visible,:active){background:color-mix(in srgb,var(--acc) 30%,transparent);border-color:var(--acc);box-shadow:0 0 0 1px var(--acc);outline:none}
 /* ===== NÚT CHỤP kiểu máy ảnh điện thoại (quét từ ảnh tĩnh, đỡ run tay) ===== */
 #shotWrap{position:fixed;left:50%;bottom:calc(max(14px,env(safe-area-inset-bottom)) + 28px);transform:translateX(-50%);z-index:7;display:none;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
 body.scan:not(.noShot) #shotWrap{display:flex}
@@ -950,7 +956,7 @@ const overLim=t=>{const n=lsz(t),h=ht(t);return n>NMAX?'Cây có '+n+' nút, vư
 //  • BST: trái < nút < phải (đúng với cả tổ tiên), không có nhánh nào dành cho khóa bằng nút đang xét; bstInsert / insB gặp khóa đã có thì giữ nguyên cây.
 const dupCount=t=>{const c={};inord(t).forEach(n=>c[n.v]=(c[n.v]||0)+1);return Object.values(c).reduce((s,k)=>s+(k>1?k-1:0),0)};
 const dupNote=v=>{const k=inord().filter(z=>z.v==v).length;if(k>1)toast('❌ Có '+k+' nút cùng khóa '+v+' — BST không cho phép khóa trùng')};
-const BALX='<p class="tm"><b>Cây cân bằng</b> (cân bằng chiều cao): với <b>mọi nút</b>, chiều cao của cây con trái và cây con phải <b>chênh nhau không quá 1</b>. Hệ số cân bằng của một nút = h(trái) − h(phải), chỉ được là −1, 0 hoặc 1.</p><ul class="tm"><li><b>Kiểm tra từng nút</b>, không chỉ gốc: chỉ cần một nút lệch từ 2 trở lên ở bất kỳ đâu là cả cây mất cân bằng.</li><li><b>Chiều cao thấp:</b> n nút có chiều cao cỡ log₂n (31 nút có thể chỉ cao 4 cạnh = 5 mức), nên tìm, thêm, xóa trên BST cân bằng mất khoảng O(log n) bước.</li><li><b>Trái ngược là cây suy biến</b> (mỗi nút chỉ một con, như danh sách liên kết): chiều cao n − 1, thao tác mất O(n).</li><li>Cây <b>hoàn hảo</b> và cây <b>hoàn chỉnh</b> luôn cân bằng; ngược lại cây cân bằng chưa chắc đầy đủ hay hoàn chỉnh.</li><li>Cân bằng và BST là hai tính chất <b>độc lập</b>: cây có thể là BST nhưng lệch, hoặc cân bằng nhưng không phải BST. Cây AVL là BST luôn giữ cân bằng bằng các phép quay.</li><li>Khóa trùng không ảnh hưởng: cân bằng chỉ xét <b>hình dạng</b> cây, không xét giá trị.</li></ul><small>Thử ngay: 📐 Đo thông số cho biết nút nào đang lệch · ⌨ Tạo / chỉnh sửa cây → ⚖ Cân bằng để tạo cây mẫu cân bằng.</small>';
+const BALX='<p class="tm"><b>Cây cân bằng</b> (cân bằng chiều cao): với <b>mọi nút</b>, chiều cao của cây con trái và cây con phải <b>chênh nhau không quá 1</b>. Hệ số cân bằng của một nút = h(trái) − h(phải), chỉ được là −1, 0 hoặc 1.</p><p class="tm"><b>Độ phức tạp:</b> cây cân bằng có chiều cao cỡ log₂n nên tìm kiếm, thêm, xóa chỉ mất <b>O(log n)</b> bước. Ngược lại, cây suy biến (mỗi nút chỉ có một con, như danh sách liên kết) có chiều cao n − 1 nên các thao tác mất <b>O(n)</b>.</p>';
 function bstFromList(txt){
   if(/[()]/.test(txt)){const t=parseStr(txt);if(!t)return null;const bad=inord(t).find(n=>n.v!='None'&&!(isInt(n.v)||(typeof n.v=='string'&&VLET.test(n.v))));if(bad)return{bad:String(bad.v)};const dp=dupList(t);if(dp.length)return{dupv:dp};const ov=overLim(t);return ov?{over:ov}:{t,dup:0,n:lsz(t)}}   // vẫn hiểu dạng cũ v(trái,phải)
   const Tk=splitVals(txt);if(!Tk.length)return null;
@@ -2849,9 +2855,10 @@ async function startAR(useCam){
           const pp=[];(function z(a,b){if(!a||!b)return;pp.push([M.pts[a.i],r.C[b.i]]);z(a.l,b.l);z(a.r,b.r)})(M.tree,r.tr.root);
           [qr,qi,tx,ty]=fitSim(pp);lost=0;say('')}}
     };
-    let manualScan=false,frz=null,shooting=false;const unfreeze=()=>{if(frz){frz.remove();frz=null}};
+    let manualScan=false,frz=null,shooting=false,photo=null,photoSnap=null,lastFail='';const unfreeze=()=>{if(frz){frz.remove();frz=null}photo=null;photoSnap=null};
     const tick=()=>{if(!running)return;
-      if(frz&&(!pend||mode!=='scan'))unfreeze();                       // hết bước xác nhận / quét lại → trả về hình camera trực tiếp
+      if(frz&&mode!=='scan')unfreeze();                                 // đã chốt cây → trả về camera trực tiếp
+      else if(frz&&!pend&&!shooting)enterPhoto('Bạn vừa chọn quét lại.');   // bấm "Quét lại" ở các bước sau → vẫn giữ ảnh đã chụp, KHÔNG quay về camera
       document.body.classList.toggle('noShot',!(mode==='scan'&&!pend&&!shooting&&$('#mo').style.display!=='flex'));   // nút chụp chỉ hiện khi đang quét
       if(!locked&&!busy&&!(manualScan&&mode==='scan')){busy=true;try{step()}catch(e){console.error(e)}busy=false}setTimeout(tick,mode=='scan'?400:120)};
     
@@ -2862,29 +2869,38 @@ async function startAR(useCam){
       const f=.5;r.C.forEach(c=>{c.x*=f;c.y*=f;c.r*=f});r.s*=f;r.dd=Math.max(1,(r.dd||2)>>1);
       if(r.C.length&&Math.max(...r.C.map(c=>c.r))/r.s<Math.min(iw,ih)*.015)warnings.push('Các nút có thể quá nhỏ: đưa máy lại gần');if(warnings.length)toast('⚠ '+warnings.join(' · '));
       if(r.tr.needConfirm){drawDet(r,iw,ih);askRel(r,snap);return r}
-      if(!r.tr.ok){toast('Chưa nhận ra cây: '+r.tr.msg+(r.sh<2.2?' (ảnh mờ)':''));return null}
+      if(!r.tr.ok){lastFail='Chưa nhận ra cây: '+r.tr.msg+(r.sh<2.2?' (ảnh mờ)':'');toast(lastFail);try{drawDet(r,iw,ih)}catch(e){}return null}
       drawDet(r,iw,ih);ask2(r,snap);return r};
     $('#bMan').onclick=()=>{if(mode!='scan')return;root=parseStr('1(2(3,4),5)');S.orig=clone(root);S.view='tree';S.sel=null;S.grow=1;mode='track';locked=true;isLocked=true;pend=false;M=null;rig.visible=true;og.clearRect(0,0,SW,SH);document.body.classList.remove('scan');document.body.classList.add('locked');say('');clear();refresh();OP.str()};
     $('#bPre').onclick=()=>{if(mode=='scan'){root=parseStr('1(2(3,4),5)');S.orig=clone(root);S.view='tree';S.sel=null;S.grow=1;mode='track';locked=true;isLocked=true;pend=false;M=null;rig.visible=true;og.clearRect(0,0,SW,SH);document.body.classList.remove('scan');document.body.classList.add('locked');say('');clear();refresh();}OP.inp()};
-    // ---- NÚT CHỤP (kiểu máy ảnh điện thoại): chụp nhanh vài khung → giữ khung NÉT nhất → đóng băng hình → quét từ ảnh tĩnh ----
-    // Hình đóng băng nằm dưới lớp vẽ nút/đường nối nên người dùng có thể hạ máy xuống mà kết quả không bị lệch.
+    // ---- NÚT CHỤP (kiểu máy ảnh điện thoại): chụp nhanh vài khung → giữ khung NÉT nhất → GIỮ ẢNH trên màn hình → quét từ ảnh (như tải ảnh lên) ----
+    // Ảnh được giữ lại cho tới khi bấm "Chụp lại" hoặc chốt xong cây: quét hỏng / bấm "Quét lại" đều ở lại trên ảnh, không bật lại camera.
     const shot=$('#bShot'),flash=$('#flash');
     const freeze=c=>{unfreeze();const k=document.createElement('canvas');k.width=c.width;k.height=c.height;k.getContext('2d').drawImage(c,0,0);k.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover';vid.after(k);frz=k};
+    const enterPhoto=msg=>{                                          // chế độ xem ảnh: chờ người dùng chọn quét lại / chụp lại
+      pend=true;photo=photoSnap;say('');
+      bar(`<p style="margin:0 0 6px;font-size:13px">📷 Đang giữ ảnh vừa chụp. ${esc(msg||lastFail||'')}</p><p style="margin:0 0 8px;font-size:12px;opacity:.8">Có thể <b>kéo khung vàng</b> trên ảnh để chọn đúng vùng cây rồi bấm quét lại.</p><div style="display:flex;gap:6px"><button class="or" data-x="phRescan" style="flex:2">🔍 Quét lại ảnh này</button><button data-x="phRetake" style="flex:1">📷 Chụp lại</button></div>`)};
+    const scanPhoto=async()=>{                                       // quét ảnh đang giữ (dùng khung vàng hiện tại)
+      const c=photoSnap;if(!c||shooting)return;
+      shooting=true;pend=true;photo=null;lastFail='';say('⏳ Đang quét từ ảnh…');
+      await new Promise(z=>requestAnimationFrame(()=>setTimeout(z,30)));   // cho màn hình kịp cập nhật trước khi xử lý nặng
+      let r=null;try{r=fromStill(c,c.width,c.height,c,roiSrc(c.width,c.height),true)}catch(e){console.error(e);lastFail='Có lỗi khi quét ảnh, hãy quét lại hoặc chụp lại.';toast(lastFail)}
+      shooting=false;say('');if(!r)enterPhoto()};                    // không nhận ra cây → ở lại trên ảnh
+    X.phRescan=()=>{close();scanPhoto()};
+    X.phRetake=()=>{close();unfreeze();pend=false;stable=0;lastSig='';og.clearRect(0,0,SW,SH);drawFrame();say('')};
     const doShot=async()=>{
       if(mode!='scan'||!vid.videoWidth)return toast('Chỉ chụp quét được khi đang ở chế độ quét camera');
       if(pend||shooting)return;
-      shooting=true;pend=true;shot.classList.add('busy');document.body.classList.add('noShot');   // pend=true: tạm dừng quét tự động trong lúc chụp
+      shooting=true;pend=true;shot.classList.add('busy');document.body.classList.add('noShot');   // pend=true: tạm dừng quét tự động
       buzz(25);beep(880);flash.classList.remove('on');void flash.offsetWidth;flash.classList.add('on');
-      let r=null;
       try{
         const vw=vid.videoWidth,vh=vid.videoHeight,crop=roiSrc(vw,vh);let best=null,bs=-1;
         for(let i=0;i<4;i++){const c=document.createElement('canvas');c.width=vw;c.height=vh;c.getContext('2d').drawImage(vid,0,0);const q=imageQuality(c,crop).sharp;if(q>bs){bs=q;best=c}if(i<3)await new Promise(z=>setTimeout(z,70))}
         if(!running)return;
-        freeze(best);say('⏳ Đang quét từ ảnh vừa chụp…');
-        await new Promise(z=>requestAnimationFrame(()=>setTimeout(z,30)));   // cho hình đóng băng kịp hiện trước khi xử lý nặng
-        r=fromStill(best,vw,vh,best,crop,true);
-      }catch(e){console.error(e);toast('Không quét được ảnh vừa chụp — hãy chụp lại')}
-      finally{shooting=false;shot.classList.remove('busy');if(!r){pend=false;stable=0;lastSig='';unfreeze();say('')}}   // không nhận ra cây → về camera trực tiếp để chụp lại
+        freeze(best);photoSnap=best;
+      }catch(e){console.error(e);toast('Không chụp được, hãy thử lại');pend=false;stable=0;lastSig='';unfreeze()}
+      finally{shot.classList.remove('busy');shooting=false}
+      if(frz)await scanPhoto();
     };
     shot.onclick=doShot;$('#bSnap').onclick=doShot;
     // Tải ảnh: A = cây có nút hình tròn (quy trình nhận diện hiện tại); B = chữ số viết trực tiếp trên giấy.
@@ -2941,7 +2957,7 @@ async function startAR(useCam){
     const dist=()=>{const q=[...pts.values()];return Math.hypot(q[0][0]-q[1][0],q[0][1]-q[1][1])};
     const ang=()=>{const q=[...pts.values()];return Math.atan2(q[1][1]-q[0][1],q[1][0]-q[0][0])};
     dom.addEventListener('pointerdown',e=>{try{dom.setPointerCapture(e.pointerId)}catch(_){}pts.set(e.pointerId,[e.clientX,e.clientY]);moved=0;dragging=false;roiD=null;
-      if(mode=='scan'&&useCam&&!pend&&pts.size==1){roiD=Math.hypot(e.clientX-(ROI.x+ROI.w),e.clientY-(ROI.y+ROI.h))<44?'rs':(e.clientX>ROI.x&&e.clientX<ROI.x+ROI.w&&e.clientY>ROI.y&&e.clientY<ROI.y+ROI.h)?'mv':null}
+      if(mode=='scan'&&useCam&&(!pend||photo)&&pts.size==1){roiD=Math.hypot(e.clientX-(ROI.x+ROI.w),e.clientY-(ROI.y+ROI.h))<44?'rs':(e.clientX>ROI.x&&e.clientX<ROI.x+ROI.w&&e.clientY>ROI.y&&e.clientY<ROI.y+ROI.h)?'mv':null}
       if(pts.size==1){dragId=rig.visible&&!GM.on&&S.mode!='choi'&&S.view!='arr'&&S.dm=='node'?pick(e):null;dnNode=!GM.on&&S.dm!='node'&&rig.visible&&pick(e)!=null}else{dragId=null;pd=dist();pa=ang()}});
     dom.addEventListener('pointermove',e=>{const p=pts.get(e.pointerId);if(!p)return;const dx=e.clientX-p[0],dy=e.clientY-p[1];p[0]=e.clientX;p[1]=e.clientY;
       if(roiD&&pts.size==1){if(roiD=='rs'){ROI.w=Math.max(120,ROI.w+dx);ROI.h=Math.max(120,ROI.h+dy)}else{ROI.x+=dx;ROI.y+=dy}og.clearRect(0,0,SW,SH);drawFrame();return}
@@ -3181,7 +3197,7 @@ try{ui()}catch(e){}
 (()=>{
  const theme=document.createElement('button');theme.id='bTheme';theme.title='Đổi giao diện sáng / tối';
  theme.onclick=()=>{TH.m=TH.m==='dark'?'light':'dark';try{localStorage.setItem('arbt_theme',TH.m)}catch(_){}applyTheme();updateTheme()};
- document.getElementById('top').insertBefore(theme,document.getElementById('bSet'));
+ 
  function updateTheme(){theme.textContent=TH.m==='dark'?'☀':'☾';theme.setAttribute('aria-label',TH.m==='dark'?'Chuyển sang giao diện sáng':'Chuyển sang giao diện tối');theme.setAttribute('aria-pressed',String(TH.m==='light'))}
  new MutationObserver(updateTheme).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});updateTheme();
  ['info','code'].forEach(id=>document.getElementById(id).classList.add('cl'));
