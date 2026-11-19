@@ -716,11 +716,11 @@ html[data-theme] #mo.q.c{
   backdrop-filter:none!important;
 }
 /* ===== NÚT CHỤP kiểu máy ảnh điện thoại (quét từ ảnh tĩnh, đỡ run tay) ===== */
-#shotWrap{position:fixed;left:50%;bottom:calc(max(14px,env(safe-area-inset-bottom)) + 12px);transform:translateX(-50%);z-index:7;display:none;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
-body.shotOn #shotWrap{display:flex}
-#bShot{pointer-events:auto;width:78px;height:78px;min-height:0;padding:0;border-radius:50%;border:4px solid #fff;background:#0006;box-shadow:0 2px 16px #000b;display:flex;align-items:center;justify-content:center;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .12s,opacity .2s}
-#bShot i{display:block;width:60px;height:60px;border-radius:50%;background:#fff;transition:transform .12s,background .12s}
-#bShot:active{transform:scale(.94)}#bShot:active i{transform:scale(.86);background:#d9d9d9}
+#shotWrap{position:fixed;left:50%;bottom:calc(max(14px,env(safe-area-inset-bottom)) + 28px);transform:translateX(-50%);z-index:7;display:none;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
+body.scan:not(.noShot) #shotWrap{display:flex}
+#bShot{pointer-events:auto;width:76px;height:76px;min-height:0;padding:0;border-radius:50%;border:0;background:#fff;box-shadow:0 0 0 6px #ffffff55,0 4px 18px #000a;display:flex;align-items:center;justify-content:center;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .12s,opacity .2s}
+#bShot i{display:none}
+#bShot:active{transform:scale(.88);background:#e4e4e4}
 #bShot:focus-visible{outline:3px solid #4fe3ff;outline-offset:4px}
 #bShot.busy{opacity:.5;pointer-events:none}
 #shotWrap small{color:#fff;font-weight:700;font-size:12px;text-shadow:0 1px 4px #000,0 0 8px #000;letter-spacing:.3px}
@@ -2596,7 +2596,7 @@ function stopAR(){
   lockFn=null;rescanFn=null;isLocked=false;sync=()=>{};
   $('#ar').replaceChildren();load('');
   ['#hud','#coach','#toast','#err'].forEach(q=>{const e=$(q);if(e)e.style.display='none'});
-  document.body.classList.remove('locked','cfm','game','hp','nocam','shotOn');document.body.classList.add('scan');
+  document.body.classList.remove('locked','cfm','game','hp','nocam','noShot');document.body.classList.add('scan');
   applyTheme();ui()}
 function goHome(){stopAR();$('#start').style.display='flex'}
 $('#bHome').onclick=()=>{
@@ -2852,7 +2852,7 @@ async function startAR(useCam){
     let manualScan=false,frz=null,shooting=false;const unfreeze=()=>{if(frz){frz.remove();frz=null}};
     const tick=()=>{if(!running)return;
       if(frz&&(!pend||mode!=='scan'))unfreeze();                       // hết bước xác nhận / quét lại → trả về hình camera trực tiếp
-      document.body.classList.toggle('shotOn',mode==='scan'&&!pend&&!shooting&&document.body.classList.contains('scan')&&$('#mo').style.display!=='flex');   // nút chụp chỉ hiện khi đang quét
+      document.body.classList.toggle('noShot',!(mode==='scan'&&!pend&&!shooting&&$('#mo').style.display!=='flex'));   // nút chụp chỉ hiện khi đang quét
       if(!locked&&!busy&&!(manualScan&&mode==='scan')){busy=true;try{step()}catch(e){console.error(e)}busy=false}setTimeout(tick,mode=='scan'?400:120)};
     
     const fromStill=(src,iw,ih,snap,crop,ask,post)=>{ANX.track=0;                  // quét ảnh tĩnh độ phân giải cao (ảnh chụp hoặc ảnh tải lên)
@@ -2873,7 +2873,7 @@ async function startAR(useCam){
     const doShot=async()=>{
       if(mode!='scan'||!vid.videoWidth)return toast('Chỉ chụp quét được khi đang ở chế độ quét camera');
       if(pend||shooting)return;
-      shooting=true;pend=true;shot.classList.add('busy');document.body.classList.remove('shotOn');   // pend=true: tạm dừng quét tự động trong lúc chụp
+      shooting=true;pend=true;shot.classList.add('busy');document.body.classList.add('noShot');   // pend=true: tạm dừng quét tự động trong lúc chụp
       buzz(25);beep(880);flash.classList.remove('on');void flash.offsetWidth;flash.classList.add('on');
       let r=null;
       try{
