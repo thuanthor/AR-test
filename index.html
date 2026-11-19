@@ -636,6 +636,77 @@ html[data-theme] #tbar button[data-op]{flex:0 0 44px;min-width:44px!important;mi
 }
 </style>
 
+<style id="game-theme">
+html[data-theme]{--g-blue:#4dabf7;--g-green:#40c057;--g-amber:#fab005;--g-orange:#ff922b;--g-red:#fa5252;--g-pink:#e64980;--g-teal:#20c997;--g-violet:#9775fa}
+html[data-theme="light"]{--g-green:#2b8a3e;--g-amber:#b87300;--g-orange:#d9480f;--g-red:#c92a2a;--g-blue:#1971c2;--g-teal:#0b7a5c;--g-violet:#6741d9;--g-pink:#c2255c}
+/* Độ khó */
+html[data-theme] #mbd .dfr button.bt[data-x="df1"]{background:color-mix(in srgb,var(--g-green) 14%,transparent);border-color:color-mix(in srgb,var(--g-green) 55%,transparent)}
+html[data-theme] #mbd .dfr button.bt[data-x="df2"]{background:color-mix(in srgb,var(--g-amber) 14%,transparent);border-color:color-mix(in srgb,var(--g-amber) 55%,transparent)}
+html[data-theme] #mbd .dfr button.bt[data-x="df3"]{background:color-mix(in srgb,var(--g-red) 14%,transparent);border-color:color-mix(in srgb,var(--g-red) 55%,transparent)}
+html[data-theme] #mbd .dfr button.bt[data-x^="df"]{display:flex;align-items:center;justify-content:center;text-align:center}
+html[data-theme] #mbd .dfr button.bt[data-x="df1"]{background:color-mix(in srgb,var(--g-green) 8%,transparent)}
+html[data-theme] #mbd .dfr button.bt[data-x="df2"]{background:color-mix(in srgb,var(--g-amber) 8%,transparent)}
+html[data-theme] #mbd .dfr button.bt[data-x="df3"]{background:color-mix(in srgb,var(--g-red) 8%,transparent)}
+html[data-theme] #mbd .dfr button.bt[data-x="df1"].on{background:color-mix(in srgb,var(--g-green) 30%,transparent);border-color:var(--g-green);outline:none}
+html[data-theme] #mbd .dfr button.bt[data-x="df2"].on{background:color-mix(in srgb,var(--g-amber) 30%,transparent);border-color:var(--g-amber);outline:none}
+html[data-theme] #mbd .dfr button.bt[data-x="df3"].on{background:color-mix(in srgb,var(--g-red) 30%,transparent);border-color:var(--g-red);outline:none}
+/* Mục gập */
+html[data-theme] #mo details[data-k]{border-radius:12px;overflow:hidden}
+html[data-theme] #mo details[data-k] summary{border-left:4px solid var(--g-blue)}
+html[data-theme] #mo details[data-k="cf"] summary{border-left-color:var(--g-blue)}
+html[data-theme] #mo details[data-k="tp"] summary{border-left-color:var(--g-teal)}
+html[data-theme] #mo details[data-k="ty"] summary{border-left-color:var(--g-violet)}
+html[data-theme] #mo details[data-k="md"] summary{border-left-color:var(--g-orange)}
+html[data-theme] #mo details[data-k][open] summary{background:color-mix(in srgb,var(--g-blue) 8%,transparent)}
+html[data-theme] #mo details[data-k] input[type=checkbox]{accent-color:var(--g-teal)}
+/* Nút chế độ */
+html[data-theme] #mbd button.bt[data-x^="m"]{border-left:3px solid var(--acc,var(--g-blue))}
+html[data-theme] #mbd button.bt[data-x="mPrac"]{--acc:var(--g-blue)}
+html[data-theme] #mbd button.bt[data-x="mTime"]{--acc:var(--g-orange)}
+html[data-theme] #mbd button.bt[data-x="mFix"]{--acc:var(--g-pink)}
+html[data-theme] #mbd button.bt[data-x="mNext"]{--acc:var(--g-teal)}
+html[data-theme] #mbd button.bt[data-x="mHunt"]{--acc:var(--g-violet)}
+html[data-theme] #mbd button.bt[data-x="mMix"]{--acc:var(--g-amber)}
+html[data-theme] #mbd button.bt[data-x="mAll"]{--acc:var(--g-blue);background:color-mix(in srgb,var(--g-blue) 12%,transparent)}
+html[data-theme] #mbd button.bt[data-x="hs2"]{border-color:var(--g-amber);color:var(--g-amber)}
+html[data-theme] #mbd button.bt[data-x="hr"]{border-color:var(--g-blue);color:var(--g-blue)}
+html[data-theme] #mbd h4{color:var(--g-blue)}
+/* Bảng chơi */
+html[data-theme] #gm{border-top:2px solid var(--g-blue)}
+html[data-theme] #gm #gS{color:var(--g-amber);background:color-mix(in srgb,var(--g-amber) 14%,transparent);border-radius:999px;padding:2px 10px}
+html[data-theme] #gm #gP{color:var(--g-teal);background:color-mix(in srgb,var(--g-teal) 14%,transparent);border-radius:999px;padding:2px 10px}
+html[data-theme] #gm .bar{height:8px;border-radius:99px}
+html[data-theme] #gm .bar i{background:linear-gradient(90deg,var(--g-green),var(--g-amber),var(--g-red));border-radius:99px}
+html[data-theme] #gm #gF{padding:8px 10px;border-radius:8px;border-left:4px solid var(--g-amber);background:color-mix(in srgb,var(--g-amber) 10%,transparent)}
+html[data-theme] #gm #gF.ok{border-left-color:var(--g-green);background:color-mix(in srgb,var(--g-green) 14%,transparent)}
+html[data-theme] #gm #gF.bad{border-left-color:var(--g-red);background:color-mix(in srgb,var(--g-red) 14%,transparent)}
+html[data-theme] #gm #gF.info{border-left-color:var(--g-amber)}
+html[data-theme="light"] #gm #gF.ok{color:#1b5e2b}
+html[data-theme] #gm button[data-g="hint"]{background:color-mix(in srgb,var(--g-blue) 16%,transparent);border-color:var(--g-blue);color:var(--g-blue)}
+html[data-theme] #gm button[data-g="skip"]{background:color-mix(in srgb,var(--g-orange) 16%,transparent);border-color:var(--g-orange);color:var(--g-orange)}
+html[data-theme] #gm button[data-g="quit"]{background:color-mix(in srgb,var(--g-red) 16%,transparent);border-color:var(--g-red);color:var(--g-red)}
+/* Câu hỏi */
+html[data-theme] #mbd .qbar i{background:linear-gradient(90deg,var(--g-blue),var(--g-teal))}
+html[data-theme] #mbd .qinf span:first-child{color:var(--g-blue)}
+html[data-theme] #mbd .qinf span:last-child{color:var(--g-orange)}
+html[data-theme] #mbd button.bt:not(.or):not(.ok):not(.bad):not(.qchip):not([data-x]):not(.qtl button){border-left:3px solid var(--g-blue)}
+html[data-theme] #mbd button.bt.ok{background:color-mix(in srgb,var(--g-green) 18%,transparent);border-color:var(--g-green)}
+html[data-theme] #mbd button.bt.bad{background:color-mix(in srgb,var(--g-red) 18%,transparent);border-color:var(--g-red)}
+html[data-theme] #mbd .qchip.on{background:color-mix(in srgb,var(--g-green) 25%,transparent);border-color:var(--g-green);color:var(--g-green)}
+html[data-theme] #mbd .qhi{background:color-mix(in srgb,var(--g-orange) 12%,transparent);border-left:4px solid var(--g-orange);border-radius:8px}
+html[data-theme] #mbd .qtl button[data-x="qh"]{color:var(--g-blue);border-color:var(--g-blue)}
+html[data-theme] #mbd .qtl button[data-x="qsw"]{color:var(--g-violet);border-color:var(--g-violet)}
+html[data-theme] #mbd .qtl button[data-x="qtree"]{color:var(--g-teal);border-color:var(--g-teal)}
+html[data-theme] #mbd .fb{border-left:5px solid var(--g-blue);border-radius:8px}
+html[data-theme] #mbd .fb.ok{border-left-color:var(--g-green);background:color-mix(in srgb,var(--g-green) 12%,transparent)}
+html[data-theme] #mbd .fb.bad{border-left-color:var(--g-red);background:color-mix(in srgb,var(--g-red) 12%,transparent)}
+html[data-theme] #mbd .fb.ok h5{color:var(--g-green)}
+html[data-theme] #mbd .fb.bad h5{color:var(--g-red)}
+html[data-theme] #mbd .pts span{background:color-mix(in srgb,var(--g-amber) 18%,transparent);color:var(--g-amber);border-radius:999px;padding:2px 10px}
+html[data-theme] #mbd .pts span:first-child{background:color-mix(in srgb,var(--g-blue) 18%,transparent);color:var(--g-blue)}
+html[data-theme] #mbd .stars{color:var(--g-amber)}
+html[data-theme] #mbd details.rv{border-left:4px solid var(--g-red);border-radius:8px}
+</style>
 <style id="game-clear-view">
 /* Khi đang làm câu hỏi / chơi game: không làm mờ và không phủ tối cây AR phía sau */
 html[data-theme] #mo.q,
@@ -644,6 +715,18 @@ html[data-theme] #mo.q.c{
   -webkit-backdrop-filter:none!important;
   backdrop-filter:none!important;
 }
+/* ===== NÚT CHỤP kiểu máy ảnh điện thoại (quét từ ảnh tĩnh, đỡ run tay) ===== */
+#shotWrap{position:fixed;left:50%;bottom:calc(max(14px,env(safe-area-inset-bottom)) + 12px);transform:translateX(-50%);z-index:7;display:none;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
+body.shotOn #shotWrap{display:flex}
+#bShot{pointer-events:auto;width:78px;height:78px;min-height:0;padding:0;border-radius:50%;border:4px solid #fff;background:#0006;box-shadow:0 2px 16px #000b;display:flex;align-items:center;justify-content:center;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .12s,opacity .2s}
+#bShot i{display:block;width:60px;height:60px;border-radius:50%;background:#fff;transition:transform .12s,background .12s}
+#bShot:active{transform:scale(.94)}#bShot:active i{transform:scale(.86);background:#d9d9d9}
+#bShot:focus-visible{outline:3px solid #4fe3ff;outline-offset:4px}
+#bShot.busy{opacity:.5;pointer-events:none}
+#shotWrap small{color:#fff;font-weight:700;font-size:12px;text-shadow:0 1px 4px #000,0 0 8px #000;letter-spacing:.3px}
+#flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:14}
+#flash.on{animation:shFl .35s ease-out}@keyframes shFl{0%{opacity:.85}100%{opacity:0}}
+@media(prefers-reduced-motion:reduce){#flash.on{animation-duration:.15s;opacity:.3}}
 </style>
 
 </head>
@@ -652,7 +735,7 @@ html[data-theme] #mo.q.c{
 <div id="ar"></div>
 <div id="start"><h1>AR Cây nhị phân 3D</h1>
 <p>Đưa camera vào hình cây nhị phân (in hoặc vẽ tay). Web tự nhận diện nút và đường nối, dựng cây 3D để bạn khám phá, chỉnh sửa, tìm kiếm và luyện tập qua các trò chơi. Nếu trùng hình trong sách, web sẽ gợi ý mẫu chuẩn.</p>
-<p style="font-size:13px">💡 <b>Mẹo quét:</b> Đủ sáng, cách giấy 30–40 cm và giữ máy yên 1–2 giây. Vẽ nét đậm, khép kín các nút và đặt hình trong <b>khung vàng</b>. Ảnh mờ? Hãy chụp lại. Không có camera? Dùng nút <b>🌳 Cây có sẵn</b> trên thanh công cụ.</p><p id="stt">⏳ Đang khởi động...</p><button id="bAR" disabled>Bắt đầu</button></div>
+<p style="font-size:13px">💡 <b>Mẹo quét:</b> Đủ sáng, cách giấy 30–40 cm và giữ máy yên 1–2 giây. Vẽ nét đậm, khép kín các nút và đặt hình trong <b>khung vàng</b>. Ảnh mờ? Hãy chụp lại. Mỏi tay? Bấm <b>nút chụp tròn</b> ở đáy màn hình để quét từ ảnh vừa chụp, không cần giữ máy yên. Không có camera? Dùng nút <b>🌳 Cây có sẵn</b> trên thanh công cụ.</p><p id="stt">⏳ Đang khởi động...</p><button id="bAR" disabled>Bắt đầu</button></div>
 <div id="top" class="gl"><button id="bHome" title="Quay lại màn hình chính">🏠<span class="tx"> Màn hình chính</span></button><span>TRẠNG THÁI AR: <b id="st"></b></span><span class="sp"></span>
 <select id="vw" title="Cách hiển thị: cây 3D hoặc mảng 1 chiều T[]"><option value="tree">Cây 3D AR</option><option value="arr">Mảng 1 chiều T[]</option></select>
 <button id="bAna" title="Xem chiều cao, số lá, số mức… của cây">📐</button><button id="bMv" title="Đổi cách kéo 1 ngón: Xoay cây ⟷ Kéo nút"></button><button id="bLock" class="or" hidden></button><button id="bMan" title="Không quét được? nhập cây bằng tay">⌨<span class="tx"> Nhập tay</span></button><button id="bSnap" title="Chụp 1 ảnh nét để nhận diện">📸<span class="tx"> Chụp quét</span></button><button id="bPre" title="Cây có sẵn: nhập chuỗi số, sửa giá trị nút, tạo cây mẫu">🌳<span class="tx"> Cây có sẵn</span></button><button id="bImg" title="Lưu ảnh cây thành tệp PNG để đưa vào bài tập, báo cáo">💾<span class="tx"> Lưu ảnh cây</span></button><button id="bSet" title="Cài đặt và trợ giúp: giao diện, độ sáng, âm thanh, cách dùng">⚙<span class="tx"> Cài đặt</span></button><button id="bMore" title="Thêm: đo thông số, cài đặt">⋯</button></div>
@@ -665,7 +748,7 @@ html[data-theme] #mo.q.c{
 <select id="spd" title="Tốc độ phát"><option value="0.25">0.25x</option><option value="0.5" selected>0.5x</option><option value="1">1x</option><option value="1.5">1.5x</option><option value="2">2x</option></select></span></div>
 <div id="out"></div><div id="nt"></div></div>
 <div id="mo"><div class="gl"><h3 id="mh"></h3><div id="mbd"></div><div class="b"><button id="mx">Đóng</button><button id="mok" class="or"></button></div></div></div>
-<div id="coach" class="gl"><span id="ct"></span><button id="cs">Bỏ qua</button></div><div id="sweep"></div><div id="hud"></div><div id="toast" role="status" aria-live="polite"></div><div id="err" role="alert"></div><div id="load"></div>
+<div id="coach" class="gl"><span id="ct"></span><button id="cs">Bỏ qua</button></div><div id="sweep"></div><div id="shotWrap"><button id="bShot" type="button" aria-label="Chụp ảnh rồi quét cây" title="Chụp ảnh rồi quét — không cần giữ máy yên"><i></i></button><small>Chụp &amp; quét</small></div><div id="flash"></div><div id="hud"></div><div id="toast" role="status" aria-live="polite"></div><div id="err" role="alert"></div><div id="load"></div>
 
 <!-- Thứ tự nạp quan trọng: các file dùng chung biến toàn cục nên phải nạp đúng thứ tự này -->
 <script>
@@ -2513,7 +2596,7 @@ function stopAR(){
   lockFn=null;rescanFn=null;isLocked=false;sync=()=>{};
   $('#ar').replaceChildren();load('');
   ['#hud','#coach','#toast','#err'].forEach(q=>{const e=$(q);if(e)e.style.display='none'});
-  document.body.classList.remove('locked','cfm','game','hp','nocam');document.body.classList.add('scan');
+  document.body.classList.remove('locked','cfm','game','hp','nocam','shotOn');document.body.classList.add('scan');
   applyTheme();ui()}
 function goHome(){stopAR();$('#start').style.display='flex'}
 $('#bHome').onclick=()=>{
@@ -2749,7 +2832,7 @@ async function startAR(useCam){
             review(r,snap)}}
         else if(r.tr.needConfirm){fail=0;stable=r.tr.psig==lastSig?stable+1:1;lastSig=r.tr.psig;say(`Bước 1/3 · ⚠ ${esc(r.tr.msg)} — giữ máy yên… ${Math.min(stable,4)}/4`);
           if(stable>=4&&!pend){const snap=document.createElement('canvas');snap.width=vw;snap.height=vh;snap.getContext('2d').drawImage(vid,0,0);review(r,snap)}}
-        else{stable=0;lastSig='';fail++;say(r.tr.code==='grid'?'⚠ '+r.tr.msg:r.C.length?`Bước 1/3 · 🔍 Thấy ${r.C.length} nút, ${r.ed.length} đường nối — ${r.tr.msg}`:(r.sh<2.2?'🌫 Ảnh đang mờ — giữ máy yên, lau ống kính, hoặc bấm 📸 Chụp quét':'Bước 1/3 · 🔍 Đưa hình cây vào KHUNG VÀNG (kéo khung để dời, kéo chấm góc để đổi cỡ)')+(fail>25?'<br><small>Quét mãi không được? Bấm 📸 Chụp quét hoặc ⌨ Nhập tay</small>':''))}
+        else{stable=0;lastSig='';fail++;say(r.tr.code==='grid'?'⚠ '+r.tr.msg:r.C.length?`Bước 1/3 · 🔍 Thấy ${r.C.length} nút, ${r.ed.length} đường nối — ${r.tr.msg}`:(r.sh<2.2?'🌫 Ảnh đang mờ — giữ máy yên, lau ống kính, hoặc bấm nút chụp tròn bên dưới':'Bước 1/3 · 🔍 Đưa hình cây vào KHUNG VÀNG (kéo khung để dời, kéo chấm góc để đổi cỡ)')+(fail>25?'<br><small>Quét mãi không được? Bấm nút chụp tròn bên dưới hoặc ⌨ Nhập tay</small>':''))}
         return}
       if(r.tr.ok&&r.tr.sig==M.sig){const pp=[];(function z(a,b){if(!a||!b)return;pp.push([M.pts[a.i],r.C[b.i]]);z(a.l,b.l);z(a.r,b.r)})(M.tree,r.tr.root);
         if(pp.length>=2){const[nr,ni,nx,ny]=fitSim(pp),al=lost>0?1:.85;qr+=(nr-qr)*al;qi+=(ni-qi)*al;tx+=(nx-tx)*al;ty+=(ny-ty)*al;if(lost>=8)say('');lost=0;return}}
@@ -2766,7 +2849,11 @@ async function startAR(useCam){
           const pp=[];(function z(a,b){if(!a||!b)return;pp.push([M.pts[a.i],r.C[b.i]]);z(a.l,b.l);z(a.r,b.r)})(M.tree,r.tr.root);
           [qr,qi,tx,ty]=fitSim(pp);lost=0;say('')}}
     };
-    let manualScan=false;const tick=()=>{if(!running)return;if(!locked&&!busy&&!(manualScan&&mode==='scan')){busy=true;try{step()}catch(e){console.error(e)}busy=false}setTimeout(tick,mode=='scan'?400:120)};
+    let manualScan=false,frz=null,shooting=false;const unfreeze=()=>{if(frz){frz.remove();frz=null}};
+    const tick=()=>{if(!running)return;
+      if(frz&&(!pend||mode!=='scan'))unfreeze();                       // hết bước xác nhận / quét lại → trả về hình camera trực tiếp
+      document.body.classList.toggle('shotOn',mode==='scan'&&!pend&&!shooting&&document.body.classList.contains('scan')&&$('#mo').style.display!=='flex');   // nút chụp chỉ hiện khi đang quét
+      if(!locked&&!busy&&!(manualScan&&mode==='scan')){busy=true;try{step()}catch(e){console.error(e)}busy=false}setTimeout(tick,mode=='scan'?400:120)};
     
     const fromStill=(src,iw,ih,snap,crop,ask,post)=>{ANX.track=0;                  // quét ảnh tĩnh độ phân giải cao (ảnh chụp hoặc ảnh tải lên)
       const q=imageQuality(snap,crop),warnings=[];if(q.light<65)warnings.push('Ảnh tối: tăng ánh sáng');if(q.sharp<2.2)warnings.push('Ảnh có thể mờ: giữ máy yên và chụp lại');
@@ -2779,9 +2866,27 @@ async function startAR(useCam){
       drawDet(r,iw,ih);ask2(r,snap);return r};
     $('#bMan').onclick=()=>{if(mode!='scan')return;root=parseStr('1(2(3,4),5)');S.orig=clone(root);S.view='tree';S.sel=null;S.grow=1;mode='track';locked=true;isLocked=true;pend=false;M=null;rig.visible=true;og.clearRect(0,0,SW,SH);document.body.classList.remove('scan');document.body.classList.add('locked');say('');clear();refresh();OP.str()};
     $('#bPre').onclick=()=>{if(mode=='scan'){root=parseStr('1(2(3,4),5)');S.orig=clone(root);S.view='tree';S.sel=null;S.grow=1;mode='track';locked=true;isLocked=true;pend=false;M=null;rig.visible=true;og.clearRect(0,0,SW,SH);document.body.classList.remove('scan');document.body.classList.add('locked');say('');clear();refresh();}OP.inp()};
-    $('#bSnap').onclick=()=>{if(mode!='scan'||!vid.videoWidth)return toast('Chỉ chụp quét được khi đang ở chế độ quét camera');if(pend)return;
-      const vw=vid.videoWidth,vh=vid.videoHeight,snap=document.createElement('canvas');snap.width=vw;snap.height=vh;snap.getContext('2d').drawImage(vid,0,0);
-      fromStill(snap,vw,vh,snap,roiSrc(vw,vh),true)};
+    // ---- NÚT CHỤP (kiểu máy ảnh điện thoại): chụp nhanh vài khung → giữ khung NÉT nhất → đóng băng hình → quét từ ảnh tĩnh ----
+    // Hình đóng băng nằm dưới lớp vẽ nút/đường nối nên người dùng có thể hạ máy xuống mà kết quả không bị lệch.
+    const shot=$('#bShot'),flash=$('#flash');
+    const freeze=c=>{unfreeze();const k=document.createElement('canvas');k.width=c.width;k.height=c.height;k.getContext('2d').drawImage(c,0,0);k.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover';vid.after(k);frz=k};
+    const doShot=async()=>{
+      if(mode!='scan'||!vid.videoWidth)return toast('Chỉ chụp quét được khi đang ở chế độ quét camera');
+      if(pend||shooting)return;
+      shooting=true;pend=true;shot.classList.add('busy');document.body.classList.remove('shotOn');   // pend=true: tạm dừng quét tự động trong lúc chụp
+      buzz(25);beep(880);flash.classList.remove('on');void flash.offsetWidth;flash.classList.add('on');
+      let r=null;
+      try{
+        const vw=vid.videoWidth,vh=vid.videoHeight,crop=roiSrc(vw,vh);let best=null,bs=-1;
+        for(let i=0;i<4;i++){const c=document.createElement('canvas');c.width=vw;c.height=vh;c.getContext('2d').drawImage(vid,0,0);const q=imageQuality(c,crop).sharp;if(q>bs){bs=q;best=c}if(i<3)await new Promise(z=>setTimeout(z,70))}
+        if(!running)return;
+        freeze(best);say('⏳ Đang quét từ ảnh vừa chụp…');
+        await new Promise(z=>requestAnimationFrame(()=>setTimeout(z,30)));   // cho hình đóng băng kịp hiện trước khi xử lý nặng
+        r=fromStill(best,vw,vh,best,crop,true);
+      }catch(e){console.error(e);toast('Không quét được ảnh vừa chụp — hãy chụp lại')}
+      finally{shooting=false;shot.classList.remove('busy');if(!r){pend=false;stable=0;lastSig='';unfreeze();say('')}}   // không nhận ra cây → về camera trực tiếp để chụp lại
+    };
+    shot.onclick=doShot;$('#bSnap').onclick=doShot;
     // Tải ảnh: A = cây có nút hình tròn (quy trình nhận diện hiện tại); B = chữ số viết trực tiếp trên giấy.
     async function readPaperDigits(imageCanvas){
       const worker=await getOcr();
